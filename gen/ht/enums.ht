@@ -1,0 +1,239 @@
+class TextWidthBasis {
+	static var parent
+	static var longestLine
+}
+
+class DragStartBehavior {
+	static var down
+	static var start
+}
+
+class TextOverflow {
+	static var clip
+	static var fade
+	static var ellipsis
+	static var visible
+}
+
+class MaterialTapTargetSize {
+	static var padded
+	static var shrinkWrap
+}
+
+class FontStyle {
+	static var normal
+	static var italic
+}
+
+class TextAlign {
+	static var left
+	static var right
+	static var center
+	static var justify
+	static var start
+	static var end
+}
+
+class TextBaseline {
+	static var alphabetic
+	static var ideographic
+}
+
+class TextDecorationStyle {
+	static var solid
+	static var double
+	static var dotted
+	static var dashed
+	static var wavy
+}
+
+class TextDirection {
+	static var rtl
+	static var ltr
+}
+
+class Clip {
+	static var none
+	static var hardEdge
+	static var antiAlias
+	static var antiAliasWithSaveLayer
+}
+
+class BorderRadius {
+	static var zero
+}
+
+class BorderRadiusDirectional {
+	static var zero
+}
+
+class Alignment {
+	static var topLeft
+	static var topCenter
+	static var topRight
+	static var centerLeft
+	static var center
+	static var centerRight
+	static var bottomLeft
+	static var bottomCenter
+	static var bottomRight
+}
+
+class AlignmentDirectional {
+	static var topStart
+	static var topCenter
+	static var topEnd
+	static var centerStart
+	static var center
+	static var centerEnd
+	static var bottomStart
+	static var bottomCenter
+	static var bottomEnd
+}
+
+class FractionalOffset {
+	static var topLeft
+	static var topCenter
+	static var topRight
+	static var centerLeft
+	static var center
+	static var centerRight
+	static var bottomLeft
+	static var bottomCenter
+	static var bottomRight
+}
+
+class EdgeInsets {
+	static var zero
+}
+
+class EdgeInsetsDirectional {
+	static var zero
+}
+
+class StrutStyle {
+	static var disabled
+}
+
+class CupertinoScrollbar {
+	static var defaultThickness
+	static var defaultThicknessWhileDragging
+	static var defaultRadius
+	static var defaultRadiusWhileDragging
+}
+
+class Material {
+	static var defaultSplashRadius
+}
+
+class TextField {
+	static var noMaxLength
+}
+
+class Colors {
+	static var transparent
+	static var black
+	static var black87
+	static var black54
+	static var black45
+	static var black38
+	static var black26
+	static var black12
+	static var white
+	static var white70
+	static var white60
+	static var white54
+	static var white38
+	static var white30
+	static var white24
+	static var white12
+	static var white10
+	static var red
+	static var redAccent
+	static var pink
+	static var pinkAccent
+	static var purple
+	static var purpleAccent
+	static var deepPurple
+	static var deepPurpleAccent
+	static var indigo
+	static var indigoAccent
+	static var blue
+	static var blueAccent
+	static var lightBlue
+	static var lightBlueAccent
+	static var cyan
+	static var cyanAccent
+	static var teal
+	static var tealAccent
+	static var green
+	static var greenAccent
+	static var lightGreen
+	static var lightGreenAccent
+	static var lime
+	static var limeAccent
+	static var yellow
+	static var yellowAccent
+	static var amber
+	static var amberAccent
+	static var orange
+	static var orangeAccent
+	static var deepOrange
+	static var deepOrangeAccent
+	static var brown
+	static var grey
+	static var blueGrey
+	static var primaries
+	static var accents
+}
+
+class Checkbox {
+	static var width
+}
+
+class PaginatedDataTable {
+	static var defaultRowsPerPage
+}
+
+class VisualDensity {
+	static var minimumDensity
+	static var maximumDensity
+	static var standard
+	static var comfortable
+	static var compact
+}
+
+class NavigationToolbar {
+	static var kMiddleSpacing
+}
+
+class Navigator {
+	static var defaultRouteName
+}
+
+class FontWeight {
+	static var w100
+	static var w200
+	static var w300
+	static var w400
+	static var w500
+	static var w600
+	static var w700
+	static var w800
+	static var w900
+	static var normal
+	static var bold
+	static var values
+}
+
+class TextDecoration {
+	static var none
+	static var underline
+	static var overline
+	static var lineThrough
+}
+
+class Size {
+	static var zero
+	static var infinite
+}
