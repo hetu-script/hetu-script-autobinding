@@ -16,7 +16,9 @@ Future<List<FileSystemEntity>> dirContents(Directory dir) {
   var completer = Completer<List<FileSystemEntity>>();
   var lister = dir.list(recursive: true);
   lister.listen((file) {
-    if (file.statSync().type == FileSystemEntityType.file &&
+    if (file
+        .statSync()
+        .type == FileSystemEntityType.file &&
         file.path.endsWith('.dart')) {
       files.add(file);
     }
@@ -26,7 +28,7 @@ Future<List<FileSystemEntity>> dirContents(Directory dir) {
   return completer.future;
 }
 
-void parseBegin() async {
+void parseBegin(String outputPath) async {
   await dirContents(Directory(path));
   await dirContents(Directory(dartui));
 
@@ -39,7 +41,6 @@ void parseBegin() async {
     var unit = result.unit;
 
     unit.visitChildren(visitor);
-
 
     visitor.turnOver(v.path);
     //处理完一个了
@@ -54,21 +55,34 @@ void parseBegin() async {
     "import 'package:flutter/cupertino.dart';",
     "import 'package:flutter/rendering.dart';",
     "import 'package:flutter/services.dart';",
+    "import 'package:flutter/foundation.dart';",
+    "import 'package:flutter/semantics.dart';",
+    "import 'package:flutter/physics.dart';",
+    "import 'package:flutter/scheduler.dart';",
     "import 'package:hetu_script/hetu_script.dart';",
+    "import 'package:hetu_script_binding/hetu_script_binding.dart';"
   ];
   var header = headers.join('\n') + '\n\n';
   var constDefines = [];
   var methodDefines = [];
   var privateClassDefines = [];
-  
-  
+
   var functionMappingHeader =
-      '''var wrapperExternalFunctions = <String, HT_External>{\n''';
+  '''var wrapperExternalFunctions = <String, HT_External>{\n''';
   var functionMapping = '';
   var functionMappingFooter = '''};\n''';
   var functionDefineHeader = '''\nclass WidgetWrapper {\n''';
   var functionDefine = '';
-  var functionDefineFooter = '''}''';
+  var functionDefineFooter = '''}\n\n''';
+
+  var htClassDefineHeaders = [
+    'class HT {',
+    '\tstatic late final Interpreter _interpreter;',
+    '\tstatic Interpreter get interpreter => _interpreter;\n',
+  ];
+  var htClassDefineHeader = htClassDefineHeaders.join('\n');
+  var htClassDefineFooter = '}';
+
 
   var htExternalFunctions = '';
   visitor.exported.forEach((key, value) {
@@ -105,11 +119,13 @@ void parseBegin() async {
         var type = extClass.varTypes[e];
         if (type == null) {
           print('class[${extClass.className} : ${value.ctorName}]: $e');
+        } else {
+          if (type.startsWith('List<')) {
+            //列表类型做转换
+            return '$e: ${type}.from($e)';
+          }
         }
-        if (type.startsWith('List<')) {
-          //列表类型做转换
-          return '$e: ${type}.from($e)';
-        }
+
         return "$e: ${'$e'}";
       }).join(', '));
     }
@@ -135,10 +151,10 @@ void parseBegin() async {
         ');\n';
 
     functionDefine +=
-        '\t\treturn Function.apply(ctor, args, namedArgs.map<Symbol, dynamic>((key, value) => MapEntry(Symbol(key), value)));\n\t}\n';
+    '\t\treturn Function.apply(ctor, args, namedArgs.map<Symbol, dynamic>((key, value) => MapEntry(Symbol(key), value)));\n\t}\n';
   });
-  
-  visitor.constVars.forEach((element) { 
+
+  visitor.constVars.forEach((element) {
     // constDefines.add('const ${visitor.constVarMap[element].varExpr};');
     constDefines.add('const $element = null;');
   });
@@ -150,25 +166,19 @@ void parseBegin() async {
     // privateClassDefines.add('${visitor.privateClassMap[element]}\n');
     privateClassDefines.add('const $element = null;');
   });
-  var constDefine = constDefines.join('\n')+ '\n\n';
-  var methodDefine = methodDefines.join('\n') + '\n\n';
-  var privateClassDefine = privateClassDefines.join('\n') + '\n\n';
+  // var constDefine = constDefines.join('\n') + '\n\n';
+  // var methodDefine = methodDefines.join('\n') + '\n\n';
+  // var privateClassDefine = privateClassDefines.join('\n') + '\n\n';
 
-  var outputContent = header +
-      constDefine +
-      methodDefine +
-      privateClassDefine +
-      functionMappingHeader +
-      functionMapping +
-      functionMappingFooter +
-      functionDefineHeader +
-      functionDefine +
-      functionDefineFooter;
+
   // print('output:\n$outputContent');
   //
   // print('ht output:\n$htExternalFunctions');
   var treeVisited = <ExtendClass>{};
   void printTree(ExtendClass cls, int depth, {bool silent = false}) {
+    if (cls == null) {
+      return;
+    }
     var o = '';
     for (var i = 0; i < depth; ++i) {
       o += '\t';
@@ -192,26 +202,31 @@ void parseBegin() async {
 
   var enumOutputContent = '';
   var htEnumOutputContent = '';
-  var enumHeaders = [
-    "import 'package:hetu_script/hetu_script.dart';",
-    "import 'script.dart';",
-    "import 'package:flutter/cupertino.dart';",
-    "import 'package:flutter/material.dart';",
-    "import 'package:flutter/gestures.dart';",
-    "import 'dart:ui';",
-    '',
-  ];
-  var enumHeader = enumHeaders.join('\n');
+
   var enumClassHeaders = [
-    'class EnumWrapper {',
-    '\tstatic void loadEnumValues() {',
-    '\t\tvar interpreter = Script.interpreter;',
+    '\tstatic void _loadEnumValues() {',
     '\t\tvar enumClass;\n',
   ];
   var enumClassHeader = enumClassHeaders.join('\n');
   var enumClassDefs = [];
-  var enumClassFooters = ['\t}', '}'];
-  var enumClassFooter = enumClassFooters.join('\n');
+  var enumClassFooter = '\t}\n';
+  var initBindingHeaders = [
+    '\tstatic Future initBinding() async {',
+    '\t\t_interpreter = await HetuScriptBinding.init();\n',
+  ];
+  var enumDefinesHeader = '\t\tString _enumDefinitions = """\n';
+  var enumDefinesFooter = '\t\t""";\n';
+  var widgetDefinesHeader = '\t\tString _widgetDefinitions = """\n';
+  var widgetDefinesFooter = '\t\t""";\n';
+  var initBindingFooters = [
+    '\t\t_interpreter.eval(_enumDefinitions);',
+    '\t\t_interpreter.eval(_widgetDefinitions);\n',
+
+    '\t\t_loadEnumValues();',
+    '\t\t_interpreter.loadExternalFunctions(wrapperExternalFunctions);',
+    '\t}\n',
+  ];
+
 
   var htEnumClassDefs = [];
 
@@ -238,9 +253,26 @@ void parseBegin() async {
     addEnumKeyValues(va.varKey, va.varValues);
   }
 
-  enumOutputContent =
-      enumHeader + enumClassHeader + enumClassDefs.join('\n') + enumClassFooter;
-  htEnumOutputContent = htEnumClassDefs.join('\n');
+  var outputContent = header +
+      functionMappingHeader +
+      functionMapping +
+      functionMappingFooter +
+      functionDefineHeader +
+      functionDefine +
+      functionDefineFooter +
+      htClassDefineHeader +
+      enumClassHeader +
+      enumClassDefs.join('\n') +
+      enumClassFooter +
+      initBindingHeaders.join('\n') +
+      enumDefinesHeader +
+      htEnumClassDefs.join('\n') +
+      enumDefinesFooter +
+      widgetDefinesHeader +
+      htExternalFunctions +
+      widgetDefinesFooter +
+      initBindingFooters.join('\n') +
+      htClassDefineFooter;
 
   var notAdded = List.from(visitor.usedIdentifiers);
   notAdded.removeWhere((element) => exportedClasses.contains(element));
@@ -253,7 +285,7 @@ void parseBegin() async {
   visitor.usedIdentifiers.forEach((usefulClass) {
     if (visitor.abstractClass.contains(usefulClass)) {
       var cc = visitor.classMap[usefulClass];
-      printTree(cc, 1, silent:  true);
+      printTree(cc, 1, silent: true);
     }
   });
 
@@ -266,25 +298,25 @@ void parseBegin() async {
     exportedClasses.addAll(treeVisited.map((e) => e.className).toList());
 
     print(
-        'COMBINED EXPORTED CLASSES & ENUMS: \n${exportedClasses.map((e) => "\t\t'$e'").join(',\n')}');
+        'COMBINED EXPORTED CLASSES & ENUMS: \n${exportedClasses.map((
+            e) => "\t\t'$e'").join(',\n')}');
   }
 
   // print('path: ${Directory.current}');
-  var outputPath = Directory.current.path.toString() + '/gen';
+  var defaultOutputPath = Directory.current.path.toString() + '/gen';
 
-  await writeContent(outputContent, outputPath + '/dart/widget_wrapper.dart');
-  await writeContent(enumOutputContent, outputPath + '/dart/enum_wrapper.dart');
-  await writeContent(htExternalFunctions, outputPath + '/ht/widgets.ht');
-  await writeContent(htEnumOutputContent, outputPath + '/ht/enums.ht');
+  void output(path) async {
+    await writeContent(outputContent, path + '/ht_script_binding.dart');
+  }
+
+  output(outputPath ?? defaultOutputPath);
 }
 
 Future<File> writeContent(String content, String path) async {
-  final file = await File('$path');
-  ;
-
+  final file = File('$path');
   return file.writeAsString(content);
 }
 
 void main(List<String> arguments) {
-  parseBegin();
+  parseBegin(arguments.isEmpty ? null : arguments[0]);
 }

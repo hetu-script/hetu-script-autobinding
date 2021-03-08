@@ -390,7 +390,15 @@ Set<String> exportedClasses = {
   'PageStorageKey',
   'UniqueKey',
   'ObjectKey',
+  'ThemeData',
+  'ButtonThemeData',
+  'ToggleButtonsThemeData',
+  'Brightness',
+  'MaterialColor',
+};
 
+Set<String> ignoredEnums = {
+  'RenderAnimatedSizeState',
 };
 
 // Set<String> exportedClasses = {'TextSelectionToolbar'};
@@ -466,7 +474,7 @@ class MyVisitor extends RecursiveAstVisitor {
   var privateClasses = <String>{};
   var privateClassMap = <String, String>{};
   var staticVars = <String>{};
-  var staticVarMap= <String, String>{};
+  var staticVarMap = <String, String>{};
 
   List<ExtendClassConstructor> _ctorTurn = [];
   Set<String> _constVarTurn = {};
@@ -533,11 +541,13 @@ class MyVisitor extends RecursiveAstVisitor {
         caseSensitive: true,
         multiLine: false,
       );
-      return regExp.hasMatch(test) && !methods.contains(element);
+      return regExp.hasMatch(test) &&
+          (test.indexOf('=') < test.indexOf(element)) &&
+          !methods.contains(element);
     }, orElse: () => null);
     if (d != null) {
       methods.add(d);
-      print('useful method: ${methodMap[d]}');
+      print('match method: ${methodMap[d]}');
       // findUsefulMethod(methodMap[d])
       // findUsefulPrivateClass(methodMap[d]);
       return true;
@@ -565,7 +575,6 @@ class MyVisitor extends RecursiveAstVisitor {
     return false;
   }
 
-
   void turnOver(String path) {
     // print("turn over: $path");
     if (_constVarTurn.length == 0) {
@@ -573,19 +582,29 @@ class MyVisitor extends RecursiveAstVisitor {
     }
     // print("const: $constVarTurn");
 
-
     for (var ctor in _ctorTurn) {
-
-      for (var i=ctor.namedInitializers.length-1; i >=0; i--) {
+      print('\tConstructor: ${ctor.ctorName}');
+      for (var i = ctor.namedInitializers.length - 1; i >= 0; i--) {
         var element = ctor.namedInitializers[i];
         // print('element: $element');
-        var found = false;
-        found |= findUsefulVar(element);
-        found |= findUsefulMethod(element);
-        found |= findUsefulPrivateClass(element);
+        var found = 0;
+        found |= findUsefulVar(element) ? 1 : 0;
+        found |= findUsefulMethod(element) ? 2 : 0;
+        found |= findUsefulPrivateClass(element) ? 4 : 0;
 
-        if (found) {
+        if (found > 0) {
           //有不合格的参数，去掉
+          String getBit(int bits) {
+            if (bits & 1 != 0) {
+              return 'var';
+            } else if (bits & 2 != 0) {
+              return 'method';
+            } else {
+              return 'private class';
+            }
+          }
+
+          print('\t\tParam Not Exported(${getBit(found)}): $element');
 
           ctor.namedInitializers.removeAt(i);
           ctor.namedArguments.removeAt(i);
@@ -596,12 +615,15 @@ class MyVisitor extends RecursiveAstVisitor {
           var rep = findUsefulStaticVar(element);
           //看是否有静态方法需要替换
           if (rep != null) {
-            print("${ctor.ctorName} replace:  $element, $rep with ${staticVarMap[rep]}");
-            ctor.namedInitializers[i] = element.replaceAll(rep, staticVarMap[rep]);
+            print(
+                "${ctor.ctorName} replace:  $element, $rep with ${staticVarMap[rep]}");
+            ctor.namedInitializers[i] =
+                element.replaceAll(rep, staticVarMap[rep]);
           }
         }
-
       }
+
+      print('\t\tParam Exported: ${ctor.namedInitializers.length}');
     }
     _constVarTurn.clear();
     _methodTurn.clear();
@@ -628,6 +650,7 @@ class MyVisitor extends RecursiveAstVisitor {
       }
       return c;
     }
+
     var extendClassName = node.extendsClause?.superclass?.name?.toString();
     var extclass = getClass(className);
     classMap[className] = extclass;
@@ -710,8 +733,8 @@ class MyVisitor extends RecursiveAstVisitor {
         for (var param in m.parameters.parameters) {
           if (param.metadata
               .any((element) => element.toString().contains('Deprecated'))) {
-            print(
-                'Ignored Deprecated param: ${param.identifier.name} $className');
+            // print(
+            //     'Ignored Deprecated param: ${param.identifier.name} $className');
             continue;
           }
           // print('param[${param.identifier.name}]: \n\t\t${param.childEntities.join('\n')}');
@@ -735,9 +758,12 @@ class MyVisitor extends RecursiveAstVisitor {
               addParam(varName, vartype: varType, onlyDefine: false);
             }
           } else {
-            var testStr = param.childEntities.last.toString().replaceAll('const ', '');
+            var testStr =
+                param.childEntities.last.toString().replaceAll('const ', '');
             var testSplits = testStr.split(' ');
-            var testResult = testSplits.firstWhere((element) => element.startsWith('_'), orElse: () => null);
+            var testResult = testSplits.firstWhere(
+                (element) => element.startsWith('_'),
+                orElse: () => null);
             if (testResult != null) {
               //用的私有变量，暂时不加这个参数了。 需要等以下issue解决：
               //https://github.com/dart-lang/language/issues/216
@@ -838,6 +864,7 @@ class MyVisitor extends RecursiveAstVisitor {
         var ec = ExtendClassConstructor(className, ctorName, namedArgs,
             initializers, positionArgs, argTypes, varInitializers);
         exported[ctorName] = ec;
+
         _ctorTurn.add(ec);
       } else if (m is FieldDeclaration) {
         // print('type : ${m.fields.type}');
@@ -902,9 +929,9 @@ class MyVisitor extends RecursiveAstVisitor {
     if (enumName.startsWith('_')) {
       return;
     }
-    if (!exportedClasses.contains(enumName)) {
-      return;
-    }
+    // if (!exportedClasses.contains(enumName)) {
+    //   return;
+    // }
     // if (enumName != 'Clip') {
     //   return;
     // }
@@ -912,6 +939,9 @@ class MyVisitor extends RecursiveAstVisitor {
     // for (var e in node.constants) {
     //   print('constant: ${e.name}');
     // }
+    if (ignoredEnums.contains(enumName)) {
+      return;
+    }
     enumLists.add(
         ExportEnum(enumName, node.constants.map((e) => e.name.name).toList()));
     return super.visitEnumDeclaration(node);

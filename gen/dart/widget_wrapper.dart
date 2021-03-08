@@ -11,7 +11,6 @@ import 'package:hetu_script/hetu_script.dart';
 
 const buildRefreshIndicator = null;
 const defaultLayoutBuilder = null;
-const shape = null;
 const defaultGenerateInitialRoutes = null;
 const defaultTransitionBuilder = null;
 const defaultStringForOption = null;
@@ -140,6 +139,7 @@ var wrapperExternalFunctions = <String, HT_External>{
 	'Material': WidgetWrapper.buildMaterial,
 	'ScaffoldMessenger': WidgetWrapper.buildScaffoldMessenger,
 	'Scaffold': WidgetWrapper.buildScaffold,
+	'ToggleButtonsThemeData': WidgetWrapper.buildToggleButtonsThemeData,
 	'BackButtonIcon': WidgetWrapper.buildBackButtonIcon,
 	'BackButton': WidgetWrapper.buildBackButton,
 	'CloseButton': WidgetWrapper.buildCloseButton,
@@ -159,6 +159,7 @@ var wrapperExternalFunctions = <String, HT_External>{
 	'Ink': WidgetWrapper.buildInk,
 	'Ink_image': WidgetWrapper.buildInk_image,
 	'ButtonBar': WidgetWrapper.buildButtonBar,
+	'MaterialColor': WidgetWrapper.buildMaterialColor,
 	'SnackBarAction': WidgetWrapper.buildSnackBarAction,
 	'SnackBar': WidgetWrapper.buildSnackBar,
 	'InputDecorator': WidgetWrapper.buildInputDecorator,
@@ -216,6 +217,7 @@ var wrapperExternalFunctions = <String, HT_External>{
 	'Slider': WidgetWrapper.buildSlider,
 	'Slider_adaptive': WidgetWrapper.buildSlider_adaptive,
 	'UnderlineTabIndicator': WidgetWrapper.buildUnderlineTabIndicator,
+	'ButtonThemeData': WidgetWrapper.buildButtonThemeData,
 	'ListTile': WidgetWrapper.buildListTile,
 	'ExpansionTile': WidgetWrapper.buildExpansionTile,
 	'BottomSheet': WidgetWrapper.buildBottomSheet,
@@ -227,6 +229,12 @@ var wrapperExternalFunctions = <String, HT_External>{
 	'Drawer': WidgetWrapper.buildDrawer,
 	'DrawerController': WidgetWrapper.buildDrawerController,
 	'AnimatedIcon': WidgetWrapper.buildAnimatedIcon,
+	'ThemeData': WidgetWrapper.buildThemeData,
+	'ThemeData_raw': WidgetWrapper.buildThemeData_raw,
+	'ThemeData_from': WidgetWrapper.buildThemeData_from,
+	'ThemeData_light': WidgetWrapper.buildThemeData_light,
+	'ThemeData_dark': WidgetWrapper.buildThemeData_dark,
+	'ThemeData_fallback': WidgetWrapper.buildThemeData_fallback,
 	'VisualDensity': WidgetWrapper.buildVisualDensity,
 	'FlexibleSpaceBar': WidgetWrapper.buildFlexibleSpaceBar,
 	'Switch': WidgetWrapper.buildSwitch,
@@ -941,6 +949,10 @@ class WidgetWrapper {
 		Scaffold ctor({key, appBar, body, floatingActionButton, floatingActionButtonLocation, floatingActionButtonAnimator, persistentFooterButtons, drawer, onDrawerChanged, endDrawer, onEndDrawerChanged, bottomNavigationBar, bottomSheet, backgroundColor, resizeToAvoidBottomInset, primary = true, drawerDragStartBehavior = DragStartBehavior.start, extendBody = false, extendBodyBehindAppBar = false, drawerScrimColor, drawerEdgeDragWidth, drawerEnableOpenDragGesture = true, endDrawerEnableOpenDragGesture = true, restorationId}) => Scaffold(key: key, appBar: appBar, body: body, floatingActionButton: floatingActionButton, floatingActionButtonLocation: floatingActionButtonLocation, floatingActionButtonAnimator: floatingActionButtonAnimator, persistentFooterButtons: List<Widget>.from(persistentFooterButtons), drawer: drawer, onDrawerChanged: onDrawerChanged, endDrawer: endDrawer, onEndDrawerChanged: onEndDrawerChanged, bottomNavigationBar: bottomNavigationBar, bottomSheet: bottomSheet, backgroundColor: backgroundColor, resizeToAvoidBottomInset: resizeToAvoidBottomInset, primary: primary, drawerDragStartBehavior: drawerDragStartBehavior, extendBody: extendBody, extendBodyBehindAppBar: extendBodyBehindAppBar, drawerScrimColor: drawerScrimColor, drawerEdgeDragWidth: drawerEdgeDragWidth, drawerEnableOpenDragGesture: drawerEnableOpenDragGesture, endDrawerEnableOpenDragGesture: endDrawerEnableOpenDragGesture, restorationId: restorationId);
 		return Function.apply(ctor, args, namedArgs.map<Symbol, dynamic>((key, value) => MapEntry(Symbol(key), value)));
 	}
+	static ToggleButtonsThemeData buildToggleButtonsThemeData(instance, args, {namedArgs}) {
+		ToggleButtonsThemeData ctor({textStyle, constraints, color, selectedColor, disabledColor, fillColor, focusColor, highlightColor, hoverColor, splashColor, borderColor, selectedBorderColor, disabledBorderColor, borderRadius, borderWidth}) => ToggleButtonsThemeData(textStyle: textStyle, constraints: constraints, color: color, selectedColor: selectedColor, disabledColor: disabledColor, fillColor: fillColor, focusColor: focusColor, highlightColor: highlightColor, hoverColor: hoverColor, splashColor: splashColor, borderColor: borderColor, selectedBorderColor: selectedBorderColor, disabledBorderColor: disabledBorderColor, borderRadius: borderRadius, borderWidth: borderWidth);
+		return Function.apply(ctor, args, namedArgs.map<Symbol, dynamic>((key, value) => MapEntry(Symbol(key), value)));
+	}
 	static BackButtonIcon buildBackButtonIcon(instance, args, {namedArgs}) {
 		BackButtonIcon ctor({key}) => BackButtonIcon(key: key);
 		return Function.apply(ctor, args, namedArgs.map<Symbol, dynamic>((key, value) => MapEntry(Symbol(key), value)));
@@ -1015,6 +1027,10 @@ class WidgetWrapper {
 	}
 	static ButtonBar buildButtonBar(instance, args, {namedArgs}) {
 		ButtonBar ctor({key, alignment, mainAxisSize, buttonTextTheme, buttonMinWidth, buttonHeight, buttonPadding, buttonAlignedDropdown, layoutBehavior, overflowDirection, overflowButtonSpacing, children = const <Widget>[]}) => ButtonBar(key: key, alignment: alignment, mainAxisSize: mainAxisSize, buttonTextTheme: buttonTextTheme, buttonMinWidth: buttonMinWidth, buttonHeight: buttonHeight, buttonPadding: buttonPadding, buttonAlignedDropdown: buttonAlignedDropdown, layoutBehavior: layoutBehavior, overflowDirection: overflowDirection, overflowButtonSpacing: overflowButtonSpacing, children: List<Widget>.from(children));
+		return Function.apply(ctor, args, namedArgs.map<Symbol, dynamic>((key, value) => MapEntry(Symbol(key), value)));
+	}
+	static MaterialColor buildMaterialColor(instance, args, {namedArgs}) {
+		MaterialColor ctor(primary, swatch) => MaterialColor(primary, swatch);
 		return Function.apply(ctor, args, namedArgs.map<Symbol, dynamic>((key, value) => MapEntry(Symbol(key), value)));
 	}
 	static SnackBarAction buildSnackBarAction(instance, args, {namedArgs}) {
@@ -1245,6 +1261,10 @@ class WidgetWrapper {
 		UnderlineTabIndicator ctor({borderSide = const BorderSide(width: 2.0, color: Colors.white), insets = EdgeInsets.zero}) => UnderlineTabIndicator(borderSide: borderSide, insets: insets);
 		return Function.apply(ctor, args, namedArgs.map<Symbol, dynamic>((key, value) => MapEntry(Symbol(key), value)));
 	}
+	static ButtonThemeData buildButtonThemeData(instance, args, {namedArgs}) {
+		ButtonThemeData ctor({textTheme = ButtonTextTheme.normal, minWidth = 88.0, height = 36.0, padding, shape, layoutBehavior = ButtonBarLayoutBehavior.padded, alignedDropdown = false, buttonColor, disabledColor, focusColor, hoverColor, highlightColor, splashColor, colorScheme, materialTapTargetSize}) => ButtonThemeData(textTheme: textTheme, minWidth: minWidth, height: height, padding: padding, shape: shape, layoutBehavior: layoutBehavior, alignedDropdown: alignedDropdown, buttonColor: buttonColor, disabledColor: disabledColor, focusColor: focusColor, hoverColor: hoverColor, highlightColor: highlightColor, splashColor: splashColor, colorScheme: colorScheme, materialTapTargetSize: materialTapTargetSize);
+		return Function.apply(ctor, args, namedArgs.map<Symbol, dynamic>((key, value) => MapEntry(Symbol(key), value)));
+	}
 	static ListTile buildListTile(instance, args, {namedArgs}) {
 		ListTile ctor({key, leading, title, subtitle, trailing, isThreeLine = false, dense, visualDensity, shape, contentPadding, enabled = true, onTap, onLongPress, mouseCursor, selected = false, focusColor, hoverColor, focusNode, autofocus = false, tileColor, selectedTileColor, enableFeedback, horizontalTitleGap, minVerticalPadding, minLeadingWidth}) => ListTile(key: key, leading: leading, title: title, subtitle: subtitle, trailing: trailing, isThreeLine: isThreeLine, dense: dense, visualDensity: visualDensity, shape: shape, contentPadding: contentPadding, enabled: enabled, onTap: onTap, onLongPress: onLongPress, mouseCursor: mouseCursor, selected: selected, focusColor: focusColor, hoverColor: hoverColor, focusNode: focusNode, autofocus: autofocus, tileColor: tileColor, selectedTileColor: selectedTileColor, enableFeedback: enableFeedback, horizontalTitleGap: horizontalTitleGap, minVerticalPadding: minVerticalPadding, minLeadingWidth: minLeadingWidth);
 		return Function.apply(ctor, args, namedArgs.map<Symbol, dynamic>((key, value) => MapEntry(Symbol(key), value)));
@@ -1287,6 +1307,30 @@ class WidgetWrapper {
 	}
 	static AnimatedIcon buildAnimatedIcon(instance, args, {namedArgs}) {
 		AnimatedIcon ctor({key, icon, progress, color, size, semanticLabel, textDirection}) => AnimatedIcon(key: key, icon: icon, progress: progress, color: color, size: size, semanticLabel: semanticLabel, textDirection: textDirection);
+		return Function.apply(ctor, args, namedArgs.map<Symbol, dynamic>((key, value) => MapEntry(Symbol(key), value)));
+	}
+	static ThemeData buildThemeData(instance, args, {namedArgs}) {
+		ThemeData ctor({brightness, visualDensity, primarySwatch, primaryColor, primaryColorBrightness, primaryColorLight, primaryColorDark, accentColor, accentColorBrightness, canvasColor, shadowColor, scaffoldBackgroundColor, bottomAppBarColor, cardColor, dividerColor, focusColor, hoverColor, highlightColor, splashColor, splashFactory, selectedRowColor, unselectedWidgetColor, disabledColor, buttonColor, buttonTheme, toggleButtonsTheme, secondaryHeaderColor, backgroundColor, dialogBackgroundColor, indicatorColor, hintColor, errorColor, toggleableActiveColor, fontFamily, textTheme, primaryTextTheme, accentTextTheme, inputDecorationTheme, iconTheme, primaryIconTheme, accentIconTheme, sliderTheme, tabBarTheme, tooltipTheme, cardTheme, chipTheme, platform, materialTapTargetSize, applyElevationOverlayColor, pageTransitionsTheme, appBarTheme, scrollbarTheme, bottomAppBarTheme, colorScheme, dialogTheme, floatingActionButtonTheme, navigationRailTheme, typography, cupertinoOverrideTheme, snackBarTheme, bottomSheetTheme, popupMenuTheme, bannerTheme, dividerTheme, buttonBarTheme, bottomNavigationBarTheme, timePickerTheme, textButtonTheme, elevatedButtonTheme, outlinedButtonTheme, textSelectionTheme, dataTableTheme, checkboxTheme, radioTheme, switchTheme, fixTextFieldOutlineLabel}) => ThemeData(brightness: brightness, visualDensity: visualDensity, primarySwatch: primarySwatch, primaryColor: primaryColor, primaryColorBrightness: primaryColorBrightness, primaryColorLight: primaryColorLight, primaryColorDark: primaryColorDark, accentColor: accentColor, accentColorBrightness: accentColorBrightness, canvasColor: canvasColor, shadowColor: shadowColor, scaffoldBackgroundColor: scaffoldBackgroundColor, bottomAppBarColor: bottomAppBarColor, cardColor: cardColor, dividerColor: dividerColor, focusColor: focusColor, hoverColor: hoverColor, highlightColor: highlightColor, splashColor: splashColor, splashFactory: splashFactory, selectedRowColor: selectedRowColor, unselectedWidgetColor: unselectedWidgetColor, disabledColor: disabledColor, buttonColor: buttonColor, buttonTheme: buttonTheme, toggleButtonsTheme: toggleButtonsTheme, secondaryHeaderColor: secondaryHeaderColor, backgroundColor: backgroundColor, dialogBackgroundColor: dialogBackgroundColor, indicatorColor: indicatorColor, hintColor: hintColor, errorColor: errorColor, toggleableActiveColor: toggleableActiveColor, fontFamily: fontFamily, textTheme: textTheme, primaryTextTheme: primaryTextTheme, accentTextTheme: accentTextTheme, inputDecorationTheme: inputDecorationTheme, iconTheme: iconTheme, primaryIconTheme: primaryIconTheme, accentIconTheme: accentIconTheme, sliderTheme: sliderTheme, tabBarTheme: tabBarTheme, tooltipTheme: tooltipTheme, cardTheme: cardTheme, chipTheme: chipTheme, platform: platform, materialTapTargetSize: materialTapTargetSize, applyElevationOverlayColor: applyElevationOverlayColor, pageTransitionsTheme: pageTransitionsTheme, appBarTheme: appBarTheme, scrollbarTheme: scrollbarTheme, bottomAppBarTheme: bottomAppBarTheme, colorScheme: colorScheme, dialogTheme: dialogTheme, floatingActionButtonTheme: floatingActionButtonTheme, navigationRailTheme: navigationRailTheme, typography: typography, cupertinoOverrideTheme: cupertinoOverrideTheme, snackBarTheme: snackBarTheme, bottomSheetTheme: bottomSheetTheme, popupMenuTheme: popupMenuTheme, bannerTheme: bannerTheme, dividerTheme: dividerTheme, buttonBarTheme: buttonBarTheme, bottomNavigationBarTheme: bottomNavigationBarTheme, timePickerTheme: timePickerTheme, textButtonTheme: textButtonTheme, elevatedButtonTheme: elevatedButtonTheme, outlinedButtonTheme: outlinedButtonTheme, textSelectionTheme: textSelectionTheme, dataTableTheme: dataTableTheme, checkboxTheme: checkboxTheme, radioTheme: radioTheme, switchTheme: switchTheme, fixTextFieldOutlineLabel: fixTextFieldOutlineLabel);
+		return Function.apply(ctor, args, namedArgs.map<Symbol, dynamic>((key, value) => MapEntry(Symbol(key), value)));
+	}
+	static ThemeData buildThemeData_raw(instance, args, {namedArgs}) {
+		ThemeData ctor({visualDensity, primaryColor, primaryColorBrightness, primaryColorLight, primaryColorDark, canvasColor, shadowColor, accentColor, accentColorBrightness, scaffoldBackgroundColor, bottomAppBarColor, cardColor, dividerColor, focusColor, hoverColor, highlightColor, splashColor, splashFactory, selectedRowColor, unselectedWidgetColor, disabledColor, buttonTheme, buttonColor, toggleButtonsTheme, secondaryHeaderColor, textSelectionColor, cursorColor, textSelectionHandleColor, backgroundColor, dialogBackgroundColor, indicatorColor, hintColor, errorColor, toggleableActiveColor, textTheme, primaryTextTheme, accentTextTheme, inputDecorationTheme, iconTheme, primaryIconTheme, accentIconTheme, sliderTheme, tabBarTheme, tooltipTheme, cardTheme, chipTheme, platform, materialTapTargetSize, applyElevationOverlayColor, pageTransitionsTheme, appBarTheme, scrollbarTheme, bottomAppBarTheme, colorScheme, dialogTheme, floatingActionButtonTheme, navigationRailTheme, typography, cupertinoOverrideTheme, snackBarTheme, bottomSheetTheme, popupMenuTheme, bannerTheme, dividerTheme, buttonBarTheme, bottomNavigationBarTheme, timePickerTheme, textButtonTheme, elevatedButtonTheme, outlinedButtonTheme, textSelectionTheme, dataTableTheme, checkboxTheme, radioTheme, switchTheme, fixTextFieldOutlineLabel, useTextSelectionTheme}) => ThemeData.raw(visualDensity: visualDensity, primaryColor: primaryColor, primaryColorBrightness: primaryColorBrightness, primaryColorLight: primaryColorLight, primaryColorDark: primaryColorDark, canvasColor: canvasColor, shadowColor: shadowColor, accentColor: accentColor, accentColorBrightness: accentColorBrightness, scaffoldBackgroundColor: scaffoldBackgroundColor, bottomAppBarColor: bottomAppBarColor, cardColor: cardColor, dividerColor: dividerColor, focusColor: focusColor, hoverColor: hoverColor, highlightColor: highlightColor, splashColor: splashColor, splashFactory: splashFactory, selectedRowColor: selectedRowColor, unselectedWidgetColor: unselectedWidgetColor, disabledColor: disabledColor, buttonTheme: buttonTheme, buttonColor: buttonColor, toggleButtonsTheme: toggleButtonsTheme, secondaryHeaderColor: secondaryHeaderColor, textSelectionColor: textSelectionColor, cursorColor: cursorColor, textSelectionHandleColor: textSelectionHandleColor, backgroundColor: backgroundColor, dialogBackgroundColor: dialogBackgroundColor, indicatorColor: indicatorColor, hintColor: hintColor, errorColor: errorColor, toggleableActiveColor: toggleableActiveColor, textTheme: textTheme, primaryTextTheme: primaryTextTheme, accentTextTheme: accentTextTheme, inputDecorationTheme: inputDecorationTheme, iconTheme: iconTheme, primaryIconTheme: primaryIconTheme, accentIconTheme: accentIconTheme, sliderTheme: sliderTheme, tabBarTheme: tabBarTheme, tooltipTheme: tooltipTheme, cardTheme: cardTheme, chipTheme: chipTheme, platform: platform, materialTapTargetSize: materialTapTargetSize, applyElevationOverlayColor: applyElevationOverlayColor, pageTransitionsTheme: pageTransitionsTheme, appBarTheme: appBarTheme, scrollbarTheme: scrollbarTheme, bottomAppBarTheme: bottomAppBarTheme, colorScheme: colorScheme, dialogTheme: dialogTheme, floatingActionButtonTheme: floatingActionButtonTheme, navigationRailTheme: navigationRailTheme, typography: typography, cupertinoOverrideTheme: cupertinoOverrideTheme, snackBarTheme: snackBarTheme, bottomSheetTheme: bottomSheetTheme, popupMenuTheme: popupMenuTheme, bannerTheme: bannerTheme, dividerTheme: dividerTheme, buttonBarTheme: buttonBarTheme, bottomNavigationBarTheme: bottomNavigationBarTheme, timePickerTheme: timePickerTheme, textButtonTheme: textButtonTheme, elevatedButtonTheme: elevatedButtonTheme, outlinedButtonTheme: outlinedButtonTheme, textSelectionTheme: textSelectionTheme, dataTableTheme: dataTableTheme, checkboxTheme: checkboxTheme, radioTheme: radioTheme, switchTheme: switchTheme, fixTextFieldOutlineLabel: fixTextFieldOutlineLabel, useTextSelectionTheme: useTextSelectionTheme);
+		return Function.apply(ctor, args, namedArgs.map<Symbol, dynamic>((key, value) => MapEntry(Symbol(key), value)));
+	}
+	static ThemeData buildThemeData_from(instance, args, {namedArgs}) {
+		ThemeData ctor({colorScheme, textTheme}) => ThemeData.from(colorScheme: colorScheme, textTheme: textTheme);
+		return Function.apply(ctor, args, namedArgs.map<Symbol, dynamic>((key, value) => MapEntry(Symbol(key), value)));
+	}
+	static ThemeData buildThemeData_light(instance, args, {namedArgs}) {
+		ThemeData ctor() => ThemeData.light();
+		return Function.apply(ctor, args, namedArgs.map<Symbol, dynamic>((key, value) => MapEntry(Symbol(key), value)));
+	}
+	static ThemeData buildThemeData_dark(instance, args, {namedArgs}) {
+		ThemeData ctor() => ThemeData.dark();
+		return Function.apply(ctor, args, namedArgs.map<Symbol, dynamic>((key, value) => MapEntry(Symbol(key), value)));
+	}
+	static ThemeData buildThemeData_fallback(instance, args, {namedArgs}) {
+		ThemeData ctor() => ThemeData.fallback();
 		return Function.apply(ctor, args, namedArgs.map<Symbol, dynamic>((key, value) => MapEntry(Symbol(key), value)));
 	}
 	static VisualDensity buildVisualDensity(instance, args, {namedArgs}) {
@@ -1470,7 +1514,7 @@ class WidgetWrapper {
 		return Function.apply(ctor, args, namedArgs.map<Symbol, dynamic>((key, value) => MapEntry(Symbol(key), value)));
 	}
 	static PhysicalModel buildPhysicalModel(instance, args, {namedArgs}) {
-		PhysicalModel ctor({key, clipBehavior = Clip.none, borderRadius, elevation = 0.0, color, shadowColor = const Color(0xFF000000), child}) => PhysicalModel(key: key, clipBehavior: clipBehavior, borderRadius: borderRadius, elevation: elevation, color: color, shadowColor: shadowColor, child: child);
+		PhysicalModel ctor({key, shape = BoxShape.rectangle, clipBehavior = Clip.none, borderRadius, elevation = 0.0, color, shadowColor = const Color(0xFF000000), child}) => PhysicalModel(key: key, shape: shape, clipBehavior: clipBehavior, borderRadius: borderRadius, elevation: elevation, color: color, shadowColor: shadowColor, child: child);
 		return Function.apply(ctor, args, namedArgs.map<Symbol, dynamic>((key, value) => MapEntry(Symbol(key), value)));
 	}
 	static PhysicalShape buildPhysicalShape(instance, args, {namedArgs}) {
