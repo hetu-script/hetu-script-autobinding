@@ -578,7 +578,7 @@ class MyVisitor extends RecursiveAstVisitor {
 
       for (var i=ctor.namedInitializers.length-1; i >=0; i--) {
         var element = ctor.namedInitializers[i];
-        print('element: $element');
+        // print('element: $element');
         var found = false;
         found |= findUsefulVar(element);
         found |= findUsefulMethod(element);
