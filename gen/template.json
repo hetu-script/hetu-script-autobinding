@@ -6,27 +6,37 @@
       "name": "DartPerson",
       "members": [
         {
-          "_": "VariableDeclarationList",
-          "type": null,
-          "vars": [
-            {
-              "name": "race",
-              "init": {
-                "type": "String",
-                "value": "123"
+          "_": "FieldDeclaration",
+          "static": true,
+          "fields": {
+            "_": "VariableDeclarationList",
+            "raw": "const race = '123'",
+            "type": null,
+            "vars": [
+              {
+                "name": "race",
+                "init": {
+                  "type": "String",
+                  "value": "123"
+                }
               }
-            }
-          ]
+            ]
+          }
         },
         {
-          "_": "VariableDeclarationList",
-          "type": null,
-          "vars": [
-            {
-              "name": "test",
-              "init": null
-            }
-          ]
+          "_": "FieldDeclaration",
+          "static": false,
+          "fields": {
+            "_": "VariableDeclarationList",
+            "raw": "var test",
+            "type": null,
+            "vars": [
+              {
+                "name": "test",
+                "init": null
+              }
+            ]
+          }
         },
         {
           "_": "MethodDeclaration",
@@ -36,17 +46,22 @@
           "body": "=> 42;"
         },
         {
-          "_": "VariableDeclarationList",
-          "type": "String",
-          "vars": [
-            {
-              "name": "name",
-              "init": {
-                "type": "String",
-                "value": "no"
+          "_": "FieldDeclaration",
+          "static": false,
+          "fields": {
+            "_": "VariableDeclarationList",
+            "raw": "String name = 'no'",
+            "type": "String",
+            "vars": [
+              {
+                "name": "name",
+                "init": {
+                  "type": "String",
+                  "value": "no"
+                }
               }
-            }
-          ]
+            ]
+          }
         },
         {
           "_": "MethodDeclaration",
@@ -80,6 +95,7 @@
       "_": "TopLevelVariableDeclaration",
       "var": {
         "_": "VariableDeclarationList",
+        "raw": "const _kConstValue = 1",
         "type": null,
         "vars": [
           {
@@ -97,83 +113,126 @@
       "name": "DDD",
       "members": [
         {
-          "_": "VariableDeclarationList",
-          "type": null,
-          "vars": [
-            {
-              "name": "a",
-              "init": {
-                "type": "int",
-                "value": "1"
-              }
-            },
-            {
-              "name": "b",
-              "init": {
-                "type": "int",
-                "value": "2"
-              }
-            },
-            {
-              "name": "c",
-              "init": {
-                "_": "ListLiteral",
-                "list": [
-                  {
-                    "type": "int",
-                    "value": "1"
-                  },
-                  {
-                    "type": "int",
-                    "value": "2"
-                  },
-                  {
-                    "type": "int",
-                    "value": "3"
-                  }
-                ]
-              }
-            }
-          ]
-        },
-        {
-          "_": "VariableDeclarationList",
-          "type": null,
-          "vars": [
-            {
-              "name": "d",
-              "init": {
-                "_": "BinaryExpression",
-                "raw": "_kConstValue + _kConstValue + c",
-                "left": {
-                  "_": "BinaryExpression",
-                  "raw": "_kConstValue + _kConstValue",
-                  "left": {
-                    "identifier": "_kConstValue"
-                  },
-                  "right": {
-                    "identifier": "_kConstValue"
-                  }
-                },
-                "right": {
-                  "identifier": "c"
+          "_": "FieldDeclaration",
+          "static": true,
+          "fields": {
+            "_": "VariableDeclarationList",
+            "raw": "var a = 1, b = 2, c = [1, 2, 3]",
+            "type": null,
+            "vars": [
+              {
+                "name": "a",
+                "init": {
+                  "type": "int",
+                  "value": "1"
+                }
+              },
+              {
+                "name": "b",
+                "init": {
+                  "type": "int",
+                  "value": "2"
+                }
+              },
+              {
+                "name": "c",
+                "init": {
+                  "_": "ListLiteral",
+                  "list": [
+                    {
+                      "type": "int",
+                      "value": "1"
+                    },
+                    {
+                      "type": "int",
+                      "value": "2"
+                    },
+                    {
+                      "type": "int",
+                      "value": "3"
+                    }
+                  ]
                 }
               }
-            }
-          ]
+            ]
+          }
         },
         {
-          "_": "VariableDeclarationList",
-          "type": null,
-          "vars": [
-            {
-              "name": "e",
-              "init": {
-                "_": "SetOrMapLiteral",
-                "raw": "['1' : 1, '2' : 2]"
+          "_": "FieldDeclaration",
+          "static": false,
+          "fields": {
+            "_": "VariableDeclarationList",
+            "raw": "var d = _kConstValue + _kConstValue + b",
+            "type": null,
+            "vars": [
+              {
+                "name": "d",
+                "init": {
+                  "_": "BinaryExpression",
+                  "raw": "_kConstValue + _kConstValue + b",
+                  "left": {
+                    "_": "BinaryExpression",
+                    "raw": "_kConstValue + _kConstValue",
+                    "left": {
+                      "identifier": "_kConstValue"
+                    },
+                    "right": {
+                      "identifier": "_kConstValue"
+                    }
+                  },
+                  "right": {
+                    "identifier": "b"
+                  }
+                }
               }
+            ]
+          }
+        },
+        {
+          "_": "FieldDeclaration",
+          "static": false,
+          "fields": {
+            "_": "VariableDeclarationList",
+            "raw": "var e = {'1' : 1, '2' : 2}",
+            "type": null,
+            "vars": [
+              {
+                "name": "e",
+                "init": {
+                  "_": "SetOrMapLiteral",
+                  "raw": "['1' : 1, '2' : 2]"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "_": "FieldDeclaration",
+          "static": true,
+          "fields": {
+            "_": "VariableDeclarationList",
+            "raw": "var f",
+            "type": null,
+            "vars": [
+              {
+                "name": "f",
+                "init": null
+              }
+            ]
+          }
+        },
+        {
+          "_": "MethodDeclaration",
+          "ret": "dynamic",
+          "name": "getProperty",
+          "params": [
+            {
+              "type": "String",
+              "name": "name",
+              "_": "SimpleFormalParameter"
             }
-          ]
+          ],
+          "body": "{switch (name) {case 'e': return e; case 'd': return d; default: return null;}}"
         }
       ]
     },
@@ -202,6 +261,145 @@
               "_": "SimpleFormalParameter"
             }
           ]
+        }
+      ]
+    },
+    {
+      "type": "FunctionDeclaration",
+      "id": {
+        "identifier": "main"
+      },
+      "expression": {
+        "type": "FunctionExpression",
+        "parameters": [],
+        "typeParameters": null,
+        "body": {
+          "_": "Block",
+          "raw": "{var ctorBinding = {'Person' : (interpreter, args, namedArgs) {return DartPerson();}, 'Person.withName' : (interpreter, args, namedArgs) {return DartPerson.withName(args[0]);}}; var staticVarGetterBinding = {'DDD.a' : (interpreter, args, namedArgs) {return DDD.a;}}; var staticVarSetterBinding = {'DDD.a' : (interpreter, args, namedArgs) {DDD.a = args[0];}};}"
+        }
+      }
+    },
+    {
+      "_": "ClassDeclaration",
+      "name": "A",
+      "members": [
+        {
+          "_": "FieldDeclaration",
+          "static": false,
+          "fields": {
+            "_": "VariableDeclarationList",
+            "raw": "var a",
+            "type": null,
+            "vars": [
+              {
+                "name": "a",
+                "init": null
+              }
+            ]
+          }
+        },
+        {
+          "_": "FieldDeclaration",
+          "static": true,
+          "fields": {
+            "_": "VariableDeclarationList",
+            "raw": "var aa",
+            "type": null,
+            "vars": [
+              {
+                "name": "aa",
+                "init": null
+              }
+            ]
+          }
+        },
+        {
+          "_": "MethodDeclaration",
+          "ret": "void",
+          "name": "fa",
+          "params": [],
+          "body": "{}"
+        }
+      ]
+    },
+    {
+      "_": "ClassDeclaration",
+      "name": "B",
+      "members": [
+        {
+          "_": "FieldDeclaration",
+          "static": false,
+          "fields": {
+            "_": "VariableDeclarationList",
+            "raw": "var b",
+            "type": null,
+            "vars": [
+              {
+                "name": "b",
+                "init": null
+              }
+            ]
+          }
+        },
+        {
+          "_": "FieldDeclaration",
+          "static": true,
+          "fields": {
+            "_": "VariableDeclarationList",
+            "raw": "var bb",
+            "type": null,
+            "vars": [
+              {
+                "name": "bb",
+                "init": null
+              }
+            ]
+          }
+        },
+        {
+          "_": "MethodDeclaration",
+          "ret": "void",
+          "name": "fb",
+          "params": [],
+          "body": "{}"
+        }
+      ]
+    },
+    {
+      "_": "ClassDeclaration",
+      "name": "WrapperA",
+      "members": [
+        {
+          "_": "MethodDeclaration",
+          "ret": "dynamic",
+          "name": "getProperty",
+          "params": [
+            {
+              "type": "null",
+              "name": "name",
+              "_": "SimpleFormalParameter"
+            }
+          ],
+          "body": "{if (name == 'a') {B.bb; A.fa(); B.fb(); return a;}}"
+        }
+      ]
+    },
+    {
+      "_": "ClassDeclaration",
+      "name": "WrapperB",
+      "members": [
+        {
+          "_": "MethodDeclaration",
+          "ret": "dynamic",
+          "name": "getProperty",
+          "params": [
+            {
+              "type": "null",
+              "name": "name",
+              "_": "SimpleFormalParameter"
+            }
+          ],
+          "body": "{if (name == 'a') {return a;} if (name == 'b') {return b;}}"
         }
       ]
     }

@@ -197,7 +197,11 @@ class MyAstVisitor extends SimpleAstVisitor<dynamic> {
 
   @override
   dynamic visitFieldDeclaration(FieldDeclaration node) {
-    return _safelyVisitNode(node.fields);
+    return {
+      '_' : nodeType(node),
+      'static' : node.staticKeyword != null,
+      'fields' : _safelyVisitNode(node.fields)
+    };
   }
 
   @override
@@ -241,10 +245,13 @@ class MyAstVisitor extends SimpleAstVisitor<dynamic> {
     return {'_': nodeType(node), 'var': _safelyVisitNode(node.variables)};
   }
 
+
+
   @override
   dynamic visitVariableDeclarationList(VariableDeclarationList node) {
     return {
       '_': nodeType(node),
+      'raw': node.toString(),
       'type': node.type?.toString(),
       'vars': node.variables.map((e) => _safelyVisitNode(e)).toList(),
     };
@@ -256,8 +263,6 @@ class MyAstVisitor extends SimpleAstVisitor<dynamic> {
       'identifier' : node.name
     };
   }
-
-  visitexpress
 
   @override
   dynamic visitBinaryExpression(BinaryExpression node) {

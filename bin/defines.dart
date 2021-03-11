@@ -41,15 +41,20 @@ class ClassDefine {
     if (members != null) {
       for (var value in members) {
         var e = value as Map<String, dynamic>;
-        if (e['_'] == 'VariableDeclarationList') {
+        if (e['_'] == 'FieldDeclaration') {
+          var isStatic = e['static'] as bool;
+          var fields = e['fields'] as List;
           //variable list
-          var decVarType = e['type'];
-          var vars = e['vars'] as List;
+          fields.forEach((field) {
+            var decVarType = field['type'];
+            var vars = field['vars'] as List;
 
-          for (Map<String,dynamic> value in vars) {
-            var v = VarDefine(value);
-            memberVars.add(v);
-          }
+            for (Map<String,dynamic> value in vars) {
+              var v = VarDefine(value);
+              memberVars.add(v);
+            }
+          });
+
         }
       }
     }
@@ -57,32 +62,33 @@ class ClassDefine {
 }
 
 class VarDefine {
-  late final String type;
   late final String name;
-  late final init;
+  // late final init;
+  // late final String type;
 
   VarDefine(Map<String, dynamic> json) {
     parse(json);
   }
 
   void parse(Map<String, dynamic> json) {
-    init = json['init'];
     name = json['name'];
-    if (init != null) {
-      var t = init['type'];
-      if (t != null){
-        type = t;
-      }
-      t = init['_'];
-      if (t != null) {
-        switch (t) {
-          case 'ListLiteral':
-
-          default:
-            assert(false, '$t Not Handled!');
-        }
-      }
-    }
+    //暂时用不上type 和 init
+    // init = json['init'];
+    // if (init != null) {
+    //   var t = init['type'];
+    //   if (t != null){
+    //     type = t;
+    //   }
+    //   t = init['_'];
+    //   if (t != null) {
+    //     switch (t) {
+    //       case 'ListLiteral':
+    //
+    //       default:
+    //         assert(false, '$t Not Handled!');
+    //     }
+    //   }
+    // }
   }
 }
 
