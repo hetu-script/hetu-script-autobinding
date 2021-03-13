@@ -1,0 +1,103 @@
+{{#custom_class_import}}
+part of '{{source_file}}';
+{{/custom_class_import}}
+{{#library_class_import}}
+import 'package:hetu_script/hetu_script.dart';
+import 'package:flutter/{{flutter_lib_name}}.dart';
+{{#file_imports}}
+import {{import_uri}}{{import_prefix}};
+{{/file_imports}}
+{{/library_class_import}}
+
+{{#have_private_top_vars}}
+{{private_top_vars}}
+{{/have_private_top_vars}}
+{{#private_classes}}
+{{raw_class}}
+{{/private_classes}}
+{{#classes}}
+class {{dart_class_name}}Wrapper{{#have_constructors}} extends {{dart_class_name}}{{/have_constructors}} with HT_Reflect {
+  {{#constructors}}
+  {{dart_class_name}}Wrapper{{constructor_name}}{{constructor_params}} : super{{constructor_name}}{{super_params}};
+  {{/constructors}}
+
+  @override
+  final typeid = HT_Type('{{dart_class_name}}');
+
+  {{#have_instance_getter}}
+  @override
+  dynamic getProperty(String id) {
+    switch (id) {
+    {{#getter_case}}
+      case '{{instance_identifier}}':
+        return {{ instance_identifier　}};
+    {{/getter_case}}
+    {{#method_case}}
+      case '{{method_identifier}}':
+        return {{ method_identifier　}};
+    {{/method_case}}
+      default:
+        throw HTErr_Undefined(id);
+    }
+  }
+  {{/have_instance_getter}}
+  {{#have_instance_setter}}
+  @override
+  void setProperty(String id, dynamic value) {
+    switch (id) {
+     {{#setter_case}}
+      case '{{instance_identifier}}':
+        {{ instance_identifier　}} = value;
+        break;
+     {{/setter_case}}
+      default:
+        throw HTErr_Undefined(id);
+    }
+  }
+  {{/have_instance_setter}}
+  {{#have_static_methods}}
+  {{static_method_impl}}
+  {{/have_static_methods}}
+}
+
+var externalBinding{{dart_class_name}} = <String, HT_ExternFunc>{
+{{#binding_constructors}}
+    '{{dart_class_name}}{{constructor_name}}': (HT_Interpreter interpreter,
+        {List<dynamic> positionalArgs = const [],
+        Map<String, dynamic> namedArgs = const {},
+        HT_Object? object}) {
+      {{#constructor_private_defines}}
+      {{private_impl}}
+      {{/constructor_private_defines}}
+      return {{dart_class_name}}Wrapper{{constructor_name}}{{constructor_generated_params}};
+    },
+{{/binding_constructors}}
+{{#binding_static_methods}}
+    '{{dart_class_name}}.{{static_method_name}}': (HT_Interpreter interpreter,
+        {List<dynamic> positionalArgs = const [],
+        Map<String, dynamic> namedArgs = const {},
+        HT_Object? object}) {
+      {{#static_method_private_defines}}
+      {{private_impl}}
+      {{/static_method_private_defines}}
+      return {{dart_class_name}}.{{static_method_name}}{{static_method_generated_params}};
+    },
+{{/binding_static_methods}}
+{{#binding_static_variables_getter}}
+    '{{dart_class_name}}.__get__{{static_variable_name}}': (HT_Interpreter interpreter,
+        {List<dynamic> positionalArgs = const [],
+        Map<String, dynamic> namedArgs = const {},
+        HT_Object? object}) {
+      return {{dart_class_name}}.{{static_variable_name}};
+    },
+{{/binding_static_variables_getter}}
+{{#binding_static_variables_setter}}
+    '{{dart_class_name}}.__set__{{static_variable_name}}': (HT_Interpreter interpreter,
+        {List<dynamic> positionalArgs = const [],
+        Map<String, dynamic> namedArgs = const {},
+        HT_Object? object}) {
+      {{dart_class_name}}.{{static_variable_name}} = positionalArgs.isNotEmpty ? positionalArgs.first : null;
+    },
+{{/binding_static_variables_setter}}
+};
+{{/classes}}

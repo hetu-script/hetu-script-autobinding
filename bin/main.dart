@@ -1,10 +1,11 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
+
+import 'package:args/args.dart';
 import 'package:path/path.dart' as path;
 
 import 'binding-generator.dart';
-import 'package:analyzer/dart/analysis/utilities.dart';
-import 'package:args/args.dart';
 
 var files = <FileSystemEntity>[];
 
@@ -13,7 +14,8 @@ Future<List<FileSystemEntity>> dirContents(Directory dir) {
   var lister = dir.list(recursive: true);
   lister.listen((file) {
     if (file.statSync().type == FileSystemEntityType.file &&
-        file.path.endsWith('.dart')) {
+        file.path.endsWith('.dart') &&
+        !file.path.endsWith('.g.dart')) {
       files.add(file);
     }
   },
@@ -38,21 +40,30 @@ void parseBegin(List<String> paths, String exportPath) async {
   } else {
     for (var p in files) {
       print('parsing: [file://${p.path}]');
-      var content = await generate(p.path);
-      var output = exportPath + '/' + path.basenameWithoutExtension(p.path) + '.json';
-
-      if (content != null) await writeContent(content, output);
+      var astData = await generate(p.path);
+      var dirName = path.basename(path.dirname(p.path));
+      var outputPath = '$exportPath/json/$dirName/';
+      await Directory(outputPath).create(recursive: true);
+      var output =
+          '$outputPath/${path.basenameWithoutExtension(p.path)}.json';
+      var encoder = JsonEncoder.withIndent('  ');
+      var content = encoder.convert(astData);
+      await writeContent(content, output);
     }
   }
 }
 
 void main(List<String> arguments) {
   var parser = ArgParser();
-  parser.addOption('output', abbr: 'o', defaultsTo: Directory.current.path.toString() + '/gen');
+  parser.addOption('output',
+      abbr: 'o', defaultsTo: Directory.current.path.toString() + '/gen');
   parser.addOption('pass', abbr: 'p');
   var results = parser.parse(arguments);
   var output = results['output'];
   Directory(output).create();
+  results.rest.forEach((element) {
+    dirContents(Directory(element));
+  });
 
   parseBegin(results.rest, output);
 }

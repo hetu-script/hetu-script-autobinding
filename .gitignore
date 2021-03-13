@@ -21,3 +21,4 @@ doc/api/
 *.js.map
 .idea/
 ignored/ht_dart_exporter.exe
+gen/*
