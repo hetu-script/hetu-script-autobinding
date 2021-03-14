@@ -1,0 +1,14 @@
+{{#ht_enums}}
+external class {{enum_name}} {
+{{#binding_enums}}
+    static get {{enum_constant_name}}
+{{/binding_enums}}
+}
+{{/ht_enums}}
+{{#ht_classes}}
+external class {{dart_class_name}} {
+{{#field_declaration}}
+    {{field}}
+{{/field_declaration}}
+}
+{{/ht_classes}}

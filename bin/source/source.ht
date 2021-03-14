@@ -1,0 +1,10 @@
+external class DartPerson {
+    construct 
+    construct withName
+    construct complex
+    construct complex2
+    var name
+    fun greeting
+    static fun meaning (n, {})
+    static var race
+}

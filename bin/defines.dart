@@ -1,11 +1,16 @@
+import 'package:test/test.dart';
+
 class FileDefine {
+  late final String filePath;
   late final List<FieldVarDefine> globalVars;
   late final List<FunctionDefine> globalFunctions;
+  late final List<EnumDefine> enums;
   late final List<ClassDefine> classes;
   late final List<ClassDefine> privateClasses;
   late final List<ImportDefine> imports = [];
 
-  FileDefine(Map<String, dynamic> json) {
+  FileDefine(Map<String, dynamic> json, String path) {
+    filePath = path;
     parse(json);
   }
 
@@ -40,6 +45,7 @@ class FileDefine {
   void parse(Map<String, dynamic> json) {
     globalVars = <FieldVarDefine>[];
     globalFunctions = <FunctionDefine>[];
+    enums = [];
     classes = [];
     privateClasses = [];
 
@@ -77,6 +83,9 @@ class FileDefine {
           } else if (e['_'] == 'FunctionDeclaration') {
             var m = FunctionDefine(e);
             globalFunctions.add(m);
+          } else if (e['_'] == 'EnumDeclaration') {
+            var v = EnumDefine(e);
+            enums.add(v);
           }
         });
       }
@@ -88,6 +97,9 @@ class FileDefine {
 
 class ClassDefine {
   late final String name;
+  late final String? superClassName;
+  ClassDefine? superClass;
+
   late final Set<String> annotations;
   late final List<ConstructorDefine> constructors;
   late final List<FieldVarDefine> instanceVars;
@@ -106,6 +118,7 @@ class ClassDefine {
 
   void parse(Map<String, dynamic> json) {
     name = json['name'];
+    superClassName = json['super'];
     raw = json['raw'];
     identifiers.addAll(json['identifiers']);
     isAbstract = json['abstract?'];
@@ -462,6 +475,23 @@ class MethodDefine {
     return '(${paramList.join(', ')})';
   }
 
+  String getHetuParams() {
+    var paramsList = [];
+    var namedList = [];
+    params.forEach((p) {
+      if (p.isPositional) {
+        paramsList.add(p.name);
+      } else {
+        namedList.add(p.name);
+      }
+    });
+    if (paramsList.isEmpty && namedList.isEmpty) {
+      return '';
+    }
+    paramsList.add('{${namedList.join(', ')}}');
+    return ' (${paramsList.join(', ')})';
+  }
+
   List<String> getDefaultIdentifiers() {
     var list = <String>[];
     params.forEach((p) {
@@ -482,5 +512,21 @@ class ImportDefine {
   void parse(Map<String, dynamic> json) {
     uri = json['id'];
     prefix = json['prefix'];
+  }
+}
+
+class EnumDefine {
+  late final String name;
+  late final List<String> constants = [];
+  bool get isPrivate => name.startsWith('_');
+
+  EnumDefine(Map<String, dynamic> json) {
+    parse(json);
+  }
+
+  void parse(Map<String, dynamic> json) {
+    name = json['name'];
+    var enums = json['enums'] as List<String>;
+    constants.addAll(enums);
   }
 }

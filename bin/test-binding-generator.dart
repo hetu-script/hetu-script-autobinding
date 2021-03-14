@@ -5,6 +5,7 @@ import 'package:args/args.dart';
 import 'package:path/path.dart' as path;
 
 import 'binding-generator.dart';
+import 'defines.dart';
 
 var files = <FileSystemEntity>[];
 
@@ -31,11 +32,16 @@ Future<List<FileSystemEntity>> dirContents(
         }
       } else {
         if (ignores.isNotEmpty) {
-          ignores.forEach((element) {
-            if (file.path.allMatches(element).isNotEmpty) {
-              return;
+          var idx = ignores.indexWhere((element) {
+            if (file.path.contains(element)) {
+              print('ignored: ${file.path} matched: $element');
+              return true;
             }
+            return false;
           });
+          if (idx != -1) {
+            return;
+          }
         }
       }
       files.add(file);
@@ -46,8 +52,45 @@ Future<List<FileSystemEntity>> dirContents(
   return completer.future;
 }
 
+var classDefineMap = <String, ClassDefine>{};
+var super_childMap = <String, List<ClassDefine>>{};
+
+Future<List<FileDefine>> parseDartFiles(String? jsonPath) async {
+  //文件读取完后将父类赋值给子类
+  var fileDefines = <FileDefine>[];
+  for (var p in files) {
+    var define = await generateDefines(p.path, jsonPath);
+    if (define != null) {
+      fileDefines.add(define);
+      define.classes.forEach((element) {
+        classDefineMap[element.name] = element;
+        if (element.superClassName != null) {
+          var superName = element.superClassName!;
+          if (classDefineMap.containsKey(superName)) {
+            element.superClass = classDefineMap[superName]!;
+          } else {
+            super_childMap[superName] ??= [];
+            super_childMap[superName]!.add(element);
+          }
+        }
+        if (super_childMap.containsKey(element.name)) {
+          var children = super_childMap[element.name] as List<ClassDefine>;
+          children.forEach((child) {
+            child.superClass = element;
+          });
+          children.clear();
+        }
+      });
+    }
+  }
+  return fileDefines;
+}
+
 void parseBegin(List<String> userPaths, String? flutterPath, String exportPath,
-    List<String> ignores, List<String> whitelist) async {
+    List<String> ignores, List<String> whitelist,
+    {String? jsonPath}) async {
+  ///绑定用户自定义代码
+  files.clear();
   for (var a in userPaths) {
     await dirContents(Directory(a), ignores, whitelist);
   }
@@ -55,8 +98,9 @@ void parseBegin(List<String> userPaths, String? flutterPath, String exportPath,
   if (files.isEmpty) {
     stdout.writeln('No file found');
   } else {
-    for (var p in files) {
-      generateWrappers(p.path, exportPath, library: false);
+    var fileDefines = await parseDartFiles(jsonPath);
+    for (var p in fileDefines) {
+      generateWrappers(p, exportPath, library: ExportType.UserDefine);
     }
   }
 
@@ -64,33 +108,55 @@ void parseBegin(List<String> userPaths, String? flutterPath, String exportPath,
   if (flutterPath != null) {
     var flutterSourceRoot = flutterPath + '/packages/flutter/lib/src/';
 
-    await dirContents(Directory(flutterSourceRoot), ignores, whitelist);
-
-    if (files.isEmpty) {
-      stdout.writeln('No file found');
-    } else {
-      for (var p in files) {
-        var libName =
-            path.split(path.relative(p.path, from: flutterSourceRoot)).first;
-        generateWrappers(p.path, exportPath, library: true, libName: libName);
-      }
-    }
-
-    var dartSourceRoot = flutterPath + '/bin/cache/dart-sdk/lib/';
-
+    ///绑定Dart库
+    var dartSourceRoot = flutterPath + '/bin/cache/pkg/sky_engine/lib/';
     var dartLibs = [
-      'collection',
+      // 'collection',
       'ui',
       'math',
       'async',
       'convert',
-      'developer',
-      'ffi',
       'io',
-      'isolate',
-      'typed_data',
+      // 'isolate',
+      // 'typed_data',
       'core',
     ];
+    files.clear();
+    for (var lib in dartLibs) {
+      var libPath = '$dartSourceRoot$lib/';
+      await dirContents(Directory(libPath), ignores, whitelist);
+    }
+
+    var dartDefines = [];
+    if (files.isEmpty) {
+      stdout.writeln('No file found');
+    } else {
+      dartDefines = await parseDartFiles(jsonPath);
+    }
+
+    ///绑定Flutter库
+    files.clear();
+    await dirContents(Directory(flutterSourceRoot), ignores, whitelist);
+
+    var flutterDefines = [];
+    if (files.isEmpty) {
+      stdout.writeln('No file found');
+    } else {
+      flutterDefines = await parseDartFiles(jsonPath);
+    }
+
+    for (var p in dartDefines) {
+      var libName =
+          path.split(path.relative(p.filePath, from: dartSourceRoot)).first;
+      generateWrappers(p, exportPath,
+          library: ExportType.DartLibrary, libName: libName);
+    }
+    for (var p in flutterDefines) {
+      var libName =
+          path.split(path.relative(p.filePath, from: flutterSourceRoot)).first;
+      generateWrappers(p, exportPath,
+          library: ExportType.FlutterLibrary, libName: libName);
+    }
   }
 }
 
@@ -101,7 +167,9 @@ void main(args) {
   parser.addOption('flutter-lib-path', abbr: 'f');
   parser.addOption('output',
       abbr: 'o', defaultsTo: Directory.current.path.toString() + '/gen');
-  parser.addMultiOption('ignores', abbr: 'i', defaultsTo: []);
+  parser.addFlag('jsonExport', abbr: 'j', defaultsTo: false);
+  parser.addMultiOption('ignores',
+      abbr: 'i', defaultsTo: []);
   parser.addMultiOption('whitelist', abbr: 'w');
   var results = parser.parse(args);
   var userPaths = results['user-lib-paths'];
@@ -111,14 +179,12 @@ void main(args) {
     output = path.absolute(output);
   }
   var flutterPath = results['flutter-lib-path'];
-
+  var jsonPath =
+      results['jsonExport'] ? Directory.current.path.toString() + '/gen' : null;
   var ignores = results['ignores'];
   var whitelist = results['whitelist'];
-  print(userPaths);
-  print(flutterPath);
-  print(output);
-  print(ignores);
-  print(whitelist);
+
   Directory(output).create(recursive: true);
-  parseBegin(userPaths, flutterPath, output, ignores, whitelist);
+  parseBegin(userPaths, flutterPath, output, ignores, whitelist,
+      jsonPath: jsonPath);
 }

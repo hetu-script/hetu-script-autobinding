@@ -73,11 +73,22 @@ class RootAstVisitor extends UnifyingAstVisitor<dynamic> {
       '_': nodeType(node),
       'raw': node.toString(),
       'name': node.name.name,
+      'super': _safelyVisitNode(node.extendsClause),
       'meta': _safelyVisitNodeList(node.metadata),
       'members': _safelyVisitNodeList(node.members),
       'identifiers': node.accept(IdentifierASTVisitor()),
       'abstract?': node.abstractKeyword != null
     };
+  }
+
+  @override
+  dynamic visitExtendsClause(ExtendsClause node) {
+    var name =node.superclass.name.name;
+    if (name.contains('.')) {
+      var idx = name.lastIndexOf('.');
+      name = name.substring(idx+1);
+    }
+    return name;
   }
 
   @override
@@ -127,7 +138,18 @@ class RootAstVisitor extends UnifyingAstVisitor<dynamic> {
 
   @override
   dynamic visitEnumDeclaration(EnumDeclaration node) {
-    return {'_': nodeType(node), 'raw': node.toString()};
+    var enums = <String>[];
+    node.constants.forEach((element) {
+      enums.add(element.name.name);
+    });
+    return {'_': nodeType(node),
+      'name': node.name.name,
+      'enums': enums};
+  }
+
+  @override
+  dynamic visitEnumConstantDeclaration(EnumConstantDeclaration node) {
+    return node.name.name;
   }
 
   @override
@@ -187,10 +209,7 @@ class RootAstVisitor extends UnifyingAstVisitor<dynamic> {
 
   @override
   dynamic visitTypeParameter(TypeParameter node) {
-    return {
-      'name': node.name.name,
-      'type': node.bound?.toString()
-    };
+    return {'name': node.name.name, 'type': node.bound?.toString()};
   }
 
   @override
@@ -1126,6 +1145,22 @@ class IdentifierASTVisitor extends UnifyingAstVisitor<List<String>> {
   }
 
   @override
+  List<String>? visitEnumDeclaration(EnumDeclaration node) {
+    var ret = <String>[];
+    ret.add(node.name.name);
+    ret.addAll(_safelyVisitNodeList(node.constants));
+
+    return ret;
+  }
+
+  @override
+  List<String>? visitEnumConstantDeclaration(EnumConstantDeclaration node) {
+    var ret = <String>[];
+    ret.add(node.name.name);
+    return ret;
+  }
+
+  @override
   List<String>? visitNode(AstNode node) {
     if (node is BooleanLiteral ||
         node is IntegerLiteral ||
@@ -1137,6 +1172,7 @@ class IdentifierASTVisitor extends UnifyingAstVisitor<List<String>> {
         node is ThrowExpression ||
         node is SuperExpression ||
         node is EmptyFunctionBody ||
+        node is NativeFunctionBody ||
         node is AssertInitializer) {
       return [];
     }

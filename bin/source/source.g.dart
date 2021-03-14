@@ -1,8 +1,7 @@
 part of 'source.dart';
-
 const _kPrivateConstValue = 1;
 class _PrivateClass {final defaultValue = 1; const _PrivateClass();}
-class DartPersonWrapper extends DartPerson with HT_Reflect {
+class DartPersonWrapper extends DartPerson with HT_Reflect, HT_Typed {
   DartPersonWrapper() : super();
   DartPersonWrapper.withName([name]) : super.withName(name);
   DartPersonWrapper.complex(pos, [optional]) : super.complex(pos, optional);
@@ -34,7 +33,7 @@ class DartPersonWrapper extends DartPerson with HT_Reflect {
   }
 }
 
-var externalBindingDartPerson = <String, HT_ExternFunc>{
+var externalBindingClassDartPerson = <String, HT_ExternFunc>{
     'DartPerson': (HT_Interpreter interpreter,
         {List<dynamic> positionalArgs = const [],
         Map<String, dynamic> namedArgs = const {},

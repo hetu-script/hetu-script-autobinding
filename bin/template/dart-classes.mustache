@@ -3,12 +3,18 @@ part of '{{source_file}}';
 {{/custom_class_import}}
 {{#library_class_import}}
 import 'package:hetu_script/hetu_script.dart';
-import 'package:flutter/{{flutter_lib_name}}.dart';
+{{flutter_lib_name}}
 {{#file_imports}}
 import {{import_uri}}{{import_prefix}};
 {{/file_imports}}
 {{/library_class_import}}
-
+{{#have_private_enums}}
+enum {{private_enum_name}}{
+    {{#private_enum_constants}}
+    {{private_enum_name}}
+    {{/private_enum_constants}}
+}
+{{/have_private_enums}}
 {{#have_private_top_vars}}
 {{private_top_vars}}
 {{/have_private_top_vars}}
@@ -16,7 +22,7 @@ import {{import_uri}}{{import_prefix}};
 {{raw_class}}
 {{/private_classes}}
 {{#classes}}
-class {{dart_class_name}}Wrapper{{#have_constructors}} extends {{dart_class_name}}{{/have_constructors}} with HT_Reflect {
+class {{dart_class_name}}Wrapper{{#have_constructors}} extends {{dart_class_name}}{{/have_constructors}} with HT_Reflect, HT_Typed {
   {{#constructors}}
   {{dart_class_name}}Wrapper{{constructor_name}}{{constructor_params}} : super{{constructor_name}}{{super_params}};
   {{/constructors}}
@@ -60,7 +66,7 @@ class {{dart_class_name}}Wrapper{{#have_constructors}} extends {{dart_class_name
   {{/have_static_methods}}
 }
 
-var externalBinding{{dart_class_name}} = <String, HT_ExternFunc>{
+var externalBindingClass{{dart_class_name}} = <String, HT_ExternFunc>{
 {{#binding_constructors}}
     '{{dart_class_name}}{{constructor_name}}': (HT_Interpreter interpreter,
         {List<dynamic> positionalArgs = const [],
@@ -101,3 +107,15 @@ var externalBinding{{dart_class_name}} = <String, HT_ExternFunc>{
 {{/binding_static_variables_setter}}
 };
 {{/classes}}
+{{#enums}}
+var externalBindingEnum{{enum_name}} = <String, HT_ExternFunc>{
+    {{#binding_enums}}
+    '{{enum_name}}.__get__{{enum_constant_name}}': (HT_Interpreter interpreter,
+        {List<dynamic> positionalArgs = const [],
+        Map<String, dynamic> namedArgs = const {},
+        HT_Object? object}) {
+      return {{enum_name}}.{{enum_constant_name}};
+    },
+    {{/binding_enums}}
+};
+{{/enums}}
