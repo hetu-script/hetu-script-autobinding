@@ -20,7 +20,7 @@ enum {{private_enum_name}}{
 {{/private_classes}}
 
 {{#have_enums}}
-class {{enum_name}}EnumBinding extends HT_ExternNamespace {
+class {{enum_name}}ClassBinding extends HT_ExternNamespace {
   @override
   dynamic fetch(String id) {
     switch (id) {

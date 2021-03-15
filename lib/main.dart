@@ -260,7 +260,7 @@ void parseBegin(List<String> userPaths, String? flutterPath, List<String> packag
   }
 
   //检查是否有缺失的执行文件（库绑定、自定义绑定）
-  if (FileSystemEntity.typeSync('$exportPath/ht_script_binding.dart') == FileSystemEntityType.notFound) {
+  if (await FileSystemEntity.type('$exportPath/ht_script_binding.dart') == FileSystemEntityType.notFound) {
 
     var userTemplateVars = {
       'user_api_import': [],
@@ -270,7 +270,7 @@ void parseBegin(List<String> userPaths, String? flutterPath, List<String> packag
     renderTemplate('bin/template/ht_script_binding.mustache', userTemplateVars,
         '$exportPath/ht_script_binding.dart');
   }
-  if (FileSystemEntity.typeSync('$exportPath/ht_library_script_binding.dart') == FileSystemEntityType.notFound) {
+  if (await FileSystemEntity.type('$exportPath/ht_library_script_binding.dart') == FileSystemEntityType.notFound) {
 
     var libTemplateVars = {
       'api_import': [],
@@ -347,5 +347,4 @@ void main(args) {
   Directory(output).create(recursive: true);
   parseBegin(userPaths, flutterPath, packagePaths, output, scriptOutput, ignores, whitelist,
       jsonPath: jsonPath);
-
 }

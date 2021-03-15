@@ -461,6 +461,9 @@ Future<List<BindingDefine>> generateWrappers(
       bindingExternals.add(cls['dart_class_name']);
     }
   });
+  have_enums.forEach((element) {
+    bindingExternals.add(element['enum_name']);
+  });
 
   var template_vars = <String, dynamic>{
     'file_imports': file_imports,
