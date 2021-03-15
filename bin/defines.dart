@@ -1,5 +1,3 @@
-import 'package:test/test.dart';
-
 class FileDefine {
   late final String filePath;
   late final List<FieldVarDefine> globalVars;
@@ -75,8 +73,7 @@ class FileDefine {
             //variable list
             if (vars != null) {
               for (Map<String, dynamic> value in vars) {
-                var v = FieldVarDefine(value);
-                v.isTopLevel = true;
+                var v = FieldVarDefine(value, isStatic: false, isTopLevel: true);
                 globalVars.add(v);
               }
             }
@@ -99,6 +96,7 @@ class ClassDefine {
   late final String name;
   late final String? superClassName;
   ClassDefine? superClass;
+  bool ignored = false;
 
   late final Set<String> annotations;
   late final List<ConstructorDefine> constructors;
@@ -109,6 +107,7 @@ class ClassDefine {
   late final String raw;
   final List<String> identifiers = [];
   late final bool isAbstract;
+  late final List<Map>? generics;
 
   bool get isPrivate => name.startsWith('_');
 
@@ -120,6 +119,7 @@ class ClassDefine {
     name = json['name'];
     superClassName = json['super'];
     raw = json['raw'];
+    generics = json['generic'];
     identifiers.addAll(json['identifiers']);
     isAbstract = json['abstract?'];
     constructors = [];
@@ -145,7 +145,7 @@ class ClassDefine {
             var vars = fieldList['vars'] as List;
             //variable list
             for (Map<String, dynamic> value in vars) {
-              var v = FieldVarDefine(value);
+              var v = FieldVarDefine(value, isStatic: isStatic, isTopLevel: false);
               if (isStatic) {
                 staticVars.add(v);
               } else {
@@ -213,12 +213,13 @@ class FieldVarDefine {
   late final bool isFinal;
   late final String raw;
   final List<String> identifiers = [];
-  bool isTopLevel = false;
+  final bool isTopLevel;
+  final bool isStatic;
 
   bool get isPrivate => name.startsWith('_');
   late final bool isConst;
 
-  FieldVarDefine(Map<String, dynamic> json) {
+  FieldVarDefine(Map<String, dynamic> json, {required this.isStatic,required this.isTopLevel}) {
     parse(json);
   }
 
@@ -327,7 +328,7 @@ class ConstructorDefine {
     });
   }
 
-  String getCtorParam() {
+  String getParams() {
     var allParams = [];
     var latterParams = [];
     var isNamed = false;
@@ -335,7 +336,11 @@ class ConstructorDefine {
       if (p.isPositional && !p.isOptional) {
         allParams.add(p.name);
       } else {
-        latterParams.add(p.toCtorParam());
+        if (p.defaultValue != null) {
+          latterParams.add('${p.name} = ${p.defaultValue}');
+        } else {
+          latterParams.add('${p.name}');
+        }
         if (p.isNamed) {
           isNamed = true;
         }
@@ -351,7 +356,7 @@ class ConstructorDefine {
     return '(${allParams.join(', ')})';
   }
 
-  String getSuperParam() {
+  String getInvokeParam() {
     var paramList = [];
     params.forEach((p) {
       if (p.isPositional) {
@@ -360,24 +365,6 @@ class ConstructorDefine {
         paramList.add('${p.name} : ${p.name}');
       }
     });
-    return '(${paramList.join(', ')})';
-  }
-
-  String getInvokeParam() {
-    var paramList = [];
-    var index = 0;
-    params.forEach((p) {
-      if (p.isPositional) {
-        paramList.add('positionalArgs[$index]');
-        index++;
-      } else {
-        var key = '\'${p.name}\'';
-        var defaultValue = p.defaultValue;
-        paramList.add(
-            '${p.name} : namedArgs.containsKey($key) ? namedArgs[$key] : $defaultValue');
-      }
-    });
-
     return '(${paramList.join(', ')})';
   }
 
@@ -457,21 +444,46 @@ class MethodDefine {
     }
   }
 
-  String getInvokeParam() {
-    var paramList = [];
-    var index = 0;
+  String getParams() {
+    var allParams = [];
+    var latterParams = [];
+    var isNamed = false;
     params.forEach((p) {
-      if (p.isPositional) {
-        paramList.add('positionalArgs[$index]');
-        index++;
+      if (p.isPositional && !p.isOptional) {
+        allParams.add(p.name);
       } else {
-        paramList.add('${p.name} : namedArgs[\'${p.name}\']');
+        if (p.defaultValue != null) {
+          latterParams.add('${p.name} = ${p.defaultValue}');
+        } else {
+          latterParams.add('${p.name}');
+        }
+        if (p.isNamed) {
+          isNamed = true;
+        }
       }
     });
-
-    if (isGetter) {
-      return '${paramList.join(', ')}';
+    if (latterParams.isNotEmpty) {
+      if (isNamed) {
+        allParams.add('{${latterParams.join(', ')}}');
+      } else {
+        allParams.add('[${latterParams.join(', ')}]');
+      }
     }
+    return '(${allParams.join(', ')})';
+  }
+
+  String getInvokeParam() {
+    if (isGetter) {
+      return '';
+    }
+    var paramList = [];
+    params.forEach((p) {
+      if (p.isPositional) {
+        paramList.add(p.name);
+      } else if (p.isNamed) {
+        paramList.add('${p.name} : ${p.name}');
+      }
+    });
     return '(${paramList.join(', ')})';
   }
 
@@ -488,7 +500,9 @@ class MethodDefine {
     if (paramsList.isEmpty && namedList.isEmpty) {
       return '';
     }
-    paramsList.add('{${namedList.join(', ')}}');
+    if (namedList.isNotEmpty) {
+      paramsList.add('{${namedList.join(', ')}}');
+    }
     return ' (${paramsList.join(', ')})';
   }
 
@@ -518,6 +532,8 @@ class ImportDefine {
 class EnumDefine {
   late final String name;
   late final List<String> constants = [];
+  late final Set<String> annotations = {};
+
   bool get isPrivate => name.startsWith('_');
 
   EnumDefine(Map<String, dynamic> json) {
@@ -528,5 +544,16 @@ class EnumDefine {
     name = json['name'];
     var enums = json['enums'] as List<String>;
     constants.addAll(enums);
+    var meta = json['meta'] as List;
+    meta.forEach((m) {
+      annotations.add(m['annotation']);
+    });
   }
+}
+
+class BindingDefine {
+  final String filePath;
+  final List<String> externalVars;
+
+  BindingDefine(this.filePath, this.externalVars);
 }

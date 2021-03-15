@@ -1,0 +1,28 @@
+import 'package:hetu_script/hetu_script.dart';
+import 'package:meta/meta.dart';
+{{#api_import}}
+import {{import_file}};
+{{/api_import}}
+
+class HetuLibraryScriptBinding {
+  @mustCallSuper
+  void loadAutoBinding(HT_Interpreter interpreter) {
+    var bindings = {
+      {{#bindings}}
+      '{{dart_class_name}}' : {{prefix}}{{dart_class_name}}ClassBinding(),
+      {{/bindings}}
+    };
+    bindings.forEach((key, value) {
+      interpreter.bindExternalNamespace(key, value);
+    });
+  }
+
+  @mustCallSuper
+  Future loadAutoBindingScripts(HT_Interpreter interpreter, String path) {
+    var futures = <Future>[];
+    {{#ht_bindings}}
+    futures.add(interpreter.evalf('$path/{{ht_file_relative_path}}'));
+    {{/ht_bindings}}
+    return Future.wait(futures);
+  }
+}

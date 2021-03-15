@@ -1,6 +1,3 @@
-{{#custom_class_import}}
-part of '{{source_file}}';
-{{/custom_class_import}}
 {{#library_class_import}}
 import 'package:hetu_script/hetu_script.dart';
 {{flutter_lib_name}}
@@ -21,39 +18,104 @@ enum {{private_enum_name}}{
 {{#private_classes}}
 {{raw_class}}
 {{/private_classes}}
-{{#classes}}
-class {{dart_class_name}}Wrapper{{#have_constructors}} extends {{dart_class_name}}{{/have_constructors}} with HT_Reflect, HT_Typed {
-  {{#constructors}}
-  {{dart_class_name}}Wrapper{{constructor_name}}{{constructor_params}} : super{{constructor_name}}{{super_params}};
-  {{/constructors}}
+
+{{#have_enums}}
+class {{enum_name}}EnumBinding extends HT_ExternNamespace {
+  @override
+  dynamic fetch(String id) {
+    switch (id) {
+      {{#binding_enums}}
+      case '{{enum_constant_name}}':
+        return {{enum_name}}.{{enum_constant_name}};
+      {{/binding_enums}}
+      default:
+        throw HTErr_Undefined(id);
+    }
+  }
+}
+{{/have_enums}}
+
+{{#all_classes}}
+{{#have_class_member}}
+class {{dart_class_name}}ClassBinding extends HT_ExternNamespace {
+  {{#have_class_fetch}}
+  @override
+  dynamic fetch(String id) {
+    switch (id) {
+      {{#binding_constructors}}
+      case '{{dart_class_name}}{{constructor_name}}':
+        {{#constructor_private_defines}}
+        {{private_impl}}
+        {{/constructor_private_defines}}
+        return {{constructor_params}} => {{dart_class_name}}ObjectBinding({{dart_class_name}}{{generic_types}}{{constructor_name}}{{constructor_invoke_params}});
+      {{/binding_constructors}}
+      {{#binding_static_methods}}
+      case '{{static_method_name}}':
+        {{#static_method_private_defines}}
+        {{private_impl}}
+        {{/static_method_private_defines}}
+        return {{static_method_params}} => {{dart_class_name}}.{{static_method_name}}{{static_method_invoke_params}};
+      {{/binding_static_methods}}
+      {{#binding_static_variables_getter}}
+      case '{{dart_class_name}}.{{static_variable_name}}':
+        return {{dart_class_name}}.{{static_variable_name}};
+      {{/binding_static_variables_getter}}
+      default:
+        throw HTErr_Undefined(id);
+    }
+  }
+  {{/have_class_fetch}}
+  {{#have_class_assign}}
+  @override
+  void assign(String id, dynamic value) {
+    switch (id) {
+      {{#binding_static_variables_setter}}
+      case '{{dart_class_name}}.{{static_variable_name}}':
+        return {{dart_class_name}}.{{static_variable_name}} = value;
+      {{/binding_static_variables_setter}}
+      default:
+        throw HTErr_Undefined(id);
+    }
+  }
+  {{/have_class_assign}}
+  {{#have_static_declarations}}
+  {{static_declaration}}
+  {{/have_static_declarations}}
+}
+{{/have_class_member}}
+
+{{#have_instance_member}}
+class {{dart_class_name}}ObjectBinding extends HT_ExternObject<{{dart_class_name}}> {
+  {{dart_class_name}}ObjectBinding({{dart_class_name}} value) : super(value);
 
   @override
-  final typeid = HT_Type('{{dart_class_name}}');
+  final typeid = HT_TypeId('{{dart_class_name}}');
 
   {{#have_instance_getter}}
   @override
-  dynamic getProperty(String id) {
+  dynamic fetch(String id) {
     switch (id) {
     {{#getter_case}}
       case '{{instance_identifier}}':
-        return {{ instance_identifier　}};
+        return externObject.{{instance_identifier}};
     {{/getter_case}}
     {{#method_case}}
       case '{{method_identifier}}':
-        return {{ method_identifier　}};
+        return externObject.{{method_identifier}};
     {{/method_case}}
       default:
         throw HTErr_Undefined(id);
     }
   }
   {{/have_instance_getter}}
+
   {{#have_instance_setter}}
   @override
-  void setProperty(String id, dynamic value) {
+  void assign(String id, dynamic value) {
     switch (id) {
      {{#setter_case}}
       case '{{instance_identifier}}':
-        {{ instance_identifier　}} = value;
+        externObject.{{instance_identifier}} = value;
         break;
      {{/setter_case}}
       default:
@@ -61,61 +123,6 @@ class {{dart_class_name}}Wrapper{{#have_constructors}} extends {{dart_class_name
     }
   }
   {{/have_instance_setter}}
-  {{#have_static_methods}}
-  {{static_method_impl}}
-  {{/have_static_methods}}
 }
-
-var externalBindingClass{{dart_class_name}} = <String, HT_ExternFunc>{
-{{#binding_constructors}}
-    '{{dart_class_name}}{{constructor_name}}': (HT_Interpreter interpreter,
-        {List<dynamic> positionalArgs = const [],
-        Map<String, dynamic> namedArgs = const {},
-        HT_Object? object}) {
-      {{#constructor_private_defines}}
-      {{private_impl}}
-      {{/constructor_private_defines}}
-      return {{dart_class_name}}Wrapper{{constructor_name}}{{constructor_generated_params}};
-    },
-{{/binding_constructors}}
-{{#binding_static_methods}}
-    '{{dart_class_name}}.{{static_method_name}}': (HT_Interpreter interpreter,
-        {List<dynamic> positionalArgs = const [],
-        Map<String, dynamic> namedArgs = const {},
-        HT_Object? object}) {
-      {{#static_method_private_defines}}
-      {{private_impl}}
-      {{/static_method_private_defines}}
-      return {{dart_class_name}}.{{static_method_name}}{{static_method_generated_params}};
-    },
-{{/binding_static_methods}}
-{{#binding_static_variables_getter}}
-    '{{dart_class_name}}.__get__{{static_variable_name}}': (HT_Interpreter interpreter,
-        {List<dynamic> positionalArgs = const [],
-        Map<String, dynamic> namedArgs = const {},
-        HT_Object? object}) {
-      return {{dart_class_name}}.{{static_variable_name}};
-    },
-{{/binding_static_variables_getter}}
-{{#binding_static_variables_setter}}
-    '{{dart_class_name}}.__set__{{static_variable_name}}': (HT_Interpreter interpreter,
-        {List<dynamic> positionalArgs = const [],
-        Map<String, dynamic> namedArgs = const {},
-        HT_Object? object}) {
-      {{dart_class_name}}.{{static_variable_name}} = positionalArgs.isNotEmpty ? positionalArgs.first : null;
-    },
-{{/binding_static_variables_setter}}
-};
-{{/classes}}
-{{#enums}}
-var externalBindingEnum{{enum_name}} = <String, HT_ExternFunc>{
-    {{#binding_enums}}
-    '{{enum_name}}.__get__{{enum_constant_name}}': (HT_Interpreter interpreter,
-        {List<dynamic> positionalArgs = const [],
-        Map<String, dynamic> namedArgs = const {},
-        HT_Object? object}) {
-      return {{enum_name}}.{{enum_constant_name}};
-    },
-    {{/binding_enums}}
-};
-{{/enums}}
+{{/have_instance_member}}
+{{/all_classes}}

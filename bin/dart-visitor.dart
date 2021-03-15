@@ -73,6 +73,7 @@ class RootAstVisitor extends UnifyingAstVisitor<dynamic> {
       '_': nodeType(node),
       'raw': node.toString(),
       'name': node.name.name,
+      'generic': _safelyVisitNode(node.typeParameters),
       'super': _safelyVisitNode(node.extendsClause),
       'meta': _safelyVisitNodeList(node.metadata),
       'members': _safelyVisitNodeList(node.members),
@@ -144,6 +145,7 @@ class RootAstVisitor extends UnifyingAstVisitor<dynamic> {
     });
     return {'_': nodeType(node),
       'name': node.name.name,
+      'meta': _safelyVisitNodeList(node.metadata),
       'enums': enums};
   }
 
@@ -387,7 +389,7 @@ class RootAstVisitor extends UnifyingAstVisitor<dynamic> {
     return {
       '_': nodeType(node),
       'param': _safelyVisitNode(node.parameter),
-      'default': node.defaultValue.toString(),
+      'default': node.defaultValue?.toString(),
       'default_identifiers': identifiers
     };
   }
@@ -1096,8 +1098,16 @@ class IdentifierASTVisitor extends UnifyingAstVisitor<List<String>> {
   @override
   List<String>? visitClassDeclaration(ClassDeclaration node) {
     var ret = <String>[];
+    if (node.extendsClause != null) {
+      ret.addAll(_safelyVisitNode(node.extendsClause));
+    }
     ret.addAll(_safelyVisitNodeList(node.members));
     return ret;
+  }
+
+  @override
+  List<String>? visitExtendsClause(ExtendsClause node) {
+    return [node.superclass.name.name];
   }
 
   @override
