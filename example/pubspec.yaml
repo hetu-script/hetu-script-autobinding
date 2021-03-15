@@ -24,7 +24,9 @@ dependencies:
   flutter:
     sdk: flutter
   hetu_script:
-    path: ../hetu_script
+    git:
+      url: https://github.com/hythl0day/hetu_script.git
+      ref: nightly
   external_asset_bundle: 1.0.1
 
   # The following adds the Cupertino Icons font to your application.

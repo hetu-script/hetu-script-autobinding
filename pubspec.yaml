@@ -10,7 +10,9 @@ dependencies:
   analyzer: 1.1.0
   args: 2.0.0
   hetu_script:
-    path: ../hetu_script
+    git:
+      url: https://github.com/hythl0day/hetu_script.git
+      ref: nightly
   json_annotation: 4.0.0
   mustache_template: 2.0.0
 
