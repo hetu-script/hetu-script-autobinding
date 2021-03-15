@@ -25,7 +25,8 @@ void renderTemplate(String templateFile, Map<String, dynamic> templateVars,
   var dirName = path.dirname(opath);
   await Directory(dirName).create(recursive: true);
   final file = File(opath);
-  await file.writeAsString(output);
+  var result = await file.writeAsString(output);
+  // print('Writing to file: $opath');
 }
 
 void writeJson(
@@ -418,7 +419,7 @@ Future<List<BindingDefine>> generateWrappers(
         'have_static_declarations': have_static_declarations,
       };
     }
-    var empty_instance_binding = !have_instance_setter && !have_instance_getter;
+    var empty_instance_binding = !have_instance_setter && !have_instance_getter && binding_constructors.isEmpty;
     if (!empty_instance_binding) {
       have_instance_member = {
         'dart_class_name': dart_class_name,
@@ -480,6 +481,7 @@ Future<List<BindingDefine>> generateWrappers(
   htPath = '$scriptOutputPath/$dirName/';
   await Directory(dartPath).create(recursive: true);
   await Directory(htPath).create(recursive: true);
+
   bindings.add(BindingDefine('$dirName/$fileName', bindingExternals));
 
   var ht_template_vars = <String, dynamic>{
@@ -515,11 +517,13 @@ Future<List<BindingDefine>> generateWrappers(
       'flutter_lib_name': "import 'package:$packageName/$packageName.dart';",
     };
   }
-
+  // print('output: $dartPath$fileName.g.dart');
+  // print('ht output: $htPath/$fileName.ht');
   renderTemplate('bin/template/dart-classes.mustache', template_vars,
-      '$dartPath/$fileName.g.dart');
+      '$dartPath$fileName.g.dart');
   renderTemplate('bin/template/ht-classes.mustache', ht_template_vars,
-      '$htPath/$fileName.ht');
+      '$htPath$fileName.ht');
+
 
   return bindings;
 }

@@ -20,5 +20,5 @@ doc/api/
 *.js.deps
 *.js.map
 .idea/
-ignored/ht_dart_exporter.exe
 gen/*
+bin/

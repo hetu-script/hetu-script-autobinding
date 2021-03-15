@@ -20,32 +20,32 @@ Future<List<FileSystemEntity>> dirContents(
         file.path.endsWith('.dart') &&
         !file.path.endsWith('.g.dart')) {
       if (whitelist.isNotEmpty) {
-        var match = whitelist.firstWhere((element) {
-          if (file.path.allMatches(element).isNotEmpty) {
+        var idx = whitelist.indexWhere((element) {
+          if (file.path.contains(element)) {
+            print('whitelist: ${file.path} matched: $element');
             return true;
           }
+
           return false;
-        }, orElse: () => '');
-        if (match == '') {
-          //no match
+        });
+        if (idx == -1) {
           return;
         }
-      } else {
-        if (ignores.isNotEmpty) {
-          var idx = ignores.indexWhere((element) {
-            var ignoreClass = element.contains(':');
-            if (!ignoreClass) {
-              if (file.path.contains(element)) {
-                print('ignored: ${file.path} matched: $element');
-                return true;
-              }
+      }
+      if (ignores.isNotEmpty) {
+        var idx = ignores.indexWhere((element) {
+          var ignoreClass = element.contains(':');
+          if (!ignoreClass) {
+            if (file.path.contains(element)) {
+              print('ignored: ${file.path} matched: $element');
+              return true;
             }
-
-            return false;
-          });
-          if (idx != -1) {
-            return;
           }
+
+          return false;
+        });
+        if (idx != -1) {
+          return;
         }
       }
       files.add(file);
@@ -280,18 +280,25 @@ void parseBegin(List<String> userPaths, String? flutterPath, List<String> packag
     renderTemplate('bin/template/ht_library_script_binding.mustache',
         libTemplateVars, '$exportPath/ht_library_script_binding.dart');
   }
+
+  print('Job done.');
 }
 
 void main(args) {
   var parser = ArgParser();
-  parser.addMultiOption('user-lib-paths', abbr: 'u', defaultsTo: []);
-  parser.addOption('flutter-lib-path', abbr: 'f');
+  parser.addMultiOption('user-lib-paths', abbr: 'u', defaultsTo: [], valueHelp: 'path1, path2, ...', help: 'Will iterate over all the folders recursively.');
+  parser.addMultiOption('package-lib-paths', abbr: 'p', defaultsTo: [], valueHelp: 'package1/lib, package2/lib, ...', help: 'Will iterate over all the package cache folders.');
+  parser.addOption('flutter-lib-path', abbr: 'f', valueHelp: 'flutter-framework-path', help: 'Will iterate the Flutter/Dart framework recursively. The path should point to the Flutter root folder.');
   parser.addOption('output',
-      abbr: 'o', defaultsTo: Directory.current.path.toString() + '/gen/dart');
+      abbr: 'o', defaultsTo: Directory.current.path.toString() + '/gen/dart', help: 'The output path for .dart code generation and .json intermediate files.');
   parser.addOption('script-output',
-      abbr: 's', defaultsTo: Directory.current.path.toString() + '/gen/ht');
-  parser.addFlag('json-export', abbr: 'j', defaultsTo: false);
-  parser.addMultiOption('package-lib-paths', abbr: 'p', defaultsTo: []);
+      abbr: 's', defaultsTo: Directory.current.path.toString() + '/gen/ht', help: 'The output path for .ht code generation.');
+  parser.addFlag('json-export', abbr: 'j', defaultsTo: false, help: 'Whether to export the intermediate JSON files for diagnostics.');
+  parser.addFlag('help', abbr: 'h', callback: (f) {
+    if (f) {
+      print(parser.usage);
+    }
+  });
   parser.addMultiOption('ignores',
       abbr: 'i',
       defaultsTo: [
@@ -300,8 +307,10 @@ void main(args) {
         'ui/platform_dispatcher.dart:ViewConfiguration',
       ],
       valueHelp:
-          '[ignored-file-name, ignored-file-name:ignored-class-name, ...]');
-  parser.addMultiOption('whitelist', abbr: 'w');
+          'ignored-file-name, ignored-file-name:ignored-class-name, ...',
+  help: 'The files/classes from this list will be ignored during the code generation.');
+  parser.addMultiOption('whitelist', abbr: 'w', valueHelp:
+  'whitelist-file-name, whitelist-file-name2, ...', help: 'Only the files from the list will be parsed, working with \'ignores\' too.');
   var results = parser.parse(args);
   var userPaths = results['user-lib-paths'];
 
@@ -331,8 +340,12 @@ void main(args) {
     'foundation/basic_types.dart',
   ]);
   var whitelist = results['whitelist'];
-
+  if (results['help'] == true) {
+    return;
+  }
+  print('Begin parsing...');
   Directory(output).create(recursive: true);
   parseBegin(userPaths, flutterPath, packagePaths, output, scriptOutput, ignores, whitelist,
       jsonPath: jsonPath);
+
 }

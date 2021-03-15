@@ -1,1 +1,0 @@
-dart compile exe ../bin/ht_dart_exporter.dart

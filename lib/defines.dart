@@ -268,7 +268,7 @@ class ParamDefine {
           isPositional = js['pos?'];
           isOptional = js['optional?'];
           isNamed = js['named?'] ?? false;
-          isFinal = json['final?'];
+          isFinal = json['final?'] ?? false;
           break;
         case 'DefaultFormalParameter':
           var param = js['param'];
@@ -284,14 +284,14 @@ class ParamDefine {
           isPositional = js['pos?'];
           isOptional = js['optional?'];
           isNamed = js['named?'] ?? false;
-          isFinal = json['final?'];
+          isFinal = json['final?'] ?? false;
           break;
         case 'FunctionTypedFormalParameter':
           name = js['name'];
           isPositional = js['pos?'];
           isOptional = js['optional?'];
           isNamed = js['named?'] ?? false;
-          isFinal = json['final?'];
+          isFinal = json['final?'] ?? false;
           break;
         default:
           assert(false, 'Unknown Parameter [$js]!');
