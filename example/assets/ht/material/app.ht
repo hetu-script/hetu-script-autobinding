@@ -1,0 +1,47 @@
+external class ThemeMode {
+    static var system
+    static var light
+    static var dark
+}
+external class MaterialApp {
+    construct 
+    construct router
+    get navigatorKey
+    get scaffoldMessengerKey
+    get home
+    get routes
+    get initialRoute
+    get onGenerateRoute
+    get onGenerateInitialRoutes
+    get onUnknownRoute
+    get navigatorObservers
+    get routeInformationProvider
+    get routeInformationParser
+    get routerDelegate
+    get backButtonDispatcher
+    get builder
+    get title
+    get onGenerateTitle
+    get theme
+    get darkTheme
+    get highContrastTheme
+    get highContrastDarkTheme
+    get themeMode
+    get color
+    get locale
+    get localizationsDelegates
+    get localeListResolutionCallback
+    get localeResolutionCallback
+    get supportedLocales
+    get showPerformanceOverlay
+    get checkerboardRasterCacheImages
+    get checkerboardOffscreenLayers
+    get showSemanticsDebugger
+    get debugShowCheckedModeBanner
+    get shortcuts
+    get actions
+    get restorationScopeId
+    get debugShowMaterialGrid
+    fun createState
+    static fun createMaterialHeroController
+}

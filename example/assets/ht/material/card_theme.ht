@@ -1,0 +1,14 @@
+external class CardTheme {
+    construct 
+    get clipBehavior
+    get color
+    get shadowColor
+    get elevation
+    get margin
+    get shape
+    fun copyWith
+    get hashCode
+    fun debugFillProperties
+    static fun of (context)
+    static fun lerp (a, b, t)
+}

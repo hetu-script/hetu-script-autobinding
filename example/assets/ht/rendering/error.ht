@@ -1,0 +1,15 @@
+external class RenderErrorBox {
+    construct 
+    get message
+    fun computeMaxIntrinsicWidth
+    fun computeMaxIntrinsicHeight
+    get sizedByParent
+    fun hitTestSelf
+    fun computeDryLayout
+    fun paint
+    static var padding
+    static var minimumWidth
+    static var backgroundColor
+    static var textStyle
+    static var paragraphStyle
+}

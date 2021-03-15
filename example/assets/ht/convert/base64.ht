@@ -1,0 +1,19 @@
+external class Base64Codec {
+    construct 
+    construct urlSafe
+    get encoder
+    get decoder
+    fun decode
+    fun normalize
+}
+external class Base64Encoder {
+    construct 
+    construct urlSafe
+    fun convert
+    fun startChunkedConversion
+}
+external class Base64Decoder {
+    construct 
+    fun convert
+    fun startChunkedConversion
+}

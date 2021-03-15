@@ -1,0 +1,7 @@
+external class GridTile {
+    construct 
+    get header
+    get footer
+    get child
+    fun build
+}

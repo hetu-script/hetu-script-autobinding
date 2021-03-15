@@ -1,0 +1,19 @@
+external class MethodCall {
+    construct 
+    get method
+    get arguments
+    fun toString
+}
+external class PlatformException {
+    construct 
+    get code
+    get message
+    get details
+    get stacktrace
+    fun toString
+}
+external class MissingPluginException {
+    construct 
+    get message
+    fun toString
+}

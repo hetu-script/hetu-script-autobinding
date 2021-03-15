@@ -1,0 +1,12 @@
+external class GestureDisposition {
+    static var accepted
+    static var rejected
+}
+external class GestureArenaManager {
+    construct
+    fun add
+    fun close
+    fun sweep
+    fun hold
+    fun release
+}

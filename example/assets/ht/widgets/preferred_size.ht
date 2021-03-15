@@ -1,0 +1,6 @@
+external class PreferredSize {
+    construct 
+    get child
+    get preferredSize
+    fun build
+}

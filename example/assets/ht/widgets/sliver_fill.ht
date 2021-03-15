@@ -1,0 +1,15 @@
+external class SliverFillViewport {
+    construct 
+    get viewportFraction
+    get padEnds
+    get delegate
+    fun build
+}
+external class SliverFillRemaining {
+    construct 
+    get child
+    get hasScrollBody
+    get fillOverscroll
+    fun build
+    fun debugFillProperties
+}

@@ -1,0 +1,22 @@
+external class ButtonBarThemeData {
+    construct 
+    get alignment
+    get mainAxisSize
+    get buttonTextTheme
+    get buttonMinWidth
+    get buttonHeight
+    get buttonPadding
+    get buttonAlignedDropdown
+    get layoutBehavior
+    get overflowDirection
+    fun copyWith
+    get hashCode
+    fun debugFillProperties
+    static fun lerp (a, b, t)
+}
+external class ButtonBarTheme {
+    construct 
+    get data
+    fun updateShouldNotify
+    static fun of (context)
+}

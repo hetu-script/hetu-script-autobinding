@@ -1,0 +1,12 @@
+external class AnimatedSize {
+    construct 
+    get alignment
+    get curve
+    get duration
+    get reverseDuration
+    get vsync
+    get clipBehavior
+    fun createRenderObject
+    fun updateRenderObject
+    fun debugFillProperties
+}

@@ -1,0 +1,22 @@
+external class MouseTrackerAnnotation {
+    construct 
+    get onEnter
+    get onExit
+    get cursor
+    get validForMouseTracker
+    fun debugFillProperties
+}
+external class MouseTrackerUpdateDetails {
+    construct byNewFrame
+    construct byPointerEvent
+    get lastAnnotations
+    get nextAnnotations
+    get previousEvent
+    get triggeringEvent
+    get device
+    get latestEvent
+    fun debugFillProperties
+}
+external class MouseTracker {
+    construct
+}

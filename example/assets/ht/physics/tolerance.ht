@@ -1,0 +1,8 @@
+external class Tolerance {
+    construct 
+    get distance
+    get time
+    get velocity
+    fun toString
+    static get defaultTolerance
+}

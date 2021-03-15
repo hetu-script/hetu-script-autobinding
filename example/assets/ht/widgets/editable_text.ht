@@ -1,0 +1,124 @@
+external class TextEditingController {
+    construct 
+    construct fromValue
+    get text
+    set text(value)
+    set value(value)
+    fun buildTextSpan
+    get selection
+    set selection(value)
+    fun clear
+    fun clearComposing
+    fun isSelectionWithinTextBounds
+}
+external class ToolbarOptions {
+    construct 
+    get copy
+    get cut
+    get paste
+    get selectAll
+}
+external class EditableText {
+    construct 
+    get controller
+    get focusNode
+    get obscuringCharacter
+    get obscureText
+    get textHeightBehavior
+    get textWidthBasis
+    get readOnly
+    get forceLine
+    get toolbarOptions
+    get showSelectionHandles
+    get showCursor
+    get autocorrect
+    get smartDashesType
+    get smartQuotesType
+    get enableSuggestions
+    get style
+    get textAlign
+    get textDirection
+    get textCapitalization
+    get locale
+    get textScaleFactor
+    get cursorColor
+    get autocorrectionTextRectColor
+    get backgroundCursorColor
+    get maxLines
+    get minLines
+    get expands
+    get autofocus
+    get selectionColor
+    get selectionControls
+    get keyboardType
+    get textInputAction
+    get onChanged
+    get onEditingComplete
+    get onSubmitted
+    get onAppPrivateCommand
+    get onSelectionChanged
+    get onSelectionHandleTapped
+    get inputFormatters
+    get mouseCursor
+    get rendererIgnoresPointer
+    get cursorWidth
+    get cursorHeight
+    get cursorRadius
+    get cursorOpacityAnimates
+    get cursorOffset
+    get paintCursorAboveText
+    get selectionHeightStyle
+    get selectionWidthStyle
+    get keyboardAppearance
+    get scrollPadding
+    get enableInteractiveSelection
+    get dragStartBehavior
+    get scrollController
+    get scrollPhysics
+    get autofillHints
+    get clipBehavior
+    get restorationId
+    get strutStyle
+    get selectionEnabled
+    fun createState
+    fun debugFillProperties
+    static var debugDeterministicCursor
+}
+external class EditableTextState {
+    construct
+    get currentAutofillScope
+    get wantKeepAlive
+    get cutEnabled
+    get copyEnabled
+    get pasteEnabled
+    get selectAllEnabled
+    fun initState
+    fun didChangeDependencies
+    fun didUpdateWidget
+    fun dispose
+    get currentTextEditingValue
+    fun updateEditingValue
+    fun performAction
+    fun performPrivateCommand
+    fun updateFloatingCursor
+    fun beginBatchEdit
+    fun endBatchEdit
+    fun connectionClosed
+    fun requestKeyboard
+    fun didChangeMetrics
+    get cursorCurrentlyVisible
+    get cursorBlinkInterval
+    get selectionOverlay
+    get renderEditable
+    get textEditingValue
+    set textEditingValue(value)
+    fun bringIntoView
+    fun showToolbar
+    fun hideToolbar
+    fun toggleToolbar
+    get autofillId
+    get textInputConfiguration
+    fun showAutocorrectionPromptRect
+    fun build
+    fun buildTextSpan
+}

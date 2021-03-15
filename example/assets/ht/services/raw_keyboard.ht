@@ -1,0 +1,26 @@
+external class KeyboardSide {
+    static var any
+    static var left
+    static var right
+    static var all
+}
+external class ModifierKey {
+    static var controlModifier
+    static var shiftModifier
+    static var altModifier
+    static var metaModifier
+    static var capsLockModifier
+    static var numLockModifier
+    static var scrollLockModifier
+    static var functionModifier
+    static var symbolModifier
+}
+external class RawKeyDownEvent {
+    construct 
+}
+external class RawKeyUpEvent {
+    construct 
+}
+external class RawKeyboard {
+    static get instance
+}

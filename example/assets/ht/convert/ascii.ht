@@ -1,0 +1,15 @@
+external class AsciiCodec {
+    construct 
+    get name
+    fun encode
+    fun decode
+    get encoder
+    get decoder
+}
+external class AsciiEncoder {
+    construct 
+}
+external class AsciiDecoder {
+    construct 
+    fun startChunkedConversion
+}

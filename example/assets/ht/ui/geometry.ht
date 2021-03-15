@@ -1,0 +1,114 @@
+external class Offset {
+    construct 
+    get dx
+    get dy
+    get distance
+    get distanceSquared
+    get direction
+    fun scale
+    fun translate
+    get hashCode
+    fun toString
+    static fun lerp (a, b, t)
+    static get zero
+    static get infinite
+}
+external class Size {
+    construct 
+    construct copy
+    construct square
+    construct fromWidth
+    construct fromHeight
+    construct fromRadius
+    get width
+    get height
+    get aspectRatio
+    get isEmpty
+    get shortestSide
+    get longestSide
+    fun topLeft
+    fun topCenter
+    fun topRight
+    fun centerLeft
+    fun center
+    fun centerRight
+    fun bottomLeft
+    fun bottomCenter
+    fun bottomRight
+    fun contains
+    get flipped
+    get hashCode
+    fun toString
+    static fun lerp (a, b, t)
+    static get zero
+    static get infinite
+}
+external class Rect {
+    construct fromLTRB
+    construct fromLTWH
+    construct fromCircle
+    construct fromCenter
+    construct fromPoints
+    get left
+    get top
+    get right
+    get bottom
+    get width
+    get height
+    get size
+    get hasNaN
+    get isInfinite
+    get isFinite
+    get isEmpty
+    fun shift
+    fun translate
+    fun inflate
+    fun deflate
+    fun intersect
+    fun expandToInclude
+    fun overlaps
+    get shortestSide
+    get longestSide
+    get topLeft
+    get topCenter
+    get topRight
+    get centerLeft
+    get center
+    get centerRight
+    get bottomLeft
+    get bottomCenter
+    get bottomRight
+    fun contains
+    get hashCode
+    fun toString
+    static fun lerp (a, b, t)
+    static get zero
+    static get largest
+}
+external class Radius {
+    construct circular
+    construct elliptical
+    get x
+    get y
+    get hashCode
+    fun toString
+    static fun lerp (a, b, t)
+    static get zero
+}
+external class RRect {
+    construct fromLTRBXY
+    construct fromLTRBR
+    construct fromRectXY
+    construct fromRectAndRadius
+    construct fromLTRBAndCorners
+    construct fromRectAndCorners
+    static fun lerp (a, b, t)
+    static get zero
+}
+external class RSTransform {
+    construct 
+    get scos
+    get ssin
+    get tx
+    get ty
+}

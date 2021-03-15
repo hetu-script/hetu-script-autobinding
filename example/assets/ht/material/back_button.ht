@@ -1,0 +1,16 @@
+external class BackButtonIcon {
+    construct 
+    fun build
+}
+external class BackButton {
+    construct 
+    get color
+    get onPressed
+    fun build
+}
+external class CloseButton {
+    construct 
+    get color
+    get onPressed
+    fun build
+}

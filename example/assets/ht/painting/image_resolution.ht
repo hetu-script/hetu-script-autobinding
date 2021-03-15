@@ -1,0 +1,10 @@
+external class AssetImage {
+    construct 
+    get assetName
+    get bundle
+    get package
+    get keyName
+    fun obtainKey
+    get hashCode
+    fun toString
+}

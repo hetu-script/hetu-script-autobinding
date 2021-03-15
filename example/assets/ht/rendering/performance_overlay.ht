@@ -1,0 +1,25 @@
+external class PerformanceOverlayOption {
+    static var displayRasterizerStatistics
+    static var visualizeRasterizerStatistics
+    static var displayEngineStatistics
+    static var visualizeEngineStatistics
+}
+external class RenderPerformanceOverlay {
+    construct 
+    get optionsMask
+    set optionsMask(value)
+    get rasterizerThreshold
+    set rasterizerThreshold(value)
+    get checkerboardRasterCacheImages
+    set checkerboardRasterCacheImages(value)
+    get checkerboardOffscreenLayers
+    set checkerboardOffscreenLayers(value)
+    get sizedByParent
+    get alwaysNeedsCompositing
+    fun computeMinIntrinsicWidth
+    fun computeMaxIntrinsicWidth
+    fun computeMinIntrinsicHeight
+    fun computeMaxIntrinsicHeight
+    fun computeDryLayout
+    fun paint
+}

@@ -1,0 +1,5 @@
+external class GestureArenaTeam {
+    construct
+    var captain
+    fun add
+}

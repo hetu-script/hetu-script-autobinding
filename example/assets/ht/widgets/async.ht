@@ -1,0 +1,25 @@
+external class ConnectionState {
+    static var none
+    static var waiting
+    static var active
+    static var done
+}
+external class StreamBuilder {
+    construct 
+    get builder
+    get initialData
+    fun initial
+    fun afterConnected
+    fun afterData
+    fun afterError
+    fun afterDone
+    fun afterDisconnected
+    fun build
+}
+external class FutureBuilder {
+    construct 
+    get future
+    get builder
+    get initialData
+    fun createState
+}

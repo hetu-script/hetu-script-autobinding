@@ -1,0 +1,37 @@
+external class MaterialButton {
+    construct 
+    get onPressed
+    get onLongPress
+    get onHighlightChanged
+    get mouseCursor
+    get textTheme
+    get textColor
+    get disabledTextColor
+    get color
+    get disabledColor
+    get splashColor
+    get focusColor
+    get hoverColor
+    get highlightColor
+    get elevation
+    get hoverElevation
+    get focusElevation
+    get highlightElevation
+    get disabledElevation
+    get colorBrightness
+    get child
+    get padding
+    get visualDensity
+    get shape
+    get clipBehavior
+    get focusNode
+    get autofocus
+    get animationDuration
+    get materialTapTargetSize
+    get minWidth
+    get height
+    get enableFeedback
+    get enabled
+    fun build
+    fun debugFillProperties
+}

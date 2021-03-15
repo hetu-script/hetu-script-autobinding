@@ -1,0 +1,78 @@
+external class KeyEventResult {
+    static var handled
+    static var ignored
+    static var skipRemainingHandlers
+}
+external class UnfocusDisposition {
+    static var scope
+    static var previouslyFocusedChild
+}
+external class FocusHighlightMode {
+    static var touch
+    static var traditional
+}
+external class FocusHighlightStrategy {
+    static var automatic
+    static var alwaysTouch
+    static var alwaysTraditional
+}
+external class FocusNode {
+    construct 
+    get skipTraversal
+    set skipTraversal(value)
+    get canRequestFocus
+    set canRequestFocus(value)
+    get descendantsAreFocusable
+    set descendantsAreFocusable(value)
+    get context
+    get onKey
+    get parent
+    get children
+    get traversalChildren
+    get debugLabel
+    set debugLabel(value)
+    get descendants
+    get traversalDescendants
+    get ancestors
+    get hasFocus
+    get hasPrimaryFocus
+    get highlightMode
+    get nearestScope
+    get enclosingScope
+    get size
+    get offset
+    get rect
+    fun unfocus
+    fun consumeKeyboardToken
+    fun attach
+    fun dispose
+    fun requestFocus
+    fun nextFocus
+    fun previousFocus
+    fun focusInDirection
+    fun debugFillProperties
+    fun debugDescribeChildren
+    fun toStringShort
+}
+external class FocusScopeNode {
+    construct 
+    get nearestScope
+    get isFirstFocus
+    get focusedChild
+    fun setFirstFocus
+    fun autofocus
+    fun debugFillProperties
+}
+external class FocusManager {
+    construct 
+    get rootScope
+    get highlightStrategy
+    set highlightStrategy(value)
+    get highlightMode
+    fun addHighlightModeListener
+    fun removeHighlightModeListener
+    get primaryFocus
+    fun debugDescribeChildren
+    fun debugFillProperties
+    static fun instance
+}

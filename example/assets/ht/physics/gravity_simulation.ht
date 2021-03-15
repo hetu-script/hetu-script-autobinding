@@ -1,0 +1,6 @@
+external class GravitySimulation {
+    construct 
+    fun x
+    fun dx
+    fun isDone
+}

@@ -1,0 +1,19 @@
+external class DividerThemeData {
+    construct 
+    get color
+    get space
+    get thickness
+    get indent
+    get endIndent
+    fun copyWith
+    get hashCode
+    fun debugFillProperties
+    static fun lerp (a, b, t)
+}
+external class DividerTheme {
+    construct 
+    get data
+    fun wrap
+    fun updateShouldNotify
+    static fun of (context)
+}

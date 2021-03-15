@@ -1,0 +1,29 @@
+external class Velocity {
+    construct 
+    get pixelsPerSecond
+    fun clampMagnitude
+    get hashCode
+    fun toString
+    static get zero
+}
+external class VelocityEstimate {
+    construct 
+    get pixelsPerSecond
+    get confidence
+    get duration
+    get offset
+    fun toString
+}
+external class VelocityTracker {
+    construct 
+    construct withKind
+    get kind
+    fun addPosition
+    fun getVelocityEstimate
+    fun getVelocity
+}
+external class IOSScrollViewFlingVelocityTracker {
+    construct 
+    fun addPosition
+    fun getVelocityEstimate
+}

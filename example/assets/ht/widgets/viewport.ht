@@ -1,0 +1,26 @@
+external class Viewport {
+    construct 
+    get axisDirection
+    get crossAxisDirection
+    get anchor
+    get offset
+    get center
+    get cacheExtent
+    get cacheExtentStyle
+    get clipBehavior
+    fun createRenderObject
+    fun updateRenderObject
+    fun createElement
+    fun debugFillProperties
+    static fun getDefaultCrossAxisDirection (context, axisDirection)
+}
+external class ShrinkWrappingViewport {
+    construct 
+    get axisDirection
+    get crossAxisDirection
+    get offset
+    get clipBehavior
+    fun createRenderObject
+    fun updateRenderObject
+    fun debugFillProperties
+}

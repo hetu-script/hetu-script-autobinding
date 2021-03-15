@@ -1,0 +1,5 @@
+external class ScrollDirection {
+    static var idle
+    static var forward
+    static var reverse
+}

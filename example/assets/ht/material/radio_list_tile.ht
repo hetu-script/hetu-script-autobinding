@@ -1,0 +1,22 @@
+external class RadioListTile {
+    construct 
+    get value
+    get groupValue
+    get onChanged
+    get toggleable
+    get activeColor
+    get title
+    get subtitle
+    get secondary
+    get isThreeLine
+    get dense
+    get selected
+    get controlAffinity
+    get autofocus
+    get contentPadding
+    get shape
+    get tileColor
+    get selectedTileColor
+    get checked
+    fun build
+}

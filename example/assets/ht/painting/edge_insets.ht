@@ -1,0 +1,40 @@
+external class EdgeInsets {
+    construct fromLTRB
+    construct all
+    construct only
+    construct symmetric
+    construct fromWindowPadding
+    get left
+    get top
+    get right
+    get bottom
+    get topLeft
+    get topRight
+    get bottomLeft
+    get bottomRight
+    get flipped
+    fun inflateRect
+    fun deflateRect
+    fun subtract
+    fun add
+    fun clamp
+    fun resolve
+    fun copyWith
+    static fun lerp (a, b, t)
+    static get zero
+}
+external class EdgeInsetsDirectional {
+    construct fromSTEB
+    construct only
+    get start
+    get top
+    get end
+    get bottom
+    get isNonNegative
+    get flipped
+    fun subtract
+    fun add
+    fun resolve
+    static fun lerp (a, b, t)
+    static get zero
+}

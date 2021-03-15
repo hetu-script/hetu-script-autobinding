@@ -1,0 +1,33 @@
+external class NavigationRailLabelType {
+    static var none
+    static var selected
+    static var all
+}
+external class NavigationRail {
+    construct 
+    get backgroundColor
+    get extended
+    get leading
+    get trailing
+    get destinations
+    get selectedIndex
+    get onDestinationSelected
+    get elevation
+    get groupAlignment
+    get labelType
+    get unselectedLabelTextStyle
+    get selectedLabelTextStyle
+    get unselectedIconTheme
+    get selectedIconTheme
+    get minWidth
+    get minExtendedWidth
+    fun createState
+    static fun extendedAnimation (context)
+}
+external class NavigationRailDestination {
+    construct 
+    get icon
+    get selectedIcon
+    get label
+    get padding
+}

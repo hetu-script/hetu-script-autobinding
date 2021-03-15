@@ -1,0 +1,58 @@
+external class ListTileStyle {
+    static var list
+    static var drawer
+}
+external class ListTileControlAffinity {
+    static var leading
+    static var trailing
+    static var platform
+}
+external class ListTileTheme {
+    construct 
+    get dense
+    get shape
+    get style
+    get selectedColor
+    get iconColor
+    get textColor
+    get contentPadding
+    get tileColor
+    get selectedTileColor
+    get horizontalTitleGap
+    get minVerticalPadding
+    get minLeadingWidth
+    get enableFeedback
+    fun wrap
+    fun updateShouldNotify
+    static fun merge ({key, dense, shape, style, selectedColor, iconColor, textColor, contentPadding, tileColor, selectedTileColor, enableFeedback, horizontalTitleGap, minVerticalPadding, minLeadingWidth, child})
+    static fun of (context)
+}
+external class ListTile {
+    construct 
+    get leading
+    get title
+    get subtitle
+    get trailing
+    get isThreeLine
+    get dense
+    get visualDensity
+    get shape
+    get contentPadding
+    get enabled
+    get onTap
+    get onLongPress
+    get mouseCursor
+    get selected
+    get focusColor
+    get hoverColor
+    get focusNode
+    get autofocus
+    get tileColor
+    get selectedTileColor
+    get enableFeedback
+    get horizontalTitleGap
+    get minVerticalPadding
+    get minLeadingWidth
+    fun build
+    static fun divideTiles ({context, tiles, color})
+}

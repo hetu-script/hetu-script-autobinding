@@ -1,0 +1,13 @@
+external class IconData {
+    construct 
+    get codePoint
+    get fontFamily
+    get fontPackage
+    get matchTextDirection
+    get hashCode
+    fun toString
+}
+external class IconDataProperty {
+    construct 
+    fun toJsonMap
+}

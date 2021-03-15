@@ -1,0 +1,24 @@
+external class ButtonStyle {
+    construct 
+    get textStyle
+    get backgroundColor
+    get foregroundColor
+    get overlayColor
+    get shadowColor
+    get elevation
+    get padding
+    get minimumSize
+    get side
+    get shape
+    get mouseCursor
+    get visualDensity
+    get tapTargetSize
+    get animationDuration
+    get enableFeedback
+    get alignment
+    fun copyWith
+    fun merge
+    get hashCode
+    fun debugFillProperties
+    static fun lerp (a, b, t)
+}

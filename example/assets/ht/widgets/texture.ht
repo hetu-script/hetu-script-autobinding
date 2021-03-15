@@ -1,0 +1,7 @@
+external class Texture {
+    construct 
+    get textureId
+    get filterQuality
+    fun createRenderObject
+    fun updateRenderObject
+}

@@ -1,0 +1,29 @@
+external class DragDownDetails {
+    construct 
+    get globalPosition
+    get localPosition
+    fun toString
+}
+external class DragStartDetails {
+    construct 
+    get sourceTimeStamp
+    get globalPosition
+    get localPosition
+    get kind
+    fun toString
+}
+external class DragUpdateDetails {
+    construct 
+    get sourceTimeStamp
+    get delta
+    get primaryDelta
+    get globalPosition
+    get localPosition
+    fun toString
+}
+external class DragEndDetails {
+    construct 
+    get velocity
+    get primaryVelocity
+    fun toString
+}

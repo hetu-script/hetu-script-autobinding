@@ -1,0 +1,61 @@
+external class TabBarIndicatorSize {
+    static var tab
+    static var label
+}
+external class Tab {
+    construct 
+    get text
+    get child
+    get icon
+    get iconMargin
+    fun build
+    fun debugFillProperties
+}
+external class TabBar {
+    construct 
+    get tabs
+    get controller
+    get isScrollable
+    get indicatorColor
+    get indicatorWeight
+    get indicatorPadding
+    get indicator
+    get automaticIndicatorColorAdjustment
+    get indicatorSize
+    get labelColor
+    get unselectedLabelColor
+    get labelStyle
+    get labelPadding
+    get unselectedLabelStyle
+    get overlayColor
+    get dragStartBehavior
+    get mouseCursor
+    get enableFeedback
+    get onTap
+    get physics
+    get preferredSize
+    fun createState
+}
+external class TabBarView {
+    construct 
+    get controller
+    get children
+    get physics
+    get dragStartBehavior
+    fun createState
+}
+external class TabPageSelectorIndicator {
+    construct 
+    get backgroundColor
+    get borderColor
+    get size
+    fun build
+}
+external class TabPageSelector {
+    construct 
+    get controller
+    get indicatorSize
+    get color
+    get selectedColor
+    fun build
+}

@@ -1,0 +1,7 @@
+external class AnnotatedRegion {
+    construct 
+    get value
+    get sized
+    fun createRenderObject
+    fun updateRenderObject
+}

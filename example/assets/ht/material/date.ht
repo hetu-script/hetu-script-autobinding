@@ -1,0 +1,27 @@
+external class DatePickerEntryMode {
+    static var calendar
+    static var input
+}
+external class DatePickerMode {
+    static var day
+    static var year
+}
+external class DateUtils {
+    static fun dateOnly (date)
+    static fun datesOnly (range)
+    static fun isSameDay (dateA, dateB)
+    static fun isSameMonth (dateA, dateB)
+    static fun monthDelta (startDate, endDate)
+    static fun addMonthsToMonthDate (monthDate, monthsToAdd)
+    static fun addDaysToDate (date, days)
+    static fun firstDayOffset (year, month, localizations)
+    static fun getDaysInMonth (year, month)
+}
+external class DateTimeRange {
+    construct 
+    get start
+    get end
+    get duration
+    get hashCode
+    fun toString
+}

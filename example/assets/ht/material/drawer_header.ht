@@ -1,0 +1,10 @@
+external class DrawerHeader {
+    construct 
+    get decoration
+    get padding
+    get margin
+    get duration
+    get curve
+    get child
+    fun build
+}

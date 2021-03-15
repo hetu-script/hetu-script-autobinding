@@ -1,0 +1,60 @@
+external class BoxConstraints {
+    construct 
+    construct tight
+    construct tightFor
+    construct tightForFinite
+    construct loose
+    construct expand
+    get minWidth
+    get maxWidth
+    get minHeight
+    get maxHeight
+    fun copyWith
+    fun deflate
+    fun loosen
+    fun enforce
+    fun tighten
+    get flipped
+    fun widthConstraints
+    fun heightConstraints
+    fun constrainWidth
+    fun constrainHeight
+    fun constrain
+    fun constrainDimensions
+    fun constrainSizeAndAttemptToPreserveAspectRatio
+    get biggest
+    get smallest
+    get hasTightWidth
+    get hasTightHeight
+    get isTight
+    get hasBoundedWidth
+    get hasBoundedHeight
+    get hasInfiniteWidth
+    get hasInfiniteHeight
+    fun isSatisfiedBy
+    get isNormalized
+    fun debugAssertIsValid
+    fun normalize
+    get hashCode
+    fun toString
+    static fun lerp (a, b, t)
+}
+external class BoxHitTestResult {
+    construct 
+    construct wrap
+    fun addWithPaintTransform
+    fun addWithPaintOffset
+    fun addWithRawTransform
+    fun addWithOutOfBandPosition
+}
+external class BoxHitTestEntry {
+    construct 
+    get localPosition
+    get target
+    fun toString
+}
+external class BoxParentData {
+    construct
+    var offset
+    fun toString
+}

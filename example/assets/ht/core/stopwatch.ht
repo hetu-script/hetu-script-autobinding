@@ -1,0 +1,12 @@
+external class Stopwatch {
+    construct 
+    get frequency
+    fun start
+    fun stop
+    fun reset
+    get elapsedTicks
+    get elapsed
+    get elapsedMicroseconds
+    get elapsedMilliseconds
+    get isRunning
+}

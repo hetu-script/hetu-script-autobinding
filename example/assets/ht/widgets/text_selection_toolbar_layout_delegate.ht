@@ -1,0 +1,9 @@
+external class TextSelectionToolbarLayoutDelegate {
+    construct 
+    get anchorAbove
+    get anchorBelow
+    get fitsAbove
+    fun getConstraintsForChild
+    fun getPositionForChild
+    fun shouldRelayout
+}

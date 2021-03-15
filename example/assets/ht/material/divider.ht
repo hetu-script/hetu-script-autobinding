@@ -1,0 +1,19 @@
+external class Divider {
+    construct 
+    get height
+    get thickness
+    get indent
+    get endIndent
+    get color
+    fun build
+    static fun createBorderSide (context, {color, width})
+}
+external class VerticalDivider {
+    construct 
+    get width
+    get thickness
+    get indent
+    get endIndent
+    get color
+    fun build
+}

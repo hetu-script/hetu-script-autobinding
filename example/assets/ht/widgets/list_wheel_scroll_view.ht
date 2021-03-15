@@ -1,0 +1,97 @@
+external class ListWheelChildListDelegate {
+    construct 
+    get children
+    get estimatedChildCount
+    fun build
+    fun shouldRebuild
+}
+external class ListWheelChildLoopingListDelegate {
+    construct 
+    get children
+    get estimatedChildCount
+    fun trueIndexOf
+    fun build
+    fun shouldRebuild
+}
+external class ListWheelChildBuilderDelegate {
+    construct 
+    get builder
+    get childCount
+    get estimatedChildCount
+    fun build
+    fun shouldRebuild
+}
+external class FixedExtentScrollController {
+    construct 
+    get initialItem
+    get selectedItem
+    fun animateToItem
+    fun jumpToItem
+    fun createScrollPosition
+}
+external class FixedExtentMetrics {
+    construct 
+    get itemIndex
+    fun copyWith
+}
+external class FixedExtentScrollPhysics {
+    construct 
+    fun applyTo
+    fun createBallisticSimulation
+}
+external class ListWheelScrollView {
+    construct 
+    construct useDelegate
+    get controller
+    get physics
+    get diameterRatio
+    get perspective
+    get offAxisFraction
+    get useMagnifier
+    get magnification
+    get overAndUnderCenterOpacity
+    get itemExtent
+    get squeeze
+    get onSelectedItemChanged
+    get renderChildrenOutsideViewport
+    get childDelegate
+    get clipBehavior
+    get restorationId
+    fun createState
+}
+external class ListWheelElement {
+    construct 
+    get widget
+    get renderObject
+    fun update
+    get childCount
+    fun performRebuild
+    fun retrieveWidget
+    fun childExistsAt
+    fun createChild
+    fun removeChild
+    fun updateChild
+    fun insertRenderObjectChild
+    fun moveRenderObjectChild
+    fun removeRenderObjectChild
+    fun visitChildren
+    fun forgetChild
+}
+external class ListWheelViewport {
+    construct 
+    get diameterRatio
+    get perspective
+    get offAxisFraction
+    get useMagnifier
+    get magnification
+    get overAndUnderCenterOpacity
+    get itemExtent
+    get squeeze
+    get renderChildrenOutsideViewport
+    get offset
+    get childDelegate
+    get clipBehavior
+    fun createElement
+    fun createRenderObject
+    fun updateRenderObject
+}

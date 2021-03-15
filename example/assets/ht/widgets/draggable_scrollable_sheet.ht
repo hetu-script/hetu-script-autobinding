@@ -1,0 +1,24 @@
+external class DraggableScrollableSheet {
+    construct 
+    get initialChildSize
+    get minChildSize
+    get maxChildSize
+    get expand
+    get builder
+    fun createState
+}
+external class DraggableScrollableNotification {
+    construct 
+    get extent
+    get minExtent
+    get maxExtent
+    get initialExtent
+    get context
+    fun debugFillDescription
+}
+external class DraggableScrollableActuator {
+    construct 
+    get child
+    fun build
+    static fun reset (context)
+}

@@ -1,0 +1,44 @@
+external class DefaultTextStyle {
+    construct 
+    construct fallback
+    get style
+    get textAlign
+    get softWrap
+    get overflow
+    get maxLines
+    get textWidthBasis
+    get textHeightBehavior
+    fun updateShouldNotify
+    fun wrap
+    fun debugFillProperties
+    static fun merge ({key, style, textAlign, softWrap, overflow, maxLines, textWidthBasis, child})
+    static fun of (context)
+}
+external class DefaultTextHeightBehavior {
+    construct 
+    get textHeightBehavior
+    fun updateShouldNotify
+    fun wrap
+    fun debugFillProperties
+    static fun of (context)
+}
+external class Text {
+    construct 
+    construct rich
+    get data
+    get textSpan
+    get style
+    get strutStyle
+    get textAlign
+    get textDirection
+    get locale
+    get softWrap
+    get overflow
+    get textScaleFactor
+    get maxLines
+    get semanticsLabel
+    get textWidthBasis
+    get textHeightBehavior
+    fun build
+    fun debugFillProperties
+}

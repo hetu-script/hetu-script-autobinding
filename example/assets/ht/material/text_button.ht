@@ -1,0 +1,6 @@
+external class TextButton {
+    construct 
+    fun defaultStyleOf
+    fun themeStyleOf
+    static fun styleFrom ({primary, onSurface, backgroundColor, shadowColor, elevation, textStyle, padding, minimumSize, side, shape, enabledMouseCursor, disabledMouseCursor, visualDensity, tapTargetSize, animationDuration, enableFeedback, alignment})
+}

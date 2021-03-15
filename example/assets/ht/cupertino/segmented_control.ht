@@ -1,0 +1,12 @@
+external class CupertinoSegmentedControl {
+    construct 
+    get children
+    get groupValue
+    get onValueChanged
+    get unselectedColor
+    get selectedColor
+    get borderColor
+    get pressedColor
+    get padding
+    fun createState
+}

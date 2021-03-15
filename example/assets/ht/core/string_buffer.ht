@@ -1,0 +1,12 @@
+external class StringBuffer {
+    construct 
+    get length
+    get isEmpty
+    get isNotEmpty
+    fun write
+    fun writeCharCode
+    fun writeAll
+    fun writeln
+    fun clear
+    fun toString
+}

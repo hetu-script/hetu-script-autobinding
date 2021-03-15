@@ -1,0 +1,16 @@
+external class FractionalOffset {
+    construct 
+    get dx
+    get dy
+    fun toString
+    static fun lerp (a, b, t)
+    static get topLeft
+    static get topCenter
+    static get topRight
+    static get centerLeft
+    static get center
+    static get centerRight
+    static get bottomLeft
+    static get bottomCenter
+    static get bottomRight
+}

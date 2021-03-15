@@ -1,0 +1,102 @@
+external class RenderPadding {
+    construct 
+    get padding
+    set padding(value)
+    get textDirection
+    set textDirection(value)
+    fun computeMinIntrinsicWidth
+    fun computeMaxIntrinsicWidth
+    fun computeMinIntrinsicHeight
+    fun computeMaxIntrinsicHeight
+    fun computeDryLayout
+    fun performLayout
+    fun debugPaintSize
+    fun debugFillProperties
+}
+external class RenderPositionedBox {
+    construct 
+    get widthFactor
+    set widthFactor(value)
+    get heightFactor
+    set heightFactor(value)
+    fun computeDryLayout
+    fun performLayout
+    fun debugPaintSize
+    fun debugFillProperties
+}
+external class RenderConstrainedOverflowBox {
+    construct 
+    get minWidth
+    set minWidth(value)
+    get maxWidth
+    set maxWidth(value)
+    get minHeight
+    set minHeight(value)
+    get maxHeight
+    set maxHeight(value)
+    get sizedByParent
+    fun computeDryLayout
+    fun performLayout
+    fun debugFillProperties
+}
+external class RenderUnconstrainedBox {
+    construct 
+    get constrainedAxis
+    set constrainedAxis(value)
+    get clipBehavior
+    set clipBehavior(value)
+    fun computeDryLayout
+    fun performLayout
+    fun paint
+    fun describeApproximatePaintClip
+    fun toStringShort
+}
+external class RenderSizedOverflowBox {
+    construct 
+    get requestedSize
+    set requestedSize(value)
+    fun computeMinIntrinsicWidth
+    fun computeMaxIntrinsicWidth
+    fun computeMinIntrinsicHeight
+    fun computeMaxIntrinsicHeight
+    fun computeDistanceToActualBaseline
+    fun computeDryLayout
+    fun performLayout
+}
+external class RenderFractionallySizedOverflowBox {
+    construct 
+    get widthFactor
+    set widthFactor(value)
+    get heightFactor
+    set heightFactor(value)
+    fun computeMinIntrinsicWidth
+    fun computeMaxIntrinsicWidth
+    fun computeMinIntrinsicHeight
+    fun computeMaxIntrinsicHeight
+    fun computeDryLayout
+    fun performLayout
+    fun debugFillProperties
+}
+external class RenderCustomSingleChildLayoutBox {
+    construct 
+    get delegate
+    set delegate(value)
+    fun attach
+    fun detach
+    fun computeMinIntrinsicWidth
+    fun computeMaxIntrinsicWidth
+    fun computeMinIntrinsicHeight
+    fun computeMaxIntrinsicHeight
+    fun computeDryLayout
+    fun performLayout
+}
+external class RenderBaseline {
+    construct 
+    get baseline
+    set baseline(value)
+    get baselineType
+    set baselineType(value)
+    fun computeDryLayout
+    fun performLayout
+    fun debugFillProperties
+}

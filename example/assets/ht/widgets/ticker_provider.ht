@@ -1,0 +1,8 @@
+external class TickerMode {
+    construct 
+    get enabled
+    get child
+    fun build
+    fun debugFillProperties
+    static fun of (context)
+}

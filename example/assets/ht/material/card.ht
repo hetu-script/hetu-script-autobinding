@@ -1,0 +1,13 @@
+external class Card {
+    construct 
+    get color
+    get shadowColor
+    get elevation
+    get shape
+    get borderOnForeground
+    get clipBehavior
+    get margin
+    get semanticContainer
+    get child
+    fun build
+}

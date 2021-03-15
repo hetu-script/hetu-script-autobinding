@@ -1,0 +1,10 @@
+external class RenderSliverPadding {
+    construct 
+    get resolvedPadding
+    get padding
+    set padding(value)
+    get textDirection
+    set textDirection(value)
+    fun performLayout
+    fun debugFillProperties
+}

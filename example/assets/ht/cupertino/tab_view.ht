@@ -1,0 +1,12 @@
+external class CupertinoTabView {
+    construct 
+    get builder
+    get navigatorKey
+    get defaultTitle
+    get routes
+    get onGenerateRoute
+    get onUnknownRoute
+    get navigatorObservers
+    get restorationScopeId
+    fun createState
+}

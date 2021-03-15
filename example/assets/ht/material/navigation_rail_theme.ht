@@ -1,0 +1,22 @@
+external class NavigationRailThemeData {
+    construct 
+    get backgroundColor
+    get elevation
+    get unselectedLabelTextStyle
+    get selectedLabelTextStyle
+    get unselectedIconTheme
+    get selectedIconTheme
+    get groupAlignment
+    get labelType
+    fun copyWith
+    get hashCode
+    fun debugFillProperties
+    static fun lerp (a, b, t)
+}
+external class NavigationRailTheme {
+    construct 
+    get data
+    fun wrap
+    fun updateShouldNotify
+    static fun of (context)
+}

@@ -1,0 +1,493 @@
+external class HitTestBehavior {
+    static var deferToChild
+    static var opaque
+    static var translucent
+}
+external class DecorationPosition {
+    static var background
+    static var foreground
+}
+external class RenderProxyBox {
+    construct 
+}
+external class RenderConstrainedBox {
+    construct 
+    get additionalConstraints
+    set additionalConstraints(value)
+    fun computeMinIntrinsicWidth
+    fun computeMaxIntrinsicWidth
+    fun computeMinIntrinsicHeight
+    fun computeMaxIntrinsicHeight
+    fun performLayout
+    fun computeDryLayout
+    fun debugPaintSize
+    fun debugFillProperties
+}
+external class RenderLimitedBox {
+    construct 
+    get maxWidth
+    set maxWidth(value)
+    get maxHeight
+    set maxHeight(value)
+    fun computeDryLayout
+    fun performLayout
+    fun debugFillProperties
+}
+external class RenderAspectRatio {
+    construct 
+    get aspectRatio
+    set aspectRatio(value)
+    fun computeMinIntrinsicWidth
+    fun computeMaxIntrinsicWidth
+    fun computeMinIntrinsicHeight
+    fun computeMaxIntrinsicHeight
+    fun computeDryLayout
+    fun performLayout
+    fun debugFillProperties
+}
+external class RenderIntrinsicWidth {
+    construct 
+    get stepWidth
+    set stepWidth(value)
+    get stepHeight
+    set stepHeight(value)
+    fun computeMinIntrinsicWidth
+    fun computeMaxIntrinsicWidth
+    fun computeMinIntrinsicHeight
+    fun computeMaxIntrinsicHeight
+    fun computeDryLayout
+    fun performLayout
+    fun debugFillProperties
+}
+external class RenderIntrinsicHeight {
+    construct 
+    fun computeMinIntrinsicWidth
+    fun computeMaxIntrinsicWidth
+    fun computeMinIntrinsicHeight
+    fun computeDryLayout
+    fun performLayout
+}
+external class RenderOpacity {
+    construct 
+    get alwaysNeedsCompositing
+    get opacity
+    set opacity(value)
+    get alwaysIncludeSemantics
+    set alwaysIncludeSemantics(value)
+    fun paint
+    fun visitChildrenForSemantics
+    fun debugFillProperties
+}
+external class RenderAnimatedOpacity {
+    construct 
+}
+external class RenderShaderMask {
+    construct 
+    get layer
+    get shaderCallback
+    set shaderCallback(value)
+    get blendMode
+    set blendMode(value)
+    get alwaysNeedsCompositing
+    fun paint
+}
+external class RenderBackdropFilter {
+    construct 
+    get layer
+    get filter
+    set filter(value)
+    get alwaysNeedsCompositing
+    fun paint
+}
+external class ShapeBorderClipper {
+    construct 
+    get shape
+    get textDirection
+    fun getClip
+    fun shouldReclip
+}
+external class RenderClipRect {
+    construct 
+    fun hitTest
+    fun paint
+    fun debugPaintSize
+}
+external class RenderClipRRect {
+    construct 
+    get borderRadius
+    set borderRadius(value)
+    fun hitTest
+    fun paint
+    fun debugPaintSize
+}
+external class RenderClipOval {
+    construct 
+    fun hitTest
+    fun paint
+    fun debugPaintSize
+}
+external class RenderClipPath {
+    construct 
+    fun hitTest
+    fun paint
+    fun debugPaintSize
+}
+external class RenderPhysicalModel {
+    construct 
+    get layer
+    get shape
+    set shape(value)
+    get borderRadius
+    set borderRadius(value)
+    fun hitTest
+    fun paint
+    fun debugFillProperties
+}
+external class RenderPhysicalShape {
+    construct 
+    get layer
+    fun hitTest
+    fun paint
+    fun debugFillProperties
+}
+external class RenderDecoratedBox {
+    construct 
+    get decoration
+    set decoration(value)
+    get position
+    set position(value)
+    get configuration
+    set configuration(value)
+    fun detach
+    fun hitTestSelf
+    fun paint
+    fun debugFillProperties
+}
+external class RenderTransform {
+    construct 
+    var transformHitTests
+    get origin
+    set origin(value)
+    get alignment
+    set alignment(value)
+    get textDirection
+    set textDirection(value)
+    set transform(value)
+    fun setIdentity
+    fun rotateX
+    fun rotateY
+    fun rotateZ
+    fun translate
+    fun scale
+    fun hitTest
+    fun hitTestChildren
+    fun paint
+    fun applyPaintTransform
+    fun debugFillProperties
+}
+external class RenderFittedBox {
+    construct 
+    get fit
+    set fit(value)
+    get alignment
+    set alignment(value)
+    get textDirection
+    set textDirection(value)
+    fun computeDryLayout
+    fun performLayout
+    get clipBehavior
+    set clipBehavior(value)
+    fun paint
+    fun hitTestChildren
+    fun applyPaintTransform
+    fun debugFillProperties
+}
+external class RenderFractionalTranslation {
+    construct 
+    var transformHitTests
+    get translation
+    set translation(value)
+    fun hitTest
+    fun hitTestChildren
+    fun paint
+    fun applyPaintTransform
+    fun debugFillProperties
+}
+external class RenderPointerListener {
+    construct 
+    var onPointerDown
+    var onPointerMove
+    var onPointerUp
+    var onPointerHover
+    var onPointerCancel
+    var onPointerSignal
+    fun computeSizeForNoChild
+    fun handleEvent
+    fun debugFillProperties
+}
+external class RenderMouseRegion {
+    construct 
+    var onEnter
+    var onHover
+    var onExit
+    fun hitTestSelf
+    fun hitTest
+    fun handleEvent
+    get opaque
+    set opaque(value)
+    get cursor
+    set cursor(value)
+    get validForMouseTracker
+    fun attach
+    fun detach
+    fun computeSizeForNoChild
+    fun debugFillProperties
+}
+external class RenderRepaintBoundary {
+    construct 
+    get isRepaintBoundary
+    fun toImage
+    get debugSymmetricPaintCount
+    get debugAsymmetricPaintCount
+    fun debugResetMetrics
+    fun debugRegisterRepaintBoundaryPaint
+    fun debugFillProperties
+}
+external class RenderIgnorePointer {
+    construct 
+    get ignoring
+    set ignoring(value)
+    get ignoringSemantics
+    set ignoringSemantics(value)
+    fun hitTest
+    fun visitChildrenForSemantics
+    fun debugFillProperties
+}
+external class RenderOffstage {
+    construct 
+    get offstage
+    set offstage(value)
+    fun computeMinIntrinsicWidth
+    fun computeMaxIntrinsicWidth
+    fun computeMinIntrinsicHeight
+    fun computeMaxIntrinsicHeight
+    fun computeDistanceToActualBaseline
+    get sizedByParent
+    fun computeDryLayout
+    fun performResize
+    fun performLayout
+    fun hitTest
+    fun paint
+    fun visitChildrenForSemantics
+    fun debugFillProperties
+    fun debugDescribeChildren
+}
+external class RenderAbsorbPointer {
+    construct 
+    get absorbing
+    set absorbing(value)
+    get ignoringSemantics
+    set ignoringSemantics(value)
+    fun hitTest
+    fun visitChildrenForSemantics
+    fun debugFillProperties
+}
+external class RenderMetaData {
+    construct 
+    var metaData
+    fun debugFillProperties
+}
+external class RenderSemanticsGestureHandler {
+    construct 
+    var scrollFactor
+    get validActions
+    set validActions(value)
+    get onTap
+    set onTap(value)
+    get onLongPress
+    set onLongPress(value)
+    get onHorizontalDragUpdate
+    set onHorizontalDragUpdate(value)
+    get onVerticalDragUpdate
+    set onVerticalDragUpdate(value)
+    fun describeSemanticsConfiguration
+    fun debugFillProperties
+}
+external class RenderSemanticsAnnotations {
+    construct 
+    get container
+    set container(value)
+    get explicitChildNodes
+    set explicitChildNodes(value)
+    get excludeSemantics
+    set excludeSemantics(value)
+    get checked
+    set checked(value)
+    get enabled
+    set enabled(value)
+    get selected
+    set selected(value)
+    get button
+    set button(value)
+    get slider
+    set slider(value)
+    get link
+    set link(value)
+    get header
+    set header(value)
+    get textField
+    set textField(value)
+    get readOnly
+    set readOnly(value)
+    get focusable
+    set focusable(value)
+    get focused
+    set focused(value)
+    get inMutuallyExclusiveGroup
+    set inMutuallyExclusiveGroup(value)
+    get obscured
+    set obscured(value)
+    get multiline
+    set multiline(value)
+    get scopesRoute
+    set scopesRoute(value)
+    get namesRoute
+    set namesRoute(value)
+    get hidden
+    set hidden(value)
+    get image
+    set image(value)
+    get liveRegion
+    set liveRegion(value)
+    get maxValueLength
+    set maxValueLength(value)
+    get currentValueLength
+    set currentValueLength(value)
+    get toggled
+    set toggled(value)
+    get label
+    set label(value)
+    get value
+    set value(value)
+    get increasedValue
+    set increasedValue(value)
+    get decreasedValue
+    set decreasedValue(value)
+    get hint
+    set hint(value)
+    get hintOverrides
+    set hintOverrides(value)
+    get textDirection
+    set textDirection(value)
+    get sortKey
+    set sortKey(value)
+    get tagForChildren
+    set tagForChildren(value)
+    get onTap
+    set onTap(value)
+    get onDismiss
+    set onDismiss(value)
+    get onLongPress
+    set onLongPress(value)
+    get onScrollLeft
+    set onScrollLeft(value)
+    get onScrollRight
+    set onScrollRight(value)
+    get onScrollUp
+    set onScrollUp(value)
+    get onScrollDown
+    set onScrollDown(value)
+    get onIncrease
+    set onIncrease(value)
+    get onDecrease
+    set onDecrease(value)
+    get onCopy
+    set onCopy(value)
+    get onCut
+    set onCut(value)
+    get onPaste
+    set onPaste(value)
+    get onMoveCursorForwardByCharacter
+    set onMoveCursorForwardByCharacter(value)
+    get onMoveCursorBackwardByCharacter
+    set onMoveCursorBackwardByCharacter(value)
+    get onMoveCursorForwardByWord
+    set onMoveCursorForwardByWord(value)
+    get onMoveCursorBackwardByWord
+    set onMoveCursorBackwardByWord(value)
+    get onSetSelection
+    set onSetSelection(value)
+    get onDidGainAccessibilityFocus
+    set onDidGainAccessibilityFocus(value)
+    get onDidLoseAccessibilityFocus
+    set onDidLoseAccessibilityFocus(value)
+    get customSemanticsActions
+    set customSemanticsActions(value)
+    fun visitChildrenForSemantics
+    fun describeSemanticsConfiguration
+}
+external class RenderBlockSemantics {
+    construct 
+    get blocking
+    set blocking(value)
+    fun describeSemanticsConfiguration
+    fun debugFillProperties
+}
+external class RenderMergeSemantics {
+    construct 
+    fun describeSemanticsConfiguration
+}
+external class RenderExcludeSemantics {
+    construct 
+    get excluding
+    set excluding(value)
+    fun visitChildrenForSemantics
+    fun debugFillProperties
+}
+external class RenderIndexedSemantics {
+    construct 
+    get index
+    set index(value)
+    fun describeSemanticsConfiguration
+    fun debugFillProperties
+}
+external class RenderLeaderLayer {
+    construct 
+    get link
+    set link(value)
+    get alwaysNeedsCompositing
+    fun performLayout
+    fun paint
+    fun debugFillProperties
+}
+external class RenderFollowerLayer {
+    construct 
+    get link
+    set link(value)
+    get showWhenUnlinked
+    set showWhenUnlinked(value)
+    get offset
+    set offset(value)
+    get leaderAnchor
+    set leaderAnchor(value)
+    get followerAnchor
+    set followerAnchor(value)
+    fun detach
+    get alwaysNeedsCompositing
+    get layer
+    fun getCurrentTransform
+    fun hitTest
+    fun hitTestChildren
+    fun paint
+    fun applyPaintTransform
+    fun debugFillProperties
+}
+external class RenderAnnotatedRegion {
+    construct 
+    get alwaysNeedsCompositing
+    get value
+    set value(value)
+    get sized
+    set sized(value)
+    fun paint
+}

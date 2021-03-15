@@ -1,0 +1,97 @@
+external class ProcessInfo {
+    construct
+    static fun currentRss
+    static fun maxRss
+}
+external class ProcessStartMode {
+    static fun values
+    static get normal
+    static get NORMAL
+    static get inheritStdio
+    static get INHERIT_STDIO
+    static get detached
+    static get DETACHED
+    static get detachedWithStdio
+    static get DETACHED_WITH_STDIO
+}
+external class ProcessResult {
+    construct 
+    get exitCode
+    get stdout
+    get stderr
+    get pid
+}
+external class ProcessSignal {
+    static get sighup
+    static get sigint
+    static get sigquit
+    static get sigill
+    static get sigtrap
+    static get sigabrt
+    static get sigbus
+    static get sigfpe
+    static get sigkill
+    static get sigusr1
+    static get sigsegv
+    static get sigusr2
+    static get sigpipe
+    static get sigalrm
+    static get sigterm
+    static get sigchld
+    static get sigcont
+    static get sigstop
+    static get sigtstp
+    static get sigttin
+    static get sigttou
+    static get sigurg
+    static get sigxcpu
+    static get sigxfsz
+    static get sigvtalrm
+    static get sigprof
+    static get sigwinch
+    static get sigpoll
+    static get sigsys
+    static get SIGHUP
+    static get SIGINT
+    static get SIGQUIT
+    static get SIGILL
+    static get SIGTRAP
+    static get SIGABRT
+    static get SIGBUS
+    static get SIGFPE
+    static get SIGKILL
+    static get SIGUSR1
+    static get SIGSEGV
+    static get SIGUSR2
+    static get SIGPIPE
+    static get SIGALRM
+    static get SIGTERM
+    static get SIGCHLD
+    static get SIGCONT
+    static get SIGSTOP
+    static get SIGTSTP
+    static get SIGTTIN
+    static get SIGTTOU
+    static get SIGURG
+    static get SIGXCPU
+    static get SIGXFSZ
+    static get SIGVTALRM
+    static get SIGPROF
+    static get SIGWINCH
+    static get SIGPOLL
+    static get SIGSYS
+}
+external class SignalException {
+    construct 
+    get message
+    get osError
+    fun toString
+}
+external class ProcessException {
+    construct 
+    get executable
+    get arguments
+    get message
+    get errorCode
+    fun toString
+}

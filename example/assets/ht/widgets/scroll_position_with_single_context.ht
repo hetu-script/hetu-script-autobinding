@@ -1,0 +1,21 @@
+external class ScrollPositionWithSingleContext {
+    construct 
+    get axisDirection
+    fun setPixels
+    fun absorb
+    fun applyNewDimensions
+    fun beginActivity
+    fun applyUserOffset
+    fun goIdle
+    fun goBallistic
+    get userScrollDirection
+    fun updateUserScrollDirection
+    fun animateTo
+    fun jumpTo
+    fun pointerScroll
+    fun jumpToWithoutSettling
+    fun hold
+    fun drag
+    fun dispose
+    fun debugFillDescription
+}

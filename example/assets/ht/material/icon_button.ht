@@ -1,0 +1,24 @@
+external class IconButton {
+    construct 
+    get iconSize
+    get visualDensity
+    get padding
+    get alignment
+    get splashRadius
+    get icon
+    get focusColor
+    get hoverColor
+    get color
+    get splashColor
+    get highlightColor
+    get disabledColor
+    get onPressed
+    get mouseCursor
+    get focusNode
+    get autofocus
+    get tooltip
+    get enableFeedback
+    get constraints
+    fun build
+    fun debugFillProperties
+}

@@ -1,0 +1,66 @@
+external class TextOverflow {
+    static var clip
+    static var fade
+    static var ellipsis
+    static var visible
+}
+external class TextParentData {
+    construct
+    var scale
+    fun toString
+}
+external class PlaceholderSpanIndexSemanticsTag {
+    construct 
+    get index
+    get hashCode
+}
+external class RenderParagraph {
+    construct 
+    fun setupParentData
+    get text
+    set text(value)
+    get textAlign
+    set textAlign(value)
+    get textDirection
+    set textDirection(value)
+    get softWrap
+    set softWrap(value)
+    get overflow
+    set overflow(value)
+    get textScaleFactor
+    set textScaleFactor(value)
+    get maxLines
+    set maxLines(value)
+    get locale
+    set locale(value)
+    get strutStyle
+    set strutStyle(value)
+    get textWidthBasis
+    set textWidthBasis(value)
+    get textHeightBehavior
+    set textHeightBehavior(value)
+    fun computeMinIntrinsicWidth
+    fun computeMaxIntrinsicWidth
+    fun computeMinIntrinsicHeight
+    fun computeMaxIntrinsicHeight
+    fun computeDistanceToActualBaseline
+    fun hitTestSelf
+    fun hitTestChildren
+    fun handleEvent
+    get debugHasOverflowShader
+    fun systemFontsDidChange
+    fun computeDryLayout
+    fun performLayout
+    fun paint
+    fun getOffsetForCaret
+    fun getFullHeightForCaret
+    fun getBoxesForSelection
+    fun getPositionForOffset
+    fun getWordBoundary
+    get textSize
+    fun describeSemanticsConfiguration
+    fun assembleSemanticsNode
+    fun clearSemantics
+    fun debugDescribeChildren
+    fun debugFillProperties
+}

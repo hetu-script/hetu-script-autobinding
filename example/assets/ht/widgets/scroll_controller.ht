@@ -1,0 +1,26 @@
+external class ScrollController {
+    construct 
+    get keepScrollOffset
+    get debugLabel
+    get initialScrollOffset
+    get positions
+    get hasClients
+    get position
+    get offset
+    fun animateTo
+    fun jumpTo
+    fun attach
+    fun detach
+    fun dispose
+    fun createScrollPosition
+    fun toString
+    fun debugFillDescription
+}
+external class TrackingScrollController {
+    construct 
+    get mostRecentlyUpdatedPosition
+    get initialScrollOffset
+    fun attach
+    fun detach
+    fun dispose
+}

@@ -1,0 +1,11 @@
+external class ImageSizeInfo {
+    construct 
+    get source
+    get displaySize
+    get imageSize
+    get displaySizeInBytes
+    get decodedSizeInBytes
+    fun toJson
+    get hashCode
+    fun toString
+}

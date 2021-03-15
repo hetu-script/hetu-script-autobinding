@@ -1,0 +1,13 @@
+external class TextureBox {
+    construct 
+    get textureId
+    set textureId(value)
+    get filterQuality
+    set filterQuality(value)
+    get sizedByParent
+    get alwaysNeedsCompositing
+    get isRepaintBoundary
+    fun computeDryLayout
+    fun hitTestSelf
+    fun paint
+}

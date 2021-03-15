@@ -1,0 +1,22 @@
+external class StdoutException {
+    construct 
+    get message
+    get osError
+    fun toString
+}
+external class StdinException {
+    construct 
+    get message
+    get osError
+    fun toString
+}
+external class StdioType {
+    static get terminal
+    static get pipe
+    static get file
+    static get other
+    static get TERMINAL
+    static get PIPE
+    static get FILE
+    static get OTHER
+}

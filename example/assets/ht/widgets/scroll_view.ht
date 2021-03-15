@@ -1,0 +1,29 @@
+external class ScrollViewKeyboardDismissBehavior {
+    static var manual
+    static var onDrag
+}
+external class CustomScrollView {
+    construct 
+    get slivers
+    fun buildSlivers
+}
+external class ListView {
+    construct 
+    construct builder
+    construct separated
+    construct custom
+    get itemExtent
+    get childrenDelegate
+    fun buildChildLayout
+    fun debugFillProperties
+}
+external class GridView {
+    construct 
+    construct builder
+    construct custom
+    construct count
+    construct extent
+    get gridDelegate
+    get childrenDelegate
+    fun buildChildLayout
+}

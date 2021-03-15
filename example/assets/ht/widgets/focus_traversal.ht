@@ -1,0 +1,80 @@
+external class TraversalDirection {
+    static var up
+    static var right
+    static var down
+    static var left
+}
+external class WidgetOrderTraversalPolicy {
+    construct
+    fun sortDescendants
+}
+external class ReadingOrderTraversalPolicy {
+    construct
+    fun sortDescendants
+}
+external class NumericFocusOrder {
+    construct 
+    get order
+    fun doCompare
+    fun debugFillProperties
+}
+external class LexicalFocusOrder {
+    construct 
+    get order
+    fun doCompare
+    fun debugFillProperties
+}
+external class OrderedTraversalPolicy {
+    construct 
+    get secondary
+    fun sortDescendants
+}
+external class FocusTraversalOrder {
+    construct 
+    get order
+    fun updateShouldNotify
+    fun debugFillProperties
+    static fun of (context)
+    static fun maybeOf (context)
+}
+external class FocusTraversalGroup {
+    construct 
+    get policy
+    get descendantsAreFocusable
+    get child
+    fun createState
+    fun debugFillProperties
+    static fun of (context)
+    static fun maybeOf (context)
+}
+external class RequestFocusIntent {
+    construct 
+    get focusNode
+}
+external class RequestFocusAction {
+    construct
+    fun invoke
+}
+external class NextFocusIntent {
+    construct 
+}
+external class NextFocusAction {
+    construct
+    fun invoke
+}
+external class PreviousFocusIntent {
+    construct 
+}
+external class PreviousFocusAction {
+    construct
+    fun invoke
+}
+external class DirectionalFocusIntent {
+    construct 
+    get direction
+    get ignoreTextFields
+}
+external class DirectionalFocusAction {
+    construct
+    fun invoke
+}

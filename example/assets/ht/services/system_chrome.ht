@@ -1,0 +1,36 @@
+external class DeviceOrientation {
+    static var portraitUp
+    static var landscapeLeft
+    static var portraitDown
+    static var landscapeRight
+}
+external class SystemUiOverlay {
+    static var top
+    static var bottom
+}
+external class ApplicationSwitcherDescription {
+    construct 
+    get label
+    get primaryColor
+}
+external class SystemUiOverlayStyle {
+    construct 
+    get systemNavigationBarColor
+    get systemNavigationBarDividerColor
+    get systemNavigationBarIconBrightness
+    get statusBarColor
+    get statusBarBrightness
+    get statusBarIconBrightness
+    fun toString
+    fun copyWith
+    get hashCode
+    static get light
+    static get dark
+}
+external class SystemChrome {
+    static fun setPreferredOrientations (orientations)
+    static fun setApplicationSwitcherDescription (description)
+    static fun setEnabledSystemUIOverlays (overlays)
+    static fun restoreSystemUIOverlays
+    static fun setSystemUIOverlayStyle (style)
+}

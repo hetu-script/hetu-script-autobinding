@@ -1,0 +1,30 @@
+external class RawKeyEventDataIos {
+    construct 
+    get characters
+    get charactersIgnoringModifiers
+    get keyCode
+    get modifiers
+    get keyLabel
+    get physicalKey
+    get logicalKey
+    fun isModifierPressed
+    fun getModifierSide
+    fun toString
+    static get modifierCapsLock
+    static get modifierShift
+    static get modifierLeftShift
+    static get modifierRightShift
+    static get modifierControl
+    static get modifierLeftControl
+    static get modifierRightControl
+    static get modifierOption
+    static get modifierLeftOption
+    static get modifierRightOption
+    static get modifierCommand
+    static get modifierLeftCommand
+    static get modifierRightCommand
+    static get modifierNumericPad
+    static get modifierHelp
+    static get modifierFunction
+    static get deviceIndependentMask
+}

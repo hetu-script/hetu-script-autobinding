@@ -1,0 +1,19 @@
+external class RadioThemeData {
+    construct 
+    get mouseCursor
+    get fillColor
+    get overlayColor
+    get splashRadius
+    get materialTapTargetSize
+    get visualDensity
+    fun copyWith
+    get hashCode
+    fun debugFillProperties
+    static fun lerp (a, b, t)
+}
+external class RadioTheme {
+    construct 
+    get data
+    fun updateShouldNotify
+    static fun of (context)
+}

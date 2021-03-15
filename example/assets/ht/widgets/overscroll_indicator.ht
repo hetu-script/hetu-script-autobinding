@@ -1,0 +1,19 @@
+external class GlowingOverscrollIndicator {
+    construct 
+    get showLeading
+    get showTrailing
+    get axisDirection
+    get color
+    get notificationPredicate
+    get child
+    get axis
+    fun createState
+    fun debugFillProperties
+}
+external class OverscrollIndicatorNotification {
+    construct 
+    get leading
+    var paintOffset
+    fun disallowGlow
+    fun debugFillDescription
+}

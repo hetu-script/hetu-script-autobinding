@@ -1,0 +1,70 @@
+external class AppBar {
+    construct 
+    get leading
+    get automaticallyImplyLeading
+    get title
+    get actions
+    get flexibleSpace
+    get bottom
+    get elevation
+    get shadowColor
+    get shape
+    get backgroundColor
+    get foregroundColor
+    get brightness
+    get iconTheme
+    get actionsIconTheme
+    get textTheme
+    get primary
+    get centerTitle
+    get excludeHeaderSemantics
+    get titleSpacing
+    get toolbarOpacity
+    get bottomOpacity
+    get preferredSize
+    get toolbarHeight
+    get leadingWidth
+    get backwardsCompatibility
+    get toolbarTextStyle
+    get titleTextStyle
+    get systemOverlayStyle
+    fun createState
+}
+external class SliverAppBar {
+    construct 
+    get leading
+    get automaticallyImplyLeading
+    get title
+    get actions
+    get flexibleSpace
+    get bottom
+    get elevation
+    get shadowColor
+    get forceElevated
+    get backgroundColor
+    get foregroundColor
+    get brightness
+    get iconTheme
+    get actionsIconTheme
+    get textTheme
+    get primary
+    get centerTitle
+    get excludeHeaderSemantics
+    get titleSpacing
+    get collapsedHeight
+    get expandedHeight
+    get floating
+    get pinned
+    get shape
+    get snap
+    get stretch
+    get stretchTriggerOffset
+    get onStretchTrigger
+    get toolbarHeight
+    get leadingWidth
+    get backwardsCompatibility
+    get toolbarTextStyle
+    get titleTextStyle
+    get systemOverlayStyle
+    fun createState
+}

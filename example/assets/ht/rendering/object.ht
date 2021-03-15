@@ -1,0 +1,48 @@
+external class ParentData {
+    construct
+    fun detach
+    fun toString
+}
+external class PaintingContext {
+    construct 
+    get estimatedBounds
+    fun paintChild
+    fun appendLayer
+    get canvas
+    fun stopRecordingIfNeeded
+    fun setIsComplexHint
+    fun setWillChangeHint
+    fun addLayer
+    fun pushLayer
+    fun createChildContext
+    fun pushClipRect
+    fun pushClipRRect
+    fun pushClipPath
+    fun pushColorFilter
+    fun pushTransform
+    fun pushOpacity
+    fun toString
+    static fun repaintCompositedChild (child, {debugAlsoPaintedParent})
+    static fun debugInstrumentRepaintCompositedChild (child, {debugAlsoPaintedParent, customContext})
+}
+external class PipelineOwner {
+    construct 
+    get onNeedVisualUpdate
+    get onSemanticsOwnerCreated
+    get onSemanticsOwnerDisposed
+    fun requestVisualUpdate
+    get rootNode
+    set rootNode(value)
+    get debugDoingLayout
+    fun flushLayout
+    fun flushCompositingBits
+    get debugDoingPaint
+    fun flushPaint
+    get semanticsOwner
+    get debugOutstandingSemanticsHandles
+    fun ensureSemantics
+    fun flushSemantics
+}
+external class DiagnosticsDebugCreator {
+    construct 
+}

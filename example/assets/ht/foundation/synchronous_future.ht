@@ -1,0 +1,8 @@
+external class SynchronousFuture {
+    construct 
+    fun asStream
+    fun catchError
+    fun then
+    fun timeout
+    fun whenComplete
+}

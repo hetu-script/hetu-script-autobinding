@@ -1,0 +1,7 @@
+external class AsyncError {
+    construct 
+    get error
+    get stackTrace
+    fun toString
+    static fun defaultStackTrace (error)
+}

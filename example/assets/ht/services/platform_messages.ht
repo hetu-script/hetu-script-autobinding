@@ -1,0 +1,6 @@
+external class BinaryMessages {
+    static fun handlePlatformMessage (channel, data, callback)
+    static fun send (channel, message)
+    static fun setMessageHandler (channel, handler)
+    static fun setMockMessageHandler (channel, handler)
+}

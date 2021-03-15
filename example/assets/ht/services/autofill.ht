@@ -1,0 +1,75 @@
+external class AutofillHints {
+    static get addressCity
+    static get addressCityAndState
+    static get addressState
+    static get birthday
+    static get birthdayDay
+    static get birthdayMonth
+    static get birthdayYear
+    static get countryCode
+    static get countryName
+    static get creditCardExpirationDate
+    static get creditCardExpirationDay
+    static get creditCardExpirationMonth
+    static get creditCardExpirationYear
+    static get creditCardFamilyName
+    static get creditCardGivenName
+    static get creditCardMiddleName
+    static get creditCardName
+    static get creditCardNumber
+    static get creditCardSecurityCode
+    static get creditCardType
+    static get email
+    static get familyName
+    static get fullStreetAddress
+    static get gender
+    static get givenName
+    static get impp
+    static get jobTitle
+    static get language
+    static get location
+    static get middleInitial
+    static get middleName
+    static get name
+    static get namePrefix
+    static get nameSuffix
+    static get newPassword
+    static get newUsername
+    static get nickname
+    static get oneTimeCode
+    static get organizationName
+    static get password
+    static get photo
+    static get postalAddress
+    static get postalAddressExtended
+    static get postalAddressExtendedPostalCode
+    static get postalCode
+    static get streetAddressLevel1
+    static get streetAddressLevel2
+    static get streetAddressLevel3
+    static get streetAddressLevel4
+    static get streetAddressLine1
+    static get streetAddressLine2
+    static get streetAddressLine3
+    static get sublocality
+    static get telephoneNumber
+    static get telephoneNumberAreaCode
+    static get telephoneNumberCountryCode
+    static get telephoneNumberDevice
+    static get telephoneNumberExtension
+    static get telephoneNumberLocal
+    static get telephoneNumberLocalPrefix
+    static get telephoneNumberLocalSuffix
+    static get telephoneNumberNational
+    static get transactionAmount
+    static get transactionCurrency
+    static get url
+    static get username
+}
+external class AutofillConfiguration {
+    construct 
+    get uniqueIdentifier
+    get autofillHints
+    get currentEditingValue
+    fun toJson
+}

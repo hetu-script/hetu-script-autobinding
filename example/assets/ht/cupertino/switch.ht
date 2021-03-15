@@ -1,0 +1,10 @@
+external class CupertinoSwitch {
+    construct 
+    get value
+    get onChanged
+    get activeColor
+    get trackColor
+    get dragStartBehavior
+    fun createState
+    fun debugFillProperties
+}

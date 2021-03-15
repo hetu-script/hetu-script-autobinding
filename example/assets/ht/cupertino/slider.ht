@@ -1,0 +1,14 @@
+external class CupertinoSlider {
+    construct 
+    get value
+    get onChanged
+    get onChangeStart
+    get onChangeEnd
+    get min
+    get max
+    get divisions
+    get activeColor
+    get thumbColor
+    fun createState
+    fun debugFillProperties
+}

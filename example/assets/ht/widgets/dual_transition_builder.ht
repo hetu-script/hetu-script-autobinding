@@ -1,0 +1,8 @@
+external class DualTransitionBuilder {
+    construct 
+    get animation
+    get forwardBuilder
+    get reverseBuilder
+    get child
+    fun createState
+}

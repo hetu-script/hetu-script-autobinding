@@ -1,0 +1,6 @@
+external class SliverMultiBoxAdaptorParentData {
+    construct
+    var index
+    get keptAlive
+    fun toString
+}

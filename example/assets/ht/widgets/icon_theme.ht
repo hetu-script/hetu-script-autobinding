@@ -1,0 +1,9 @@
+external class IconTheme {
+    construct 
+    get data
+    fun updateShouldNotify
+    fun wrap
+    fun debugFillProperties
+    static fun merge ({key, data, child})
+    static fun of (context)
+}

@@ -1,0 +1,6 @@
+external class ValueKey {
+    construct 
+    get value
+    get hashCode
+    fun toString
+}

@@ -1,0 +1,12 @@
+external class HtmlEscapeMode {
+    static get unknown
+    static get attribute
+    static get sqAttribute
+    static get element
+}
+external class HtmlEscape {
+    construct 
+    get mode
+    fun convert
+    fun startChunkedConversion
+}

@@ -1,0 +1,18 @@
+external class RenderSliverFillViewport {
+    construct 
+    get itemExtent
+    get viewportFraction
+    set viewportFraction(value)
+}
+external class RenderSliverFillRemainingWithScrollable {
+    construct 
+    fun performLayout
+}
+external class RenderSliverFillRemaining {
+    construct 
+    fun performLayout
+}
+external class RenderSliverFillRemainingAndOverscroll {
+    construct 
+    fun performLayout
+}

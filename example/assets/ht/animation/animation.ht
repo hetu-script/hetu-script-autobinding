@@ -1,0 +1,6 @@
+external class AnimationStatus {
+    static var dismissed
+    static var forward
+    static var reverse
+    static var completed
+}

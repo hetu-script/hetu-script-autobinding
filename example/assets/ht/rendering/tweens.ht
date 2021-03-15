@@ -1,0 +1,12 @@
+external class FractionalOffsetTween {
+    construct 
+    fun lerp
+}
+external class AlignmentTween {
+    construct 
+    fun lerp
+}
+external class AlignmentGeometryTween {
+    construct 
+    fun lerp
+}

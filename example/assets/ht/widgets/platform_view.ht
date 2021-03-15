@@ -1,0 +1,45 @@
+external class AndroidView {
+    construct 
+    get viewType
+    get onPlatformViewCreated
+    get hitTestBehavior
+    get layoutDirection
+    get gestureRecognizers
+    get creationParams
+    get creationParamsCodec
+    get clipBehavior
+    fun createState
+}
+external class UiKitView {
+    construct 
+    get viewType
+    get onPlatformViewCreated
+    get hitTestBehavior
+    get layoutDirection
+    get creationParams
+    get creationParamsCodec
+    get gestureRecognizers
+    fun createState
+}
+external class HtmlElementView {
+    construct 
+    get viewType
+    fun build
+}
+external class PlatformViewLink {
+    construct 
+    get viewType
+    fun createState
+}
+external class PlatformViewSurface {
+    construct 
+    get controller
+    get gestureRecognizers
+    get hitTestBehavior
+    fun createRenderObject
+    fun updateRenderObject
+}
+external class AndroidViewSurface {
+    construct 
+    fun createRenderObject
+}

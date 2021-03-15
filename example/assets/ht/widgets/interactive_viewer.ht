@@ -1,0 +1,21 @@
+external class InteractiveViewer {
+    construct 
+    get clipBehavior
+    get alignPanAxis
+    get boundaryMargin
+    get child
+    get constrained
+    get panEnabled
+    get scaleEnabled
+    get maxScale
+    get minScale
+    get onInteractionEnd
+    get onInteractionStart
+    get onInteractionUpdate
+    get transformationController
+    fun createState
+}
+external class TransformationController {
+    construct 
+    fun toScene
+}

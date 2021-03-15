@@ -1,0 +1,36 @@
+external class RestorableNum {
+    construct 
+}
+external class RestorableDouble {
+    construct 
+}
+external class RestorableInt {
+    construct 
+}
+external class RestorableString {
+    construct 
+}
+external class RestorableBool {
+    construct 
+}
+external class RestorableBoolN {
+    construct 
+}
+external class RestorableNumN {
+    construct 
+}
+external class RestorableDoubleN {
+    construct 
+}
+external class RestorableIntN {
+    construct 
+}
+external class RestorableStringN {
+    construct 
+}
+external class RestorableTextEditingController {
+    construct fromValue
+    fun createDefaultValue
+    fun fromPrimitives
+    fun toPrimitives
+}

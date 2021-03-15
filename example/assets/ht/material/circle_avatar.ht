@@ -1,0 +1,14 @@
+external class CircleAvatar {
+    construct 
+    get child
+    get backgroundColor
+    get foregroundColor
+    get backgroundImage
+    get foregroundImage
+    get onBackgroundImageError
+    get onForegroundImageError
+    get radius
+    get minRadius
+    get maxRadius
+    fun build
+}

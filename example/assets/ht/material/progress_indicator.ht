@@ -1,0 +1,15 @@
+external class LinearProgressIndicator {
+    construct 
+    get minHeight
+    fun createState
+}
+external class CircularProgressIndicator {
+    construct 
+    construct adaptive
+    get strokeWidth
+    fun createState
+}
+external class RefreshProgressIndicator {
+    construct 
+    fun createState
+}

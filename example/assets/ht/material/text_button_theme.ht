@@ -1,0 +1,14 @@
+external class TextButtonThemeData {
+    construct 
+    get style
+    get hashCode
+    fun debugFillProperties
+    static fun lerp (a, b, t)
+}
+external class TextButtonTheme {
+    construct 
+    get data
+    fun wrap
+    fun updateShouldNotify
+    static fun of (context)
+}

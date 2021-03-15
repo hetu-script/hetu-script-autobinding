@@ -1,0 +1,26 @@
+external class DoubleTapGestureRecognizer {
+    construct 
+    var onDoubleTapDown
+    var onDoubleTap
+    var onDoubleTapCancel
+    fun isPointerAllowed
+    fun addAllowedPointer
+    fun acceptGesture
+    fun rejectGesture
+    fun dispose
+    get debugDescription
+}
+external class MultiTapGestureRecognizer {
+    construct 
+    var onTapDown
+    var onTapUp
+    var onTap
+    var onTapCancel
+    var longTapDelay
+    var onLongTapDown
+    fun addAllowedPointer
+    fun acceptGesture
+    fun rejectGesture
+    fun dispose
+    get debugDescription
+}

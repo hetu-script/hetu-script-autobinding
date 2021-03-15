@@ -1,0 +1,59 @@
+external class Dialog {
+    construct 
+    get backgroundColor
+    get elevation
+    get insetAnimationDuration
+    get insetAnimationCurve
+    get insetPadding
+    get clipBehavior
+    get shape
+    get child
+    fun build
+}
+external class AlertDialog {
+    construct 
+    get title
+    get titlePadding
+    get titleTextStyle
+    get content
+    get contentPadding
+    get contentTextStyle
+    get actions
+    get actionsPadding
+    get actionsOverflowDirection
+    get actionsOverflowButtonSpacing
+    get buttonPadding
+    get backgroundColor
+    get elevation
+    get semanticLabel
+    get insetPadding
+    get clipBehavior
+    get shape
+    get scrollable
+    fun build
+}
+external class SimpleDialogOption {
+    construct 
+    get onPressed
+    get child
+    get padding
+    fun build
+}
+external class SimpleDialog {
+    construct 
+    get title
+    get titlePadding
+    get titleTextStyle
+    get children
+    get contentPadding
+    get backgroundColor
+    get elevation
+    get semanticLabel
+    get insetPadding
+    get clipBehavior
+    get shape
+    fun build
+}
+external class DialogRoute {
+    construct 
+}

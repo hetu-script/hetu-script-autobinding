@@ -1,0 +1,15 @@
+external class Latin1Codec {
+    construct 
+    get name
+    fun encode
+    fun decode
+    get encoder
+    get decoder
+}
+external class Latin1Encoder {
+    construct 
+}
+external class Latin1Decoder {
+    construct 
+    fun startChunkedConversion
+}

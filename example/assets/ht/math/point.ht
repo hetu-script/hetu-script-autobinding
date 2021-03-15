@@ -1,0 +1,10 @@
+external class Point {
+    construct 
+    get x
+    get y
+    fun toString
+    get hashCode
+    get magnitude
+    fun distanceTo
+    fun squaredDistanceTo
+}

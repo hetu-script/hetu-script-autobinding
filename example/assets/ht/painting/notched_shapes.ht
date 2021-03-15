@@ -1,0 +1,10 @@
+external class CircularNotchedRectangle {
+    construct 
+    fun getOuterPath
+}
+external class AutomaticNotchedShape {
+    construct 
+    get host
+    get guest
+    fun getOuterPath
+}

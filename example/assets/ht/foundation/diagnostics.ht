@@ -1,0 +1,168 @@
+external class DiagnosticLevel {
+    static var hidden
+    static var fine
+    static var debug
+    static var info
+    static var warning
+    static var hint
+    static var summary
+    static var error
+    static var off
+}
+external class DiagnosticsTreeStyle {
+    static var none
+    static var sparse
+    static var offstage
+    static var dense
+    static var transition
+    static var error
+    static var whitespace
+    static var flat
+    static var singleLine
+    static var errorProperty
+    static var shallow
+    static var truncateChildren
+}
+external class TextTreeConfiguration {
+    construct 
+    get prefixLineOne
+    get suffixLineOne
+    get prefixOtherLines
+    get prefixLastChildLineOne
+    get prefixOtherLinesRootNode
+    get propertyPrefixIfChildren
+    get propertyPrefixNoChildren
+    get linkCharacter
+    get childLinkSpace
+    get lineBreak
+    get lineBreakProperties
+    get beforeName
+    get afterName
+    get afterDescriptionIfBody
+    get afterDescription
+    get beforeProperties
+    get afterProperties
+    get mandatoryAfterProperties
+    get propertySeparator
+    get bodyIndent
+    get showChildren
+    get addBlankLineIfNoChildren
+    get isNameOnOwnLine
+    get footer
+    get mandatoryFooter
+    get isBlankLineBetweenPropertiesAndChildren
+}
+external class TextTreeRenderer {
+    construct 
+    fun render
+}
+external class MessageProperty {
+    construct 
+}
+external class StringProperty {
+    construct 
+    get quoted
+    fun toJsonMap
+    fun valueToString
+}
+external class DoubleProperty {
+    construct 
+    construct lazy
+    fun numberToString
+}
+external class IntProperty {
+    construct 
+    fun numberToString
+}
+external class PercentProperty {
+    construct 
+    fun valueToString
+    fun numberToString
+}
+external class FlagProperty {
+    construct 
+    get ifTrue
+    get ifFalse
+    fun toJsonMap
+    fun valueToString
+    get showName
+    get level
+}
+external class IterableProperty {
+    construct 
+    fun valueToString
+    get level
+    fun toJsonMap
+}
+external class EnumProperty {
+    construct 
+    fun valueToString
+}
+external class ObjectFlagProperty {
+    construct 
+    construct has
+    get ifPresent
+    fun valueToString
+    get showName
+    get level
+    fun toJsonMap
+}
+external class FlagsSummary {
+    construct 
+    get value
+    fun valueToString
+    get level
+    fun toJsonMap
+}
+external class DiagnosticsProperty {
+    construct 
+    construct lazy
+    get expandableValue
+    get allowWrap
+    get allowNameWrap
+    get ifNull
+    get ifEmpty
+    get tooltip
+    get missingIfNull
+    get defaultValue
+    fun toJsonMap
+    fun valueToString
+    fun toDescription
+    get propertyType
+    get value
+    get exception
+    get level
+    fun getProperties
+    fun getChildren
+}
+external class DiagnosticableNode {
+    construct 
+    get value
+    get builder
+    get style
+    get emptyBodyDescription
+    fun getProperties
+    fun getChildren
+    fun toDescription
+}
+external class DiagnosticableTreeNode {
+    construct 
+    fun getChildren
+}
+external class DiagnosticPropertiesBuilder {
+    construct 
+    construct fromProperties
+    get properties
+    var defaultDiagnosticsTreeStyle
+    var emptyBodyDescription
+    fun add
+}
+external class DiagnosticsBlock {
+    construct 
+    get level
+    get value
+    get allowTruncate
+    fun getChildren
+    fun getProperties
+    fun toDescription
+}

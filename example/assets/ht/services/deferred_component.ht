@@ -1,0 +1,4 @@
+external class DeferredComponent {
+    static fun installDeferredComponent ({moduleName})
+    static fun uninstallDeferredComponent ({moduleName})
+}

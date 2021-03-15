@@ -1,0 +1,32 @@
+external class SelectableText {
+    construct 
+    construct rich
+    get data
+    get textSpan
+    get focusNode
+    get style
+    get strutStyle
+    get textAlign
+    get textDirection
+    get textScaleFactor
+    get autofocus
+    get minLines
+    get maxLines
+    get showCursor
+    get cursorWidth
+    get cursorHeight
+    get cursorRadius
+    get cursorColor
+    get enableInteractiveSelection
+    get selectionControls
+    get dragStartBehavior
+    get toolbarOptions
+    get onTap
+    get scrollPhysics
+    get textHeightBehavior
+    get textWidthBasis
+    get onSelectionChanged
+    get selectionEnabled
+    fun createState
+    fun debugFillProperties
+}

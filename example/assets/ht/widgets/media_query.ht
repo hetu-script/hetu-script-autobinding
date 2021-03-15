@@ -1,0 +1,46 @@
+external class Orientation {
+    static var portrait
+    static var landscape
+}
+external class NavigationMode {
+    static var traditional
+    static var directional
+}
+external class MediaQueryData {
+    construct 
+    construct fromWindow
+    get size
+    get devicePixelRatio
+    get textScaleFactor
+    get platformBrightness
+    get viewInsets
+    get padding
+    get viewPadding
+    get systemGestureInsets
+    get alwaysUse24HourFormat
+    get accessibleNavigation
+    get invertColors
+    get highContrast
+    get disableAnimations
+    get boldText
+    get navigationMode
+    get orientation
+    fun copyWith
+    fun removePadding
+    fun removeViewInsets
+    fun removeViewPadding
+    get hashCode
+    fun toString
+}
+external class MediaQuery {
+    construct 
+    get data
+    fun updateShouldNotify
+    fun debugFillProperties
+    static fun of (context)
+    static fun maybeOf (context)
+    static fun textScaleFactorOf (context)
+    static fun platformBrightnessOf (context)
+    static fun highContrastOf (context)
+    static fun boldTextOverride (context)
+}

@@ -1,0 +1,20 @@
+external class RawKeyEventDataWeb {
+    construct 
+    get code
+    get key
+    get metaState
+    get keyLabel
+    get physicalKey
+    get logicalKey
+    fun isModifierPressed
+    fun getModifierSide
+    fun toString
+    static get modifierNone
+    static get modifierShift
+    static get modifierAlt
+    static get modifierControl
+    static get modifierMeta
+    static get modifierNumLock
+    static get modifierCapsLock
+    static get modifierScrollLock
+}

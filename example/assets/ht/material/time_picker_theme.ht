@@ -1,0 +1,31 @@
+external class TimePickerThemeData {
+    construct 
+    get backgroundColor
+    get hourMinuteTextColor
+    get hourMinuteColor
+    get dayPeriodTextColor
+    get dayPeriodColor
+    get dialHandColor
+    get dialBackgroundColor
+    get dialTextColor
+    get entryModeIconColor
+    get hourMinuteTextStyle
+    get dayPeriodTextStyle
+    get helpTextStyle
+    get shape
+    get hourMinuteShape
+    get dayPeriodShape
+    get dayPeriodBorderSide
+    get inputDecorationTheme
+    fun copyWith
+    get hashCode
+    fun debugFillProperties
+    static fun lerp (a, b, t)
+}
+external class TimePickerTheme {
+    construct 
+    get data
+    fun wrap
+    fun updateShouldNotify
+    static fun of (context)
+}

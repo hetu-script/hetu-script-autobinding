@@ -1,0 +1,7 @@
+external class HapticFeedback {
+    static fun vibrate
+    static fun lightImpact
+    static fun mediumImpact
+    static fun heavyImpact
+    static fun selectionClick
+}

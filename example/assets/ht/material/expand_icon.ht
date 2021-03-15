@@ -1,0 +1,11 @@
+external class ExpandIcon {
+    construct 
+    get isExpanded
+    get size
+    get onPressed
+    get padding
+    get color
+    get disabledColor
+    get expandedColor
+    fun createState
+}

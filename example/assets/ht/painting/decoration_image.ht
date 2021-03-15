@@ -1,0 +1,21 @@
+external class ImageRepeat {
+    static var repeat
+    static var repeatX
+    static var repeatY
+    static var noRepeat
+}
+external class DecorationImage {
+    construct 
+    get image
+    get onError
+    get colorFilter
+    get fit
+    get alignment
+    get centerSlice
+    get repeat
+    get matchTextDirection
+    get scale
+    fun createPainter
+    get hashCode
+    fun toString
+}

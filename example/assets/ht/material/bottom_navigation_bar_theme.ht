@@ -1,0 +1,24 @@
+external class BottomNavigationBarThemeData {
+    construct 
+    get backgroundColor
+    get elevation
+    get selectedIconTheme
+    get unselectedIconTheme
+    get selectedItemColor
+    get unselectedItemColor
+    get selectedLabelStyle
+    get unselectedLabelStyle
+    get showSelectedLabels
+    get showUnselectedLabels
+    get type
+    fun copyWith
+    get hashCode
+    fun debugFillProperties
+    static fun lerp (a, b, t)
+}
+external class BottomNavigationBarTheme {
+    construct 
+    get data
+    fun updateShouldNotify
+    static fun of (context)
+}

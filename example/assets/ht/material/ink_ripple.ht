@@ -1,0 +1,8 @@
+external class InkRipple {
+    construct 
+    fun confirm
+    fun cancel
+    fun dispose
+    fun paintFeature
+    static get splashFactory
+}

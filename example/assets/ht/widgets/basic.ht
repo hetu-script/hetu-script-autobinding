@@ -1,0 +1,566 @@
+external class Directionality {
+    construct 
+    get textDirection
+    fun updateShouldNotify
+    fun debugFillProperties
+    static fun of (context)
+    static fun maybeOf (context)
+}
+external class Opacity {
+    construct 
+    get opacity
+    get alwaysIncludeSemantics
+    fun createRenderObject
+    fun updateRenderObject
+    fun debugFillProperties
+}
+external class ShaderMask {
+    construct 
+    get shaderCallback
+    get blendMode
+    fun createRenderObject
+    fun updateRenderObject
+}
+external class BackdropFilter {
+    construct 
+    get filter
+    fun createRenderObject
+    fun updateRenderObject
+}
+external class CustomPaint {
+    construct 
+    get painter
+    get foregroundPainter
+    get size
+    get isComplex
+    get willChange
+    fun createRenderObject
+    fun updateRenderObject
+    fun didUnmountRenderObject
+}
+external class ClipRect {
+    construct 
+    get clipper
+    get clipBehavior
+    fun createRenderObject
+    fun updateRenderObject
+    fun didUnmountRenderObject
+    fun debugFillProperties
+}
+external class ClipRRect {
+    construct 
+    get borderRadius
+    get clipper
+    get clipBehavior
+    fun createRenderObject
+    fun updateRenderObject
+    fun debugFillProperties
+}
+external class ClipOval {
+    construct 
+    get clipper
+    get clipBehavior
+    fun createRenderObject
+    fun updateRenderObject
+    fun didUnmountRenderObject
+    fun debugFillProperties
+}
+external class ClipPath {
+    construct 
+    get clipper
+    get clipBehavior
+    fun createRenderObject
+    fun updateRenderObject
+    fun didUnmountRenderObject
+    fun debugFillProperties
+    static fun shape ({key, shape, clipBehavior, child})
+}
+external class PhysicalModel {
+    construct 
+    get shape
+    get clipBehavior
+    get borderRadius
+    get elevation
+    get color
+    get shadowColor
+    fun createRenderObject
+    fun updateRenderObject
+    fun debugFillProperties
+}
+external class PhysicalShape {
+    construct 
+    get clipper
+    get clipBehavior
+    get elevation
+    get color
+    get shadowColor
+    fun createRenderObject
+    fun updateRenderObject
+    fun debugFillProperties
+}
+external class Transform {
+    construct 
+    construct rotate
+    construct translate
+    construct scale
+    get transform
+    get origin
+    get alignment
+    get transformHitTests
+    fun createRenderObject
+    fun updateRenderObject
+}
+external class CompositedTransformTarget {
+    construct 
+    get link
+    fun createRenderObject
+    fun updateRenderObject
+}
+external class CompositedTransformFollower {
+    construct 
+    get link
+    get showWhenUnlinked
+    get targetAnchor
+    get followerAnchor
+    get offset
+    fun createRenderObject
+    fun updateRenderObject
+}
+external class FittedBox {
+    construct 
+    get fit
+    get alignment
+    get clipBehavior
+    fun createRenderObject
+    fun updateRenderObject
+    fun debugFillProperties
+}
+external class FractionalTranslation {
+    construct 
+    get translation
+    get transformHitTests
+    fun createRenderObject
+    fun updateRenderObject
+}
+external class RotatedBox {
+    construct 
+    get quarterTurns
+    fun createRenderObject
+    fun updateRenderObject
+}
+external class Padding {
+    construct 
+    get padding
+    fun createRenderObject
+    fun updateRenderObject
+    fun debugFillProperties
+}
+external class Align {
+    construct 
+    get alignment
+    get widthFactor
+    get heightFactor
+    fun createRenderObject
+    fun updateRenderObject
+    fun debugFillProperties
+}
+external class Center {
+    construct 
+}
+external class CustomSingleChildLayout {
+    construct 
+    get delegate
+    fun createRenderObject
+    fun updateRenderObject
+}
+external class LayoutId {
+    construct 
+    get id
+    fun applyParentData
+    get debugTypicalAncestorWidgetClass
+    fun debugFillProperties
+}
+external class CustomMultiChildLayout {
+    construct 
+    get delegate
+    fun createRenderObject
+    fun updateRenderObject
+}
+external class SizedBox {
+    construct 
+    construct expand
+    construct shrink
+    construct fromSize
+    get width
+    get height
+    fun createRenderObject
+    fun updateRenderObject
+    fun toStringShort
+    fun debugFillProperties
+}
+external class ConstrainedBox {
+    construct 
+    get constraints
+    fun createRenderObject
+    fun updateRenderObject
+    fun debugFillProperties
+}
+external class UnconstrainedBox {
+    construct 
+    get textDirection
+    get alignment
+    get constrainedAxis
+    get clipBehavior
+    fun updateRenderObject
+    fun createRenderObject
+    fun debugFillProperties
+}
+external class FractionallySizedBox {
+    construct 
+    get widthFactor
+    get heightFactor
+    get alignment
+    fun createRenderObject
+    fun updateRenderObject
+    fun debugFillProperties
+}
+external class LimitedBox {
+    construct 
+    get maxWidth
+    get maxHeight
+    fun createRenderObject
+    fun updateRenderObject
+    fun debugFillProperties
+}
+external class OverflowBox {
+    construct 
+    get alignment
+    get minWidth
+    get maxWidth
+    get minHeight
+    get maxHeight
+    fun createRenderObject
+    fun updateRenderObject
+    fun debugFillProperties
+}
+external class SizedOverflowBox {
+    construct 
+    get alignment
+    get size
+    fun createRenderObject
+    fun updateRenderObject
+    fun debugFillProperties
+}
+external class Offstage {
+    construct 
+    get offstage
+    fun createRenderObject
+    fun updateRenderObject
+    fun debugFillProperties
+    fun createElement
+}
+external class AspectRatio {
+    construct 
+    get aspectRatio
+    fun createRenderObject
+    fun updateRenderObject
+    fun debugFillProperties
+}
+external class IntrinsicWidth {
+    construct 
+    get stepWidth
+    get stepHeight
+    fun createRenderObject
+    fun updateRenderObject
+}
+external class IntrinsicHeight {
+    construct 
+    fun createRenderObject
+}
+external class Baseline {
+    construct 
+    get baseline
+    get baselineType
+    fun createRenderObject
+    fun updateRenderObject
+}
+external class SliverToBoxAdapter {
+    construct 
+    fun createRenderObject
+}
+external class SliverPadding {
+    construct 
+    get padding
+    fun createRenderObject
+    fun updateRenderObject
+    fun debugFillProperties
+}
+external class ListBody {
+    construct 
+    get mainAxis
+    get reverse
+    fun createRenderObject
+    fun updateRenderObject
+}
+external class Stack {
+    construct 
+    get alignment
+    get textDirection
+    get fit
+    get overflow
+    get clipBehavior
+    fun createRenderObject
+    fun updateRenderObject
+    fun debugFillProperties
+}
+external class IndexedStack {
+    construct 
+    get index
+    fun createRenderObject
+    fun updateRenderObject
+}
+external class Positioned {
+    construct 
+    construct fromRect
+    construct fromRelativeRect
+    construct fill
+    get left
+    get top
+    get right
+    get bottom
+    get width
+    get height
+    fun applyParentData
+    get debugTypicalAncestorWidgetClass
+    fun debugFillProperties
+}
+external class PositionedDirectional {
+    construct 
+    get start
+    get top
+    get end
+    get bottom
+    get width
+    get height
+    get child
+    fun build
+}
+external class Flex {
+    construct 
+    get direction
+    get mainAxisAlignment
+    get mainAxisSize
+    get crossAxisAlignment
+    get textDirection
+    get verticalDirection
+    get textBaseline
+    get clipBehavior
+    fun getEffectiveTextDirection
+    fun createRenderObject
+    fun updateRenderObject
+    fun debugFillProperties
+}
+external class Row {
+    construct 
+}
+external class Column {
+    construct 
+}
+external class Flexible {
+    construct 
+    get flex
+    get fit
+    fun applyParentData
+    get debugTypicalAncestorWidgetClass
+    fun debugFillProperties
+}
+external class Expanded {
+    construct 
+}
+external class Wrap {
+    construct 
+    get direction
+    get alignment
+    get spacing
+    get runAlignment
+    get runSpacing
+    get crossAxisAlignment
+    get textDirection
+    get verticalDirection
+    get clipBehavior
+    fun createRenderObject
+    fun updateRenderObject
+    fun debugFillProperties
+}
+external class Flow {
+    construct 
+    construct unwrapped
+    get delegate
+    get clipBehavior
+    fun createRenderObject
+    fun updateRenderObject
+}
+external class RichText {
+    construct 
+    get text
+    get textAlign
+    get textDirection
+    get softWrap
+    get overflow
+    get textScaleFactor
+    get maxLines
+    get locale
+    get strutStyle
+    get textWidthBasis
+    get textHeightBehavior
+    fun createRenderObject
+    fun updateRenderObject
+    fun debugFillProperties
+}
+external class RawImage {
+    construct 
+    get image
+    get debugImageLabel
+    get width
+    get height
+    get scale
+    get color
+    get filterQuality
+    get colorBlendMode
+    get fit
+    get alignment
+    get repeat
+    get centerSlice
+    get matchTextDirection
+    get invertColors
+    get isAntiAlias
+    fun createRenderObject
+    fun updateRenderObject
+    fun didUnmountRenderObject
+    fun debugFillProperties
+}
+external class DefaultAssetBundle {
+    construct 
+    get bundle
+    fun updateShouldNotify
+    static fun of (context)
+}
+external class WidgetToRenderBoxAdapter {
+    construct 
+    get renderBox
+    get onBuild
+    fun createRenderObject
+    fun updateRenderObject
+}
+external class Listener {
+    construct 
+    get onPointerDown
+    get onPointerMove
+    get onPointerUp
+    get onPointerHover
+    get onPointerCancel
+    get onPointerSignal
+    get behavior
+    fun createRenderObject
+    fun updateRenderObject
+    fun debugFillProperties
+}
+external class MouseRegion {
+    construct 
+    get onEnter
+    get onHover
+    get onExit
+    get cursor
+    get opaque
+    get child
+    fun createState
+    fun debugFillProperties
+}
+external class RepaintBoundary {
+    construct 
+    fun createRenderObject
+    static fun wrapAll (widgets)
+}
+external class IgnorePointer {
+    construct 
+    get ignoring
+    get ignoringSemantics
+    fun createRenderObject
+    fun updateRenderObject
+    fun debugFillProperties
+}
+external class AbsorbPointer {
+    construct 
+    get absorbing
+    get ignoringSemantics
+    fun createRenderObject
+    fun updateRenderObject
+    fun debugFillProperties
+}
+external class MetaData {
+    construct 
+    get metaData
+    get behavior
+    fun createRenderObject
+    fun updateRenderObject
+    fun debugFillProperties
+}
+external class Semantics {
+    construct 
+    construct fromProperties
+    get properties
+    get container
+    get explicitChildNodes
+    get excludeSemantics
+    fun createRenderObject
+    fun updateRenderObject
+    fun debugFillProperties
+}
+external class MergeSemantics {
+    construct 
+    fun createRenderObject
+}
+external class BlockSemantics {
+    construct 
+    get blocking
+    fun createRenderObject
+    fun updateRenderObject
+    fun debugFillProperties
+}
+external class ExcludeSemantics {
+    construct 
+    get excluding
+    fun createRenderObject
+    fun updateRenderObject
+    fun debugFillProperties
+}
+external class IndexedSemantics {
+    construct 
+    get index
+    fun createRenderObject
+    fun updateRenderObject
+    fun debugFillProperties
+}
+external class KeyedSubtree {
+    construct 
+    get child
+    fun build
+    static fun ensureUniqueKeysForList (items, {baseIndex})
+}
+external class Builder {
+    construct 
+    get builder
+    fun build
+}
+external class StatefulBuilder {
+    construct 
+    get builder
+    fun createState
+}
+external class ColoredBox {
+    construct 
+    get color
+    fun createRenderObject
+    fun updateRenderObject
+    fun debugFillProperties
+}

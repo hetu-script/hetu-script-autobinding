@@ -1,0 +1,14 @@
+external class SingleChildScrollView {
+    construct 
+    get scrollDirection
+    get reverse
+    get padding
+    get controller
+    get primary
+    get physics
+    get child
+    get dragStartBehavior
+    get clipBehavior
+    get restorationId
+    fun build
+}

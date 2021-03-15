@@ -1,0 +1,35 @@
+external class BasicMessageChannel {
+    construct 
+    get name
+    get codec
+    get binaryMessenger
+    fun send
+    fun setMessageHandler
+    fun setMockMessageHandler
+}
+external class MethodChannel {
+    construct 
+    get name
+    get codec
+    get binaryMessenger
+    fun invokeMethod
+    fun invokeListMethod
+    fun invokeMapMethod
+    fun setMethodCallHandler
+    fun checkMethodCallHandler
+    fun setMockMethodCallHandler
+    fun checkMockMethodCallHandler
+}
+external class OptionalMethodChannel {
+    construct 
+    fun invokeMethod
+    fun invokeListMethod
+    fun invokeMapMethod
+}
+external class EventChannel {
+    construct 
+    get name
+    get codec
+    get binaryMessenger
+    fun receiveBroadcastStream
+}

@@ -1,0 +1,13 @@
+external class FrictionSimulation {
+    construct 
+    fun x
+    fun dx
+    get finalX
+    fun timeAtX
+    fun isDone
+}
+external class BoundedFrictionSimulation {
+    construct 
+    fun x
+    fun isDone
+}

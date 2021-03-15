@@ -1,0 +1,52 @@
+external class CupertinoColors {
+    static get activeBlue
+    static get activeGreen
+    static get activeOrange
+    static get white
+    static get black
+    static get lightBackgroundGray
+    static get extraLightBackgroundGray
+    static get darkBackgroundGray
+    static get inactiveGray
+    static get destructiveRed
+    static get systemBlue
+    static get systemGreen
+    static get systemIndigo
+    static get systemOrange
+    static get systemPink
+    static get systemPurple
+    static get systemRed
+    static get systemTeal
+    static get systemYellow
+    static get systemGrey
+    static get systemGrey2
+    static get systemGrey3
+    static get systemGrey4
+    static get systemGrey5
+    static get systemGrey6
+    static get label
+    static get secondaryLabel
+    static get tertiaryLabel
+    static get quaternaryLabel
+    static get systemFill
+    static get secondarySystemFill
+    static get tertiarySystemFill
+    static get quaternarySystemFill
+    static get placeholderText
+    static get systemBackground
+    static get secondarySystemBackground
+    static get tertiarySystemBackground
+    static get systemGroupedBackground
+    static get secondarySystemGroupedBackground
+    static get tertiarySystemGroupedBackground
+    static get separator
+    static get opaqueSeparator
+    static get link
+}
+external class CupertinoDynamicColor {
+    construct 
+    construct withBrightnessAndContrast
+    construct withBrightness
+    static fun resolve (resolvable, context)
+    static fun maybeResolve (resolvable, context)
+}

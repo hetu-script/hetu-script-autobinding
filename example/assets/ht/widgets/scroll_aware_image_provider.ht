@@ -1,0 +1,8 @@
+external class ScrollAwareImageProvider {
+    construct 
+    get context
+    get imageProvider
+    fun resolveStreamForKey
+    fun load
+    fun obtainKey
+}

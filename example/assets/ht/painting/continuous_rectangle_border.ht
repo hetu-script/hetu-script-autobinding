@@ -1,0 +1,14 @@
+external class ContinuousRectangleBorder {
+    construct 
+    get borderRadius
+    get dimensions
+    fun scale
+    fun lerpFrom
+    fun lerpTo
+    fun getInnerPath
+    fun getOuterPath
+    fun copyWith
+    fun paint
+    get hashCode
+    fun toString
+}

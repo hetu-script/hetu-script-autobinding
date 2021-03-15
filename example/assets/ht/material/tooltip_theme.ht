@@ -1,0 +1,24 @@
+external class TooltipThemeData {
+    construct 
+    get height
+    get padding
+    get margin
+    get verticalOffset
+    get preferBelow
+    get excludeFromSemantics
+    get decoration
+    get textStyle
+    get waitDuration
+    get showDuration
+    fun copyWith
+    get hashCode
+    fun debugFillProperties
+    static fun lerp (a, b, t)
+}
+external class TooltipTheme {
+    construct 
+    get data
+    fun wrap
+    fun updateShouldNotify
+    static fun of (context)
+}

@@ -1,0 +1,48 @@
+external class WrapAlignment {
+    static var start
+    static var end
+    static var center
+    static var spaceBetween
+    static var spaceAround
+    static var spaceEvenly
+}
+external class WrapCrossAlignment {
+    static var start
+    static var end
+    static var center
+}
+external class WrapParentData {
+    construct
+}
+external class RenderWrap {
+    construct 
+    get direction
+    set direction(value)
+    get alignment
+    set alignment(value)
+    get spacing
+    set spacing(value)
+    get runAlignment
+    set runAlignment(value)
+    get runSpacing
+    set runSpacing(value)
+    get crossAxisAlignment
+    set crossAxisAlignment(value)
+    get textDirection
+    set textDirection(value)
+    get verticalDirection
+    set verticalDirection(value)
+    get clipBehavior
+    set clipBehavior(value)
+    fun setupParentData
+    fun computeMinIntrinsicWidth
+    fun computeMaxIntrinsicWidth
+    fun computeMinIntrinsicHeight
+    fun computeMaxIntrinsicHeight
+    fun computeDistanceToActualBaseline
+    fun computeDryLayout
+    fun performLayout
+    fun hitTestChildren
+    fun paint
+    fun debugFillProperties
+}

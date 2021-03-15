@@ -1,0 +1,8 @@
+external class MaterialTextSelectionControls {
+    construct
+    fun getHandleSize
+    fun buildToolbar
+    fun buildHandle
+    fun getHandleAnchor
+    fun canSelectAll
+}

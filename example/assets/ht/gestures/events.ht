@@ -1,0 +1,42 @@
+external class PointerAddedEvent {
+    construct 
+    fun transformed
+}
+external class PointerRemovedEvent {
+    construct 
+    fun transformed
+}
+external class PointerHoverEvent {
+    construct 
+    fun transformed
+}
+external class PointerEnterEvent {
+    construct 
+    fun transformed
+}
+external class PointerExitEvent {
+    construct 
+    fun transformed
+}
+external class PointerDownEvent {
+    construct 
+    fun transformed
+}
+external class PointerMoveEvent {
+    construct 
+    fun transformed
+}
+external class PointerUpEvent {
+    construct 
+    fun transformed
+}
+external class PointerScrollEvent {
+    construct 
+    get scrollDelta
+    fun transformed
+    fun debugFillProperties
+}
+external class PointerCancelEvent {
+    construct 
+    fun transformed
+}

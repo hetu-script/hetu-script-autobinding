@@ -1,0 +1,8 @@
+external class OutlineButton {
+    construct 
+    get highlightedBorderColor
+    get disabledBorderColor
+    get borderSide
+    fun build
+    fun debugFillProperties
+}

@@ -1,0 +1,26 @@
+external class DismissDirection {
+    static var vertical
+    static var horizontal
+    static var endToStart
+    static var startToEnd
+    static var up
+    static var down
+    static var none
+}
+external class Dismissible {
+    construct 
+    get child
+    get background
+    get secondaryBackground
+    get confirmDismiss
+    get onResize
+    get onDismissed
+    get direction
+    get resizeDuration
+    get dismissThresholds
+    get movementDuration
+    get crossAxisEndOffset
+    get dragStartBehavior
+    get behavior
+    fun createState
+}

@@ -1,0 +1,112 @@
+external class RoutePopDisposition {
+    static var pop
+    static var doNotPop
+    static var bubble
+}
+external class RouteSettings {
+    construct 
+    get name
+    get arguments
+    fun copyWith
+    fun toString
+}
+external class NavigatorObserver {
+    construct
+    get navigator
+    fun didPush
+    fun didPop
+    fun didRemove
+    fun didReplace
+    fun didStartUserGesture
+    fun didStopUserGesture
+}
+external class HeroControllerScope {
+    construct 
+    construct none
+    get controller
+    fun updateShouldNotify
+    static fun of (context)
+}
+external class DefaultTransitionDelegate {
+    construct 
+    fun resolve
+}
+external class Navigator {
+    construct 
+    get pages
+    get onPopPage
+    get transitionDelegate
+    get initialRoute
+    get onGenerateRoute
+    get onUnknownRoute
+    get observers
+    get restorationScopeId
+    get onGenerateInitialRoutes
+    get reportsRouteUpdateToEngine
+    fun createState
+    static fun canPop (context)
+    static fun popUntil (context, predicate)
+    static fun removeRoute (context, route)
+    static fun removeRouteBelow (context, anchorRoute)
+    static fun of (context, {rootNavigator})
+    static fun maybeOf (context, {rootNavigator})
+    static fun defaultGenerateInitialRoutes (navigator, initialRouteName)
+    static get defaultRouteName
+}
+external class NavigatorState {
+    construct
+    get focusScopeNode
+    get userGestureInProgressNotifier
+    fun initState
+    fun restoreState
+    fun didToggleBucket
+    get restorationId
+    fun didChangeDependencies
+    fun didUpdateWidget
+    fun dispose
+    get overlay
+    fun pushNamed
+    fun restorablePushNamed
+    fun pushReplacementNamed
+    fun restorablePushReplacementNamed
+    fun popAndPushNamed
+    fun restorablePopAndPushNamed
+    fun pushNamedAndRemoveUntil
+    fun restorablePushNamedAndRemoveUntil
+    fun push
+    fun restorablePush
+    fun pushReplacement
+    fun restorablePushReplacement
+    fun pushAndRemoveUntil
+    fun restorablePushAndRemoveUntil
+    fun replace
+    fun restorableReplace
+    fun replaceRouteBelow
+    fun restorableReplaceRouteBelow
+    fun canPop
+    fun maybePop
+    fun pop
+    fun popUntil
+    fun removeRoute
+    fun removeRouteBelow
+    fun finalizeRoute
+    get userGestureInProgress
+    fun didStartUserGesture
+    fun didStopUserGesture
+    fun build
+}
+external class RestorableRouteFuture {
+    construct 
+    get navigatorFinder
+    get onPresent
+    get onComplete
+    fun present
+    get isPresent
+    get route
+    fun createDefaultValue
+    fun initWithValue
+    fun toPrimitives
+    fun fromPrimitives
+    fun dispose
+    get enabled
+}

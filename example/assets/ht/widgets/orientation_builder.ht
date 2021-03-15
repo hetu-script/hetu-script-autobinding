@@ -1,0 +1,5 @@
+external class OrientationBuilder {
+    construct 
+    get builder
+    fun build
+}

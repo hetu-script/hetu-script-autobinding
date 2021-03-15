@@ -1,0 +1,329 @@
+external class DebugSemanticsDumpOrder {
+    static var inverseHitTest
+    static var traversalOrder
+}
+external class SemanticsTag {
+    construct 
+    get name
+    fun toString
+}
+external class CustomSemanticsAction {
+    construct 
+    construct overridingAction
+    get label
+    get hint
+    get action
+    get hashCode
+    fun toString
+    static fun getIdentifier (action)
+    static fun getAction (id)
+}
+external class SemanticsData {
+    construct 
+    get flags
+    get actions
+    get label
+    get value
+    get increasedValue
+    get decreasedValue
+    get hint
+    get textDirection
+    get textSelection
+    get scrollChildCount
+    get scrollIndex
+    get scrollPosition
+    get scrollExtentMax
+    get scrollExtentMin
+    get platformViewId
+    get maxValueLength
+    get currentValueLength
+    get rect
+    get tags
+    get transform
+    get elevation
+    get thickness
+    get customSemanticsActionIds
+    fun hasFlag
+    fun hasAction
+    fun toStringShort
+    fun debugFillProperties
+    get hashCode
+}
+external class SemanticsHintOverrides {
+    construct 
+    get onTapHint
+    get onLongPressHint
+    get isNotEmpty
+    get hashCode
+    fun debugFillProperties
+}
+external class SemanticsProperties {
+    construct 
+    get enabled
+    get checked
+    get toggled
+    get selected
+    get button
+    get link
+    get header
+    get textField
+    get slider
+    get readOnly
+    get focusable
+    get focused
+    get inMutuallyExclusiveGroup
+    get hidden
+    get obscured
+    get multiline
+    get scopesRoute
+    get namesRoute
+    get image
+    get liveRegion
+    get maxValueLength
+    get currentValueLength
+    get label
+    get value
+    get increasedValue
+    get decreasedValue
+    get hint
+    get hintOverrides
+    get textDirection
+    get sortKey
+    get tagForChildren
+    get onTap
+    get onLongPress
+    get onScrollLeft
+    get onScrollRight
+    get onScrollUp
+    get onScrollDown
+    get onIncrease
+    get onDecrease
+    get onCopy
+    get onCut
+    get onPaste
+    get onMoveCursorForwardByCharacter
+    get onMoveCursorBackwardByCharacter
+    get onMoveCursorForwardByWord
+    get onMoveCursorBackwardByWord
+    get onSetSelection
+    get onDidGainAccessibilityFocus
+    get onDidLoseAccessibilityFocus
+    get onDismiss
+    get customSemanticsActions
+    fun debugFillProperties
+    fun toStringShort
+}
+external class SemanticsNode {
+    construct 
+    construct root
+    get key
+    get id
+    var parentSemanticsClipRect
+    var parentPaintClipRect
+    var elevationAdjustment
+    var indexInParent
+    var tags
+    get transform
+    set transform(value)
+    get rect
+    set rect(value)
+    get isInvisible
+    get isMergedIntoParent
+    set isMergedIntoParent(value)
+    get isPartOfNodeMerging
+    get mergeAllDescendantsIntoThisNode
+    get hasChildren
+    get childrenCount
+    fun visitChildren
+    get owner
+    get parent
+    fun redepthChildren
+    fun attach
+    fun detach
+    fun isTagged
+    fun hasFlag
+    get label
+    get value
+    get decreasedValue
+    get increasedValue
+    get hint
+    get elevation
+    get thickness
+    get hintOverrides
+    get textDirection
+    get sortKey
+    get textSelection
+    get isMultiline
+    get scrollChildCount
+    get scrollIndex
+    get scrollPosition
+    get scrollExtentMax
+    get scrollExtentMin
+    get platformViewId
+    get maxValueLength
+    get currentValueLength
+    fun updateWith
+    fun getSemanticsData
+    fun sendEvent
+    fun toStringShort
+    fun debugFillProperties
+    fun toStringDeep
+    fun toDiagnosticsNode
+    fun debugDescribeChildren
+    fun debugListChildrenInOrder
+}
+external class SemanticsOwner {
+    construct
+    get rootSemanticsNode
+    fun dispose
+    fun sendSemanticsUpdate
+    fun performAction
+    fun performActionAt
+    fun toString
+}
+external class SemanticsConfiguration {
+    construct
+    var explicitChildNodes
+    var isBlockingSemanticsOfPreviouslyPaintedNodes
+    get isSemanticBoundary
+    set isSemanticBoundary(value)
+    get hasBeenAnnotated
+    get onTap
+    set onTap(value)
+    get onLongPress
+    set onLongPress(value)
+    get onScrollLeft
+    set onScrollLeft(value)
+    get onDismiss
+    set onDismiss(value)
+    get onScrollRight
+    set onScrollRight(value)
+    get onScrollUp
+    set onScrollUp(value)
+    get onScrollDown
+    set onScrollDown(value)
+    get onIncrease
+    set onIncrease(value)
+    get onDecrease
+    set onDecrease(value)
+    get onCopy
+    set onCopy(value)
+    get onCut
+    set onCut(value)
+    get onPaste
+    set onPaste(value)
+    get onShowOnScreen
+    set onShowOnScreen(value)
+    get onMoveCursorForwardByCharacter
+    set onMoveCursorForwardByCharacter(value)
+    get onMoveCursorBackwardByCharacter
+    set onMoveCursorBackwardByCharacter(value)
+    get onMoveCursorForwardByWord
+    set onMoveCursorForwardByWord(value)
+    get onMoveCursorBackwardByWord
+    set onMoveCursorBackwardByWord(value)
+    get onSetSelection
+    set onSetSelection(value)
+    get onDidGainAccessibilityFocus
+    set onDidGainAccessibilityFocus(value)
+    get onDidLoseAccessibilityFocus
+    set onDidLoseAccessibilityFocus(value)
+    fun getActionHandler
+    get sortKey
+    set sortKey(value)
+    get indexInParent
+    set indexInParent(value)
+    get scrollChildCount
+    set scrollChildCount(value)
+    get scrollIndex
+    set scrollIndex(value)
+    get platformViewId
+    set platformViewId(value)
+    get maxValueLength
+    set maxValueLength(value)
+    get currentValueLength
+    set currentValueLength(value)
+    get isMergingSemanticsOfDescendants
+    set isMergingSemanticsOfDescendants(value)
+    get customSemanticsActions
+    set customSemanticsActions(value)
+    get label
+    set label(value)
+    get value
+    set value(value)
+    get decreasedValue
+    set decreasedValue(value)
+    get increasedValue
+    set increasedValue(value)
+    get hint
+    set hint(value)
+    get hintOverrides
+    set hintOverrides(value)
+    get elevation
+    set elevation(value)
+    get thickness
+    set thickness(value)
+    get scopesRoute
+    set scopesRoute(value)
+    get namesRoute
+    set namesRoute(value)
+    get isImage
+    set isImage(value)
+    get liveRegion
+    set liveRegion(value)
+    get textDirection
+    set textDirection(value)
+    get isSelected
+    set isSelected(value)
+    get isEnabled
+    set isEnabled(value)
+    get isChecked
+    set isChecked(value)
+    get isToggled
+    set isToggled(value)
+    get isInMutuallyExclusiveGroup
+    set isInMutuallyExclusiveGroup(value)
+    get isFocusable
+    set isFocusable(value)
+    get isFocused
+    set isFocused(value)
+    get isButton
+    set isButton(value)
+    get isLink
+    set isLink(value)
+    get isHeader
+    set isHeader(value)
+    get isSlider
+    set isSlider(value)
+    get isHidden
+    set isHidden(value)
+    get isTextField
+    set isTextField(value)
+    get isReadOnly
+    set isReadOnly(value)
+    get isObscured
+    set isObscured(value)
+    get isMultiline
+    set isMultiline(value)
+    get hasImplicitScrolling
+    set hasImplicitScrolling(value)
+    get textSelection
+    set textSelection(value)
+    get scrollPosition
+    set scrollPosition(value)
+    get scrollExtentMax
+    set scrollExtentMax(value)
+    get scrollExtentMin
+    set scrollExtentMin(value)
+    get tagsForChildren
+    fun addTagForChildren
+    fun isCompatibleWith
+    fun absorb
+    fun copy
+}
+external class OrdinalSortKey {
+    construct 
+    get order
+    fun doCompare
+    fun debugFillProperties
+}

@@ -1,0 +1,42 @@
+external class PageController {
+    construct 
+    get initialPage
+    get keepPage
+    get viewportFraction
+    get page
+    fun animateToPage
+    fun jumpToPage
+    fun nextPage
+    fun previousPage
+    fun createScrollPosition
+    fun attach
+}
+external class PageMetrics {
+    construct 
+    get viewportFraction
+    fun copyWith
+    get page
+}
+external class PageScrollPhysics {
+    construct 
+    fun applyTo
+    fun createBallisticSimulation
+    get allowImplicitScrolling
+}
+external class PageView {
+    construct 
+    construct builder
+    construct custom
+    get allowImplicitScrolling
+    get restorationId
+    get scrollDirection
+    get reverse
+    get controller
+    get physics
+    get pageSnapping
+    get onPageChanged
+    get childrenDelegate
+    get dragStartBehavior
+    get clipBehavior
+    fun createState
+}

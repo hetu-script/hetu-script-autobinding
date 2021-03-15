@@ -1,0 +1,7 @@
+external class SystemSoundType {
+    static var click
+    static var alert
+}
+external class SystemSound {
+    static fun play (type)
+}

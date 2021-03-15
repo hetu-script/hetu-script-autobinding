@@ -1,0 +1,254 @@
+external class BlendMode {
+    static var clear
+    static var src
+    static var dst
+    static var srcOver
+    static var dstOver
+    static var srcIn
+    static var dstIn
+    static var srcOut
+    static var dstOut
+    static var srcATop
+    static var dstATop
+    static var xor
+    static var plus
+    static var modulate
+    static var screen
+    static var overlay
+    static var darken
+    static var lighten
+    static var colorDodge
+    static var colorBurn
+    static var hardLight
+    static var softLight
+    static var difference
+    static var exclusion
+    static var multiply
+    static var hue
+    static var saturation
+    static var color
+    static var luminosity
+}
+external class FilterQuality {
+    static var none
+    static var low
+    static var medium
+    static var high
+}
+external class StrokeCap {
+    static var butt
+    static var round
+    static var square
+}
+external class StrokeJoin {
+    static var miter
+    static var round
+    static var bevel
+}
+external class PaintingStyle {
+    static var fill
+    static var stroke
+}
+external class Clip {
+    static var none
+    static var hardEdge
+    static var antiAlias
+    static var antiAliasWithSaveLayer
+}
+external class ImageByteFormat {
+    static var rawRgba
+    static var rawUnmodified
+    static var png
+}
+external class PixelFormat {
+    static var rgba8888
+    static var bgra8888
+}
+external class PathFillType {
+    static var nonZero
+    static var evenOdd
+}
+external class PathOperation {
+    static var difference
+    static var intersect
+    static var union
+    static var xor
+    static var reverseDifference
+}
+external class BlurStyle {
+    static var normal
+    static var solid
+    static var outer
+    static var inner
+}
+external class TileMode {
+    static var clamp
+    static var repeated
+    static var mirror
+    static var decal
+}
+external class VertexMode {
+    static var triangles
+    static var triangleStrip
+    static var triangleFan
+}
+external class PointMode {
+    static var points
+    static var lines
+    static var polygon
+}
+external class ClipOp {
+    static var difference
+    static var intersect
+}
+external class Color {
+    construct 
+    construct fromARGB
+    construct fromRGBO
+    get value
+    get alpha
+    get opacity
+    get red
+    get green
+    get blue
+    fun withAlpha
+    fun withOpacity
+    fun withRed
+    fun withGreen
+    fun withBlue
+    fun computeLuminance
+    get hashCode
+    fun toString
+    static fun lerp (a, b, t)
+    static fun alphaBlend (foreground, background)
+    static fun getAlphaFromOpacity (opacity)
+}
+external class Paint {
+    construct 
+    get isAntiAlias
+    set isAntiAlias(value)
+    get color
+    set color(value)
+    get blendMode
+    set blendMode(value)
+    get style
+    set style(value)
+    get strokeWidth
+    set strokeWidth(value)
+    get strokeCap
+    set strokeCap(value)
+    get strokeJoin
+    set strokeJoin(value)
+    get strokeMiterLimit
+    set strokeMiterLimit(value)
+    get maskFilter
+    set maskFilter(value)
+    get filterQuality
+    set filterQuality(value)
+    get shader
+    set shader(value)
+    get colorFilter
+    set colorFilter(value)
+    get imageFilter
+    set imageFilter(value)
+    get invertColors
+    set invertColors(value)
+    fun toString
+    static var enableDithering
+}
+external class Path {
+    construct 
+    static fun combine (operation, path1, path2)
+}
+external class Tangent {
+    construct 
+    get position
+    get vector
+    get angle
+}
+external class MaskFilter {
+    construct blur
+    get hashCode
+    fun toString
+}
+external class ColorFilter {
+    construct mode
+    construct matrix
+    construct linearToSrgbGamma
+    construct srgbToLinearGamma
+    get hashCode
+    fun toString
+}
+external class Gradient {
+    construct linear
+    construct radial
+    construct sweep
+}
+external class ImageShader {
+    construct 
+}
+external class Vertices {
+    construct 
+    construct raw
+}
+external class Canvas {
+    construct 
+    fun save
+    fun saveLayer
+    fun restore
+    fun getSaveCount
+    fun translate
+    fun scale
+    fun rotate
+    fun skew
+    fun transform
+    fun clipRect
+    fun clipRRect
+    fun clipPath
+    fun drawColor
+    fun drawLine
+    fun drawPaint
+    fun drawRect
+    fun drawRRect
+    fun drawDRRect
+    fun drawOval
+    fun drawCircle
+    fun drawArc
+    fun drawPath
+    fun drawImage
+    fun drawImageRect
+    fun drawImageNine
+    fun drawPicture
+    fun drawParagraph
+    fun drawPoints
+    fun drawRawPoints
+    fun drawVertices
+    fun drawAtlas
+    fun drawRawAtlas
+    fun drawShadow
+}
+external class PictureRecorder {
+    construct 
+    get isRecording
+    fun endRecording
+}
+external class Shadow {
+    construct 
+    get color
+    get offset
+    get blurRadius
+    get blurSigma
+    fun toPaint
+    fun scale
+    get hashCode
+    fun toString
+    static fun convertRadiusToSigma (radius)
+    static fun lerp (a, b, t)
+    static fun lerpList (a, b, t)
+}
+external class ImmutableBuffer {
+    static fun fromUint8List (list)
+}
+external class ImageDescriptor {
+    static fun encoded (buffer)
+}

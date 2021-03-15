@@ -1,0 +1,17 @@
+external class ImageCache {
+    construct
+    get maximumSize
+    set maximumSize(value)
+    get currentSize
+    get maximumSizeBytes
+    set maximumSizeBytes(value)
+    get currentSizeBytes
+    fun clear
+    fun evict
+    fun putIfAbsent
+    fun statusForKey
+    fun containsKey
+    get liveImageCount
+    get pendingImageCount
+    fun clearLiveImages
+}

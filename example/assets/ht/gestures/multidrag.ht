@@ -1,0 +1,21 @@
+external class ImmediateMultiDragGestureRecognizer {
+    construct 
+    fun createNewPointerState
+    get debugDescription
+}
+external class HorizontalMultiDragGestureRecognizer {
+    construct 
+    fun createNewPointerState
+    get debugDescription
+}
+external class VerticalMultiDragGestureRecognizer {
+    construct 
+    fun createNewPointerState
+    get debugDescription
+}
+external class DelayedMultiDragGestureRecognizer {
+    construct 
+    get delay
+    fun createNewPointerState
+    get debugDescription
+}

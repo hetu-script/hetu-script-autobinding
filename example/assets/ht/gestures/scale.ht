@@ -1,0 +1,38 @@
+external class ScaleStartDetails {
+    construct 
+    get focalPoint
+    get localFocalPoint
+    get pointerCount
+    fun toString
+}
+external class ScaleUpdateDetails {
+    construct 
+    get focalPoint
+    get localFocalPoint
+    get scale
+    get horizontalScale
+    get verticalScale
+    get rotation
+    get pointerCount
+    fun toString
+}
+external class ScaleEndDetails {
+    construct 
+    get velocity
+    get pointerCount
+    fun toString
+}
+external class ScaleGestureRecognizer {
+    construct 
+    var dragStartBehavior
+    var onStart
+    var onUpdate
+    var onEnd
+    fun addAllowedPointer
+    fun handleEvent
+    fun acceptGesture
+    fun rejectGesture
+    fun didStopTrackingLastPointer
+    fun dispose
+    get debugDescription
+}

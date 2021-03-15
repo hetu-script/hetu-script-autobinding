@@ -1,0 +1,16 @@
+external class OverScrollHeaderStretchConfiguration {
+    construct 
+    get stretchTriggerOffset
+    get onStretchTrigger
+}
+external class PersistentHeaderShowOnScreenConfiguration {
+    construct 
+    get minShowOnScreenExtent
+    get maxShowOnScreenExtent
+}
+external class FloatingHeaderSnapConfiguration {
+    construct 
+    get vsync
+    get curve
+    get duration
+}

@@ -1,0 +1,9 @@
+external class FlutterLogoStyle {
+    static var markOnly
+    static var horizontal
+    static var stacked
+}
+external class FlutterLogoDecoration {
+    construct 
+    static fun lerp (a, b, t)
+}

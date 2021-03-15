@@ -1,0 +1,21 @@
+external class LocalHistoryEntry {
+    construct 
+    get onRemove
+    fun remove
+}
+external class RouteObserver {
+    construct
+    fun subscribe
+    fun unsubscribe
+    fun didPop
+    fun didPush
+}
+external class RawDialogRoute {
+    construct 
+    get barrierDismissible
+    get barrierLabel
+    get barrierColor
+    get transitionDuration
+    fun buildPage
+    fun buildTransitions
+}

@@ -1,0 +1,48 @@
+external class PlatformViewsService {
+    static fun initAndroidView ({id, viewType, layoutDirection, creationParams, creationParamsCodec, onFocus})
+    static fun initSurfaceAndroidView ({id, viewType, layoutDirection, creationParams, creationParamsCodec, onFocus})
+    static fun initUiKitView ({id, viewType, layoutDirection, creationParams, creationParamsCodec})
+}
+external class AndroidPointerProperties {
+    construct 
+    get id
+    get toolType
+    fun toString
+    static get kToolTypeUnknown
+    static get kToolTypeFinger
+    static get kToolTypeStylus
+    static get kToolTypeMouse
+    static get kToolTypeEraser
+}
+external class AndroidPointerCoords {
+    construct 
+    get orientation
+    get pressure
+    get size
+    get toolMajor
+    get toolMinor
+    get touchMajor
+    get touchMinor
+    get x
+    get y
+    fun toString
+}
+external class AndroidMotionEvent {
+    construct 
+    get downTime
+    get eventTime
+    get action
+    get pointerCount
+    get pointerProperties
+    get pointerCoords
+    get metaState
+    get buttonState
+    get xPrecision
+    get yPrecision
+    get deviceId
+    get edgeFlags
+    get source
+    get flags
+    get motionEventId
+    fun toString
+}

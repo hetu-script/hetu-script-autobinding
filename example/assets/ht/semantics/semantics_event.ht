@@ -1,0 +1,23 @@
+external class AnnounceSemanticsEvent {
+    construct 
+    get message
+    get textDirection
+    fun getDataMap
+}
+external class TooltipSemanticsEvent {
+    construct 
+    get message
+    fun getDataMap
+}
+external class LongPressSemanticsEvent {
+    construct 
+    fun getDataMap
+}
+external class TapSemanticEvent {
+    construct 
+    fun getDataMap
+}
+external class UpdateLiveRegionEvent {
+    construct 
+    fun getDataMap
+}

@@ -1,0 +1,16 @@
+external class Accumulator {
+    construct 
+    get value
+    fun increment
+}
+external class InlineSpanSemanticsInformation {
+    construct 
+    get text
+    get semanticsLabel
+    get recognizer
+    get isPlaceholder
+    get requiresOwnNode
+    get hashCode
+    fun toString
+    static get placeholder
+}

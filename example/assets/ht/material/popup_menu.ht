@@ -1,0 +1,53 @@
+external class PopupMenuDivider {
+    construct 
+    get height
+    fun represents
+    fun createState
+}
+external class PopupMenuItem {
+    construct 
+    get value
+    get enabled
+    get height
+    get textStyle
+    get mouseCursor
+    get child
+    fun represents
+    fun createState
+}
+external class PopupMenuItemState {
+    construct
+    fun buildChild
+    fun handleTap
+    fun build
+}
+external class CheckedPopupMenuItem {
+    construct 
+    get checked
+    get child
+    fun createState
+}
+external class PopupMenuButton {
+    construct 
+    get itemBuilder
+    get initialValue
+    get onSelected
+    get onCanceled
+    get tooltip
+    get elevation
+    get padding
+    get child
+    get icon
+    get offset
+    get enabled
+    get shape
+    get color
+    get enableFeedback
+    get iconSize
+    fun createState
+}
+external class PopupMenuButtonState {
+    construct
+    fun showButtonMenu
+    fun build
+}

@@ -1,0 +1,9 @@
+external class TlsException {
+    construct 
+}
+external class HandshakeException {
+    construct 
+}
+external class CertificateException {
+    construct 
+}

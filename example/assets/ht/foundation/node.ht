@@ -1,0 +1,13 @@
+external class AbstractNode {
+    construct
+    get depth
+    fun redepthChild
+    fun redepthChildren
+    get owner
+    get attached
+    fun attach
+    fun detach
+    get parent
+    fun adoptChild
+    fun dropChild
+}

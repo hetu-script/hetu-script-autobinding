@@ -1,0 +1,115 @@
+external class SawTooth {
+    construct 
+    get count
+    fun transformInternal
+    fun toString
+}
+external class Interval {
+    construct 
+    get begin
+    get end
+    get curve
+    fun transformInternal
+    fun toString
+}
+external class Threshold {
+    construct 
+    get threshold
+    fun transformInternal
+}
+external class Cubic {
+    construct 
+    get a
+    get b
+    get c
+    get d
+    fun transformInternal
+    fun toString
+}
+external class Curve2DSample {
+    construct 
+    get t
+    get value
+    fun toString
+}
+external class CatmullRomSpline {
+    construct 
+    construct precompute
+    get samplingSeed
+    fun transformInternal
+}
+external class CatmullRomCurve {
+    construct 
+    construct precompute
+    get controlPoints
+    get tension
+    fun transformInternal
+    static fun validateControlPoints (controlPoints, {tension, reasons})
+}
+external class FlippedCurve {
+    construct 
+    get curve
+    fun transformInternal
+    fun toString
+}
+external class ElasticInCurve {
+    construct 
+    get period
+    fun transformInternal
+    fun toString
+}
+external class ElasticOutCurve {
+    construct 
+    get period
+    fun transformInternal
+    fun toString
+}
+external class ElasticInOutCurve {
+    construct 
+    get period
+    fun transformInternal
+    fun toString
+}
+external class Curves {
+    static get linear
+    static get decelerate
+    static get fastLinearToSlowEaseIn
+    static get ease
+    static get easeIn
+    static get easeInToLinear
+    static get easeInSine
+    static get easeInQuad
+    static get easeInCubic
+    static get easeInQuart
+    static get easeInQuint
+    static get easeInExpo
+    static get easeInCirc
+    static get easeInBack
+    static get easeOut
+    static get linearToEaseOut
+    static get easeOutSine
+    static get easeOutQuad
+    static get easeOutCubic
+    static get easeOutQuart
+    static get easeOutQuint
+    static get easeOutExpo
+    static get easeOutCirc
+    static get easeOutBack
+    static get easeInOut
+    static get easeInOutSine
+    static get easeInOutQuad
+    static get easeInOutCubic
+    static get easeInOutQuart
+    static get easeInOutQuint
+    static get easeInOutExpo
+    static get easeInOutCirc
+    static get easeInOutBack
+    static get fastOutSlowIn
+    static get slowMiddle
+    static get bounceIn
+    static get bounceOut
+    static get bounceInOut
+    static get elasticIn
+    static get elasticOut
+    static get elasticInOut
+}

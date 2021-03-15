@@ -1,0 +1,47 @@
+external class DatePickerDateTimeOrder {
+    static var date_time_dayPeriod
+    static var date_dayPeriod_time
+    static var time_dayPeriod_date
+    static var dayPeriod_time_date
+}
+external class DatePickerDateOrder {
+    static var dmy
+    static var mdy
+    static var ymd
+    static var ydm
+}
+external class DefaultCupertinoLocalizations {
+    construct 
+    fun datePickerYear
+    fun datePickerMonth
+    fun datePickerDayOfMonth
+    fun datePickerHour
+    fun datePickerHourSemanticsLabel
+    fun datePickerMinute
+    fun datePickerMinuteSemanticsLabel
+    fun datePickerMediumDate
+    get datePickerDateOrder
+    get datePickerDateTimeOrder
+    get anteMeridiemAbbreviation
+    get postMeridiemAbbreviation
+    get todayLabel
+    get alertDialogLabel
+    fun tabSemanticsLabel
+    fun timerPickerHour
+    fun timerPickerMinute
+    fun timerPickerSecond
+    fun timerPickerHourLabel
+    get timerPickerHourLabels
+    fun timerPickerMinuteLabel
+    get timerPickerMinuteLabels
+    fun timerPickerSecondLabel
+    get timerPickerSecondLabels
+    get cutButtonLabel
+    get copyButtonLabel
+    get pasteButtonLabel
+    get selectAllButtonLabel
+    get searchTextFieldPlaceholderLabel
+    get modalBarrierDismissLabel
+    static fun load (locale)
+    static get delegate
+}

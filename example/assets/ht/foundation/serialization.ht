@@ -1,0 +1,29 @@
+external class WriteBuffer {
+    construct 
+    fun putUint8
+    fun putUint16
+    fun putUint32
+    fun putInt32
+    fun putInt64
+    fun putFloat64
+    fun putUint8List
+    fun putInt32List
+    fun putInt64List
+    fun putFloat64List
+    fun done
+}
+external class ReadBuffer {
+    construct 
+    get data
+    get hasRemaining
+    fun getUint8
+    fun getUint16
+    fun getUint32
+    fun getInt32
+    fun getInt64
+    fun getFloat64
+    fun getUint8List
+    fun getInt32List
+    fun getInt64List
+    fun getFloat64List
+}

@@ -1,0 +1,14 @@
+external class IconThemeData {
+    construct 
+    construct fallback
+    get color
+    get size
+    fun copyWith
+    fun merge
+    fun resolve
+    get isConcrete
+    get opacity
+    get hashCode
+    fun debugFillProperties
+    static fun lerp (a, b, t)
+}

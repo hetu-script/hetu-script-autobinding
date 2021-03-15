@@ -1,0 +1,27 @@
+external class BottomNavigationBarType {
+    static var fixed
+    static var shifting
+}
+external class BottomNavigationBar {
+    construct 
+    get items
+    get onTap
+    get currentIndex
+    get elevation
+    get type
+    get backgroundColor
+    get iconSize
+    get selectedItemColor
+    get unselectedItemColor
+    get selectedIconTheme
+    get unselectedIconTheme
+    get selectedLabelStyle
+    get unselectedLabelStyle
+    get selectedFontSize
+    get unselectedFontSize
+    get showUnselectedLabels
+    get showSelectedLabels
+    get mouseCursor
+    get fixedColor
+    fun createState
+}

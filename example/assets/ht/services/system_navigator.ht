@@ -1,0 +1,5 @@
+external class SystemNavigator {
+    static fun pop ({animated})
+    static fun routeInformationUpdated ({location, state})
+    static fun routeUpdated ({routeName, previousRouteName})
+}

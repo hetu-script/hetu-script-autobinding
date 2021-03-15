@@ -1,0 +1,5 @@
+external class ElevationOverlay {
+    static fun applyOverlay (context, color, elevation)
+    static fun overlayColor (context, elevation)
+    static fun colorWithOverlay (surface, overlay, elevation)
+}

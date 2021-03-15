@@ -1,0 +1,15 @@
+external class VerticalDragGestureRecognizer {
+    construct 
+    fun isFlingGesture
+    get debugDescription
+}
+external class HorizontalDragGestureRecognizer {
+    construct 
+    fun isFlingGesture
+    get debugDescription
+}
+external class PanGestureRecognizer {
+    construct 
+    fun isFlingGesture
+    get debugDescription
+}

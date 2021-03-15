@@ -1,0 +1,4 @@
+external class Brightness {
+    static var dark
+    static var light
+}

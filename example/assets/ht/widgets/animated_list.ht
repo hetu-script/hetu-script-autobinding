@@ -1,0 +1,37 @@
+external class AnimatedList {
+    construct 
+    get itemBuilder
+    get initialItemCount
+    get scrollDirection
+    get reverse
+    get controller
+    get primary
+    get physics
+    get shrinkWrap
+    get padding
+    fun createState
+    static fun of (context)
+    static fun maybeOf (context)
+}
+external class AnimatedListState {
+    construct
+    fun insertItem
+    fun removeItem
+    fun build
+}
+external class SliverAnimatedList {
+    construct 
+    get itemBuilder
+    get initialItemCount
+    fun createState
+    static fun of (context)
+    static fun maybeOf (context)
+}
+external class SliverAnimatedListState {
+    construct
+    fun initState
+    fun dispose
+    fun insertItem
+    fun removeItem
+    fun build
+}

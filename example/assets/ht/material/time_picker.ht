@@ -1,0 +1,4 @@
+external class TimePickerEntryMode {
+    static var dial
+    static var input
+}

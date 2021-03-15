@@ -1,0 +1,14 @@
+external class TabBarTheme {
+    construct 
+    get indicator
+    get indicatorSize
+    get labelColor
+    get labelPadding
+    get labelStyle
+    get unselectedLabelColor
+    get unselectedLabelStyle
+    fun copyWith
+    get hashCode
+    static fun of (context)
+    static fun lerp (a, b, t)
+}

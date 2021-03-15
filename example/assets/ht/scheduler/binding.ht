@@ -1,0 +1,7 @@
+external class SchedulerPhase {
+    static var idle
+    static var transientCallbacks
+    static var midFrameMicrotasks
+    static var persistentCallbacks
+    static var postFrameCallbacks
+}

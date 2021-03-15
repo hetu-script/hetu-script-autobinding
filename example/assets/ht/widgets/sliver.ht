@@ -1,0 +1,105 @@
+external class SliverChildBuilderDelegate {
+    construct 
+    get builder
+    get childCount
+    get addAutomaticKeepAlives
+    get addRepaintBoundaries
+    get addSemanticIndexes
+    get semanticIndexOffset
+    get semanticIndexCallback
+    get findChildIndexCallback
+    fun findIndexByKey
+    fun build
+    get estimatedChildCount
+    fun shouldRebuild
+}
+external class SliverChildListDelegate {
+    construct 
+    construct fixed
+    get addAutomaticKeepAlives
+    get addRepaintBoundaries
+    get addSemanticIndexes
+    get semanticIndexOffset
+    get semanticIndexCallback
+    get children
+    fun findIndexByKey
+    fun build
+    get estimatedChildCount
+    fun shouldRebuild
+}
+external class SliverList {
+    construct 
+    fun createElement
+    fun createRenderObject
+}
+external class SliverFixedExtentList {
+    construct 
+    get itemExtent
+    fun createRenderObject
+    fun updateRenderObject
+}
+external class SliverGrid {
+    construct 
+    construct count
+    construct extent
+    get gridDelegate
+    fun createRenderObject
+    fun updateRenderObject
+    fun estimateMaxScrollOffset
+}
+external class SliverMultiBoxAdaptorElement {
+    construct 
+    get widget
+    get renderObject
+    fun update
+    fun performRebuild
+    fun createChild
+    fun updateChild
+    fun forgetChild
+    fun removeChild
+    fun estimateMaxScrollOffset
+    get estimatedChildCount
+    get childCount
+    fun didStartLayout
+    fun didFinishLayout
+    fun debugAssertChildListLocked
+    fun didAdoptChild
+    fun setDidUnderflow
+    fun insertRenderObjectChild
+    fun moveRenderObjectChild
+    fun removeRenderObjectChild
+    fun visitChildren
+    fun debugVisitOnstageChildren
+}
+external class SliverOpacity {
+    construct 
+    get opacity
+    get alwaysIncludeSemantics
+    fun createRenderObject
+    fun updateRenderObject
+    fun debugFillProperties
+}
+external class SliverIgnorePointer {
+    construct 
+    get ignoring
+    get ignoringSemantics
+    fun createRenderObject
+    fun updateRenderObject
+    fun debugFillProperties
+}
+external class SliverOffstage {
+    construct 
+    get offstage
+    fun createRenderObject
+    fun updateRenderObject
+    fun debugFillProperties
+    fun createElement
+}
+external class KeepAlive {
+    construct 
+    get keepAlive
+    fun applyParentData
+    fun debugCanApplyOutOfTurn
+    get debugTypicalAncestorWidgetClass
+    fun debugFillProperties
+}

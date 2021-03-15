@@ -1,0 +1,29 @@
+external class MaterialType {
+    static var canvas
+    static var card
+    static var circle
+    static var button
+    static var transparency
+}
+external class Material {
+    construct 
+    get child
+    get type
+    get elevation
+    get color
+    get shadowColor
+    get textStyle
+    get shape
+    get borderOnForeground
+    get clipBehavior
+    get animationDuration
+    get borderRadius
+    fun createState
+    fun debugFillProperties
+    static fun of (context)
+    static get defaultSplashRadius
+}
+external class ShapeBorderTween {
+    construct 
+    fun lerp
+}

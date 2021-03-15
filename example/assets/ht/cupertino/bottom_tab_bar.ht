@@ -1,0 +1,15 @@
+external class CupertinoTabBar {
+    construct 
+    get items
+    get onTap
+    get currentIndex
+    get backgroundColor
+    get activeColor
+    get inactiveColor
+    get iconSize
+    get border
+    get preferredSize
+    fun opaque
+    fun build
+    fun copyWith
+}

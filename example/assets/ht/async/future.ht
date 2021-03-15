@@ -1,0 +1,6 @@
+external class TimeoutException {
+    construct 
+    get message
+    get duration
+    fun toString
+}

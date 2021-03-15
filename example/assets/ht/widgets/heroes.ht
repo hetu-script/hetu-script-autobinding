@@ -1,0 +1,31 @@
+external class HeroFlightDirection {
+    static var push
+    static var pop
+}
+external class Hero {
+    construct 
+    get tag
+    get createRectTween
+    get child
+    get flightShuttleBuilder
+    get placeholderBuilder
+    get transitionOnUserGestures
+    fun createState
+    fun debugFillProperties
+}
+external class HeroController {
+    construct 
+    get createRectTween
+    fun didPush
+    fun didPop
+    fun didReplace
+    fun didStartUserGesture
+    fun didStopUserGesture
+}
+external class HeroMode {
+    construct 
+    get child
+    get enabled
+    fun build
+    fun debugFillProperties
+}

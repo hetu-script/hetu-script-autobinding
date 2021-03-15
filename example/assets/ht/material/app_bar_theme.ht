@@ -1,0 +1,23 @@
+external class AppBarTheme {
+    construct 
+    get brightness
+    get backgroundColor
+    get foregroundColor
+    get elevation
+    get shadowColor
+    get iconTheme
+    get actionsIconTheme
+    get textTheme
+    get centerTitle
+    get titleSpacing
+    get toolbarTextStyle
+    get titleTextStyle
+    get systemOverlayStyle
+    get backwardsCompatibility
+    get color
+    fun copyWith
+    get hashCode
+    fun debugFillProperties
+    static fun of (context)
+    static fun lerp (a, b, t)
+}

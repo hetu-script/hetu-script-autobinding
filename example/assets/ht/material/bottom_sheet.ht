@@ -1,0 +1,15 @@
+external class BottomSheet {
+    construct 
+    get animationController
+    get onClosing
+    get builder
+    get enableDrag
+    get onDragStart
+    get onDragEnd
+    get backgroundColor
+    get elevation
+    get shape
+    get clipBehavior
+    fun createState
+    static fun createAnimationController (vsync)
+}

@@ -1,0 +1,23 @@
+external class CupertinoPicker {
+    construct 
+    construct builder
+    get diameterRatio
+    get backgroundColor
+    get offAxisFraction
+    get useMagnifier
+    get magnification
+    get scrollController
+    get itemExtent
+    get squeeze
+    get onSelectedItemChanged
+    get childDelegate
+    get selectionOverlay
+    fun createState
+}
+external class CupertinoPickerDefaultSelectionOverlay {
+    construct 
+    get capLeftEdge
+    get capRightEdge
+    get background
+    fun build
+}

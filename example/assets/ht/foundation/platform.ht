@@ -1,0 +1,8 @@
+external class TargetPlatform {
+    static var android
+    static var fuchsia
+    static var iOS
+    static var linux
+    static var macOS
+    static var windows
+}

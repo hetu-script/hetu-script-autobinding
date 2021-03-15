@@ -1,0 +1,16 @@
+external class LicenseParagraph {
+    construct 
+    get text
+    get indent
+    static get centeredIndent
+}
+external class LicenseEntryWithLineBreaks {
+    construct 
+    get packages
+    get text
+    get paragraphs
+}
+external class LicenseRegistry {
+    static fun addLicense (collector)
+    static fun licenses
+}

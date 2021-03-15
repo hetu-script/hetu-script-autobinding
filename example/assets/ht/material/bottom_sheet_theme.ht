@@ -1,0 +1,13 @@
+external class BottomSheetThemeData {
+    construct 
+    get backgroundColor
+    get elevation
+    get modalBackgroundColor
+    get modalElevation
+    get shape
+    get clipBehavior
+    fun copyWith
+    get hashCode
+    fun debugFillProperties
+    static fun lerp (a, b, t)
+}

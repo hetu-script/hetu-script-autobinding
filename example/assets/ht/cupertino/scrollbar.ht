@@ -1,0 +1,10 @@
+external class CupertinoScrollbar {
+    construct 
+    get thicknessWhileDragging
+    get radiusWhileDragging
+    fun createState
+    static get defaultThickness
+    static get defaultThicknessWhileDragging
+    static get defaultRadius
+    static get defaultRadiusWhileDragging
+}

@@ -1,0 +1,9 @@
+external class CupertinoFormRow {
+    construct 
+    get prefix
+    get padding
+    get helper
+    get error
+    get child
+    fun build
+}

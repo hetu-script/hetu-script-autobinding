@@ -1,0 +1,28 @@
+external class RenderObjectToWidgetAdapter {
+    construct 
+    get child
+    get container
+    get debugShortDescription
+    fun createElement
+    fun createRenderObject
+    fun updateRenderObject
+    fun attachToRenderTree
+    fun toStringShort
+}
+external class RenderObjectToWidgetElement {
+    construct 
+    get widget
+    fun visitChildren
+    fun forgetChild
+    fun mount
+    fun update
+    fun performRebuild
+    get renderObject
+    fun insertRenderObjectChild
+    fun moveRenderObjectChild
+    fun removeRenderObjectChild
+}
+external class WidgetsFlutterBinding {
+    construct
+    static fun ensureInitialized
+}

@@ -1,0 +1,42 @@
+external class BoxShape {
+    static var rectangle
+    static var circle
+}
+external class Border {
+    construct 
+    construct fromBorderSide
+    construct symmetric
+    get top
+    get right
+    get bottom
+    get left
+    get dimensions
+    get isUniform
+    fun add
+    fun scale
+    fun lerpFrom
+    fun lerpTo
+    fun paint
+    get hashCode
+    fun toString
+    static fun merge (a, b)
+    static fun lerp (a, b, t)
+}
+external class BorderDirectional {
+    construct 
+    get top
+    get start
+    get end
+    get bottom
+    get dimensions
+    get isUniform
+    fun add
+    fun scale
+    fun lerpFrom
+    fun lerpTo
+    fun paint
+    get hashCode
+    fun toString
+    static fun merge (a, b)
+    static fun lerp (a, b, t)
+}

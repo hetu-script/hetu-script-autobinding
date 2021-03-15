@@ -1,0 +1,29 @@
+external class UnderlineInputBorder {
+    construct 
+    get borderRadius
+    get isOutline
+    fun copyWith
+    get dimensions
+    fun scale
+    fun getInnerPath
+    fun getOuterPath
+    fun lerpFrom
+    fun lerpTo
+    fun paint
+    get hashCode
+}
+external class OutlineInputBorder {
+    construct 
+    get gapPadding
+    get borderRadius
+    get isOutline
+    fun copyWith
+    get dimensions
+    fun scale
+    fun lerpFrom
+    fun lerpTo
+    fun getInnerPath
+    fun getOuterPath
+    fun paint
+    get hashCode
+}

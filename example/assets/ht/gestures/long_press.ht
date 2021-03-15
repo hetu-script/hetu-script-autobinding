@@ -1,0 +1,42 @@
+external class LongPressStartDetails {
+    construct 
+    get globalPosition
+    get localPosition
+}
+external class LongPressMoveUpdateDetails {
+    construct 
+    get globalPosition
+    get localPosition
+    get offsetFromOrigin
+    get localOffsetFromOrigin
+}
+external class LongPressEndDetails {
+    construct 
+    get globalPosition
+    get localPosition
+    get velocity
+}
+external class LongPressGestureRecognizer {
+    construct 
+    var onLongPress
+    var onLongPressStart
+    var onLongPressMoveUpdate
+    var onLongPressUp
+    var onLongPressEnd
+    var onSecondaryLongPress
+    var onSecondaryLongPressStart
+    var onSecondaryLongPressMoveUpdate
+    var onSecondaryLongPressUp
+    var onSecondaryLongPressEnd
+    var onTertiaryLongPress
+    var onTertiaryLongPressStart
+    var onTertiaryLongPressMoveUpdate
+    var onTertiaryLongPressUp
+    var onTertiaryLongPressEnd
+    fun isPointerAllowed
+    fun didExceedDeadline
+    fun handlePrimaryPointer
+    fun resolve
+    fun acceptGesture
+    get debugDescription
+}

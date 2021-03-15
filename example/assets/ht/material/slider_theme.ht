@@ -1,0 +1,142 @@
+external class ShowValueIndicator {
+    static var onlyForDiscrete
+    static var onlyForContinuous
+    static var always
+    static var never
+}
+external class Thumb {
+    static var start
+    static var end
+}
+external class SliderTheme {
+    construct 
+    get data
+    fun wrap
+    fun updateShouldNotify
+    static fun of (context)
+}
+external class SliderThemeData {
+    construct 
+    get trackHeight
+    get activeTrackColor
+    get inactiveTrackColor
+    get disabledActiveTrackColor
+    get disabledInactiveTrackColor
+    get activeTickMarkColor
+    get inactiveTickMarkColor
+    get disabledActiveTickMarkColor
+    get disabledInactiveTickMarkColor
+    get thumbColor
+    get overlappingShapeStrokeColor
+    get disabledThumbColor
+    get overlayColor
+    get valueIndicatorColor
+    get overlayShape
+    get tickMarkShape
+    get thumbShape
+    get trackShape
+    get valueIndicatorShape
+    get rangeTickMarkShape
+    get rangeThumbShape
+    get rangeTrackShape
+    get rangeValueIndicatorShape
+    get showValueIndicator
+    get valueIndicatorTextStyle
+    get minThumbSeparation
+    get thumbSelector
+    fun copyWith
+    get hashCode
+    fun debugFillProperties
+    static fun lerp (a, b, t)
+}
+external class RectangularSliderTrackShape {
+    construct 
+    get disabledThumbGapWidth
+    fun paint
+}
+external class RoundedRectSliderTrackShape {
+    construct 
+    fun paint
+}
+external class RectangularRangeSliderTrackShape {
+    construct 
+    fun getPreferredRect
+    fun paint
+}
+external class RoundedRectRangeSliderTrackShape {
+    construct 
+    fun getPreferredRect
+    fun paint
+}
+external class RoundSliderTickMarkShape {
+    construct 
+    get tickMarkRadius
+    fun getPreferredSize
+    fun paint
+}
+external class RoundRangeSliderTickMarkShape {
+    construct 
+    get tickMarkRadius
+    fun getPreferredSize
+    fun paint
+}
+external class RoundSliderThumbShape {
+    construct 
+    get enabledThumbRadius
+    get disabledThumbRadius
+    get elevation
+    get pressedElevation
+    fun getPreferredSize
+    fun paint
+}
+external class RoundRangeSliderThumbShape {
+    construct 
+    get enabledThumbRadius
+    get disabledThumbRadius
+    get elevation
+    get pressedElevation
+    fun getPreferredSize
+    fun paint
+}
+external class RoundSliderOverlayShape {
+    construct 
+    get overlayRadius
+    fun getPreferredSize
+    fun paint
+}
+external class RectangularSliderValueIndicatorShape {
+    construct 
+    fun getPreferredSize
+    fun paint
+}
+external class RectangularRangeSliderValueIndicatorShape {
+    construct 
+    fun getPreferredSize
+    fun getHorizontalShift
+    fun paint
+}
+external class PaddleSliderValueIndicatorShape {
+    construct 
+    fun getPreferredSize
+    fun paint
+}
+external class PaddleRangeSliderValueIndicatorShape {
+    construct 
+    fun getPreferredSize
+    fun getHorizontalShift
+    fun paint
+}
+external class RangeValues {
+    construct 
+    get start
+    get end
+    get hashCode
+    fun toString
+}
+external class RangeLabels {
+    construct 
+    get start
+    get end
+    get hashCode
+    fun toString
+}

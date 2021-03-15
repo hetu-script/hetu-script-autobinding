@@ -1,0 +1,18 @@
+external class ObserverList {
+    construct
+    fun add
+    fun remove
+    fun contains
+    get iterator
+    get isEmpty
+    get isNotEmpty
+}
+external class HashedObserverList {
+    construct
+    fun add
+    fun remove
+    fun contains
+    get iterator
+    get isEmpty
+    get isNotEmpty
+}

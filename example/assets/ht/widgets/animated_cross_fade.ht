@@ -1,0 +1,20 @@
+external class CrossFadeState {
+    static var showFirst
+    static var showSecond
+}
+external class AnimatedCrossFade {
+    construct 
+    get firstChild
+    get secondChild
+    get crossFadeState
+    get duration
+    get reverseDuration
+    get firstCurve
+    get secondCurve
+    get sizeCurve
+    get alignment
+    get layoutBuilder
+    fun createState
+    fun debugFillProperties
+    static fun defaultLayoutBuilder (topChild, topChildKey, bottomChild, bottomChildKey)
+}

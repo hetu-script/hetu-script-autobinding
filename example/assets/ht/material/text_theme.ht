@@ -1,0 +1,32 @@
+external class TextTheme {
+    construct 
+    get headline1
+    get headline2
+    get headline3
+    get headline4
+    get headline5
+    get headline6
+    get subtitle1
+    get subtitle2
+    get bodyText1
+    get bodyText2
+    get caption
+    get button
+    get overline
+    get display4
+    get display3
+    get display2
+    get display1
+    get headline
+    get title
+    get subhead
+    get subtitle
+    get body2
+    get body1
+    fun copyWith
+    fun merge
+    fun apply
+    get hashCode
+    fun debugFillProperties
+    static fun lerp (a, b, t)
+}

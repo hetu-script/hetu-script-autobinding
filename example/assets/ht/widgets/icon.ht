@@ -1,0 +1,10 @@
+external class Icon {
+    construct 
+    get icon
+    get size
+    get color
+    get semanticLabel
+    get textDirection
+    fun build
+    fun debugFillProperties
+}

@@ -1,0 +1,43 @@
+external class RenderImage {
+    construct 
+    var debugImageLabel
+    get image
+    set image(value)
+    get width
+    set width(value)
+    get height
+    set height(value)
+    get scale
+    set scale(value)
+    get color
+    set color(value)
+    get filterQuality
+    set filterQuality(value)
+    get colorBlendMode
+    set colorBlendMode(value)
+    get fit
+    set fit(value)
+    get alignment
+    set alignment(value)
+    get repeat
+    set repeat(value)
+    get centerSlice
+    set centerSlice(value)
+    get invertColors
+    set invertColors(value)
+    get matchTextDirection
+    set matchTextDirection(value)
+    get textDirection
+    set textDirection(value)
+    get isAntiAlias
+    set isAntiAlias(value)
+    fun computeMinIntrinsicWidth
+    fun computeMaxIntrinsicWidth
+    fun computeMinIntrinsicHeight
+    fun computeMaxIntrinsicHeight
+    fun hitTestSelf
+    fun computeDryLayout
+    fun performLayout
+    fun paint
+    fun debugFillProperties
+}

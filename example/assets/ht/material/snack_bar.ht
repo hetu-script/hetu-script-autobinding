@@ -1,0 +1,34 @@
+external class SnackBarClosedReason {
+    static var action
+    static var dismiss
+    static var swipe
+    static var hide
+    static var remove
+    static var timeout
+}
+external class SnackBarAction {
+    construct 
+    get textColor
+    get disabledTextColor
+    get label
+    get onPressed
+    fun createState
+}
+external class SnackBar {
+    construct 
+    get content
+    get backgroundColor
+    get elevation
+    get margin
+    get padding
+    get width
+    get shape
+    get behavior
+    get action
+    get duration
+    get animation
+    get onVisible
+    fun withAnimation
+    fun createState
+    static fun createAnimationController ({vsync})
+}

@@ -1,0 +1,6 @@
+external class WillPopScope {
+    construct 
+    get child
+    get onWillPop
+    fun createState
+}

@@ -1,0 +1,19 @@
+external class Radio {
+    construct 
+    get value
+    get groupValue
+    get onChanged
+    get mouseCursor
+    get toggleable
+    get activeColor
+    get fillColor
+    get materialTapTargetSize
+    get visualDensity
+    get focusColor
+    get hoverColor
+    get overlayColor
+    get splashRadius
+    get focusNode
+    get autofocus
+    fun createState
+}

@@ -1,0 +1,38 @@
+external class RawKeyEventDataAndroid {
+    construct 
+    get flags
+    get codePoint
+    get plainCodePoint
+    get keyCode
+    get scanCode
+    get metaState
+    get eventSource
+    get vendorId
+    get productId
+    get deviceId
+    get repeatCount
+    get keyLabel
+    get physicalKey
+    get logicalKey
+    fun isModifierPressed
+    fun getModifierSide
+    fun toString
+    static get modifierNone
+    static get modifierAlt
+    static get modifierLeftAlt
+    static get modifierRightAlt
+    static get modifierShift
+    static get modifierLeftShift
+    static get modifierRightShift
+    static get modifierSym
+    static get modifierFunction
+    static get modifierControl
+    static get modifierLeftControl
+    static get modifierRightControl
+    static get modifierMeta
+    static get modifierLeftMeta
+    static get modifierRightMeta
+    static get modifierCapsLock
+    static get modifierNumLock
+    static get modifierScrollLock
+}

@@ -1,0 +1,79 @@
+external class GrowthDirection {
+    static var forward
+    static var reverse
+}
+external class SliverConstraints {
+    construct 
+    get axisDirection
+    get growthDirection
+    get userScrollDirection
+    get scrollOffset
+    get precedingScrollExtent
+    get overlap
+    get remainingPaintExtent
+    get crossAxisExtent
+    get crossAxisDirection
+    get viewportMainAxisExtent
+    get cacheOrigin
+    get remainingCacheExtent
+    fun copyWith
+    get axis
+    get normalizedGrowthDirection
+    get isTight
+    get isNormalized
+    fun asBoxConstraints
+    fun debugAssertIsValid
+    get hashCode
+    fun toString
+}
+external class SliverGeometry {
+    construct 
+    get scrollExtent
+    get paintOrigin
+    get paintExtent
+    get layoutExtent
+    get maxPaintExtent
+    get maxScrollObstructionExtent
+    get hitTestExtent
+    get visible
+    get hasVisualOverflow
+    get scrollOffsetCorrection
+    get cacheExtent
+    fun debugAssertIsValid
+    fun toStringShort
+    fun debugFillProperties
+    static get zero
+}
+external class SliverHitTestResult {
+    construct 
+    construct wrap
+    fun addWithAxisOffset
+}
+external class SliverHitTestEntry {
+    construct 
+    get mainAxisPosition
+    get crossAxisPosition
+    get target
+    fun toString
+}
+external class SliverLogicalParentData {
+    construct
+    var layoutOffset
+    fun toString
+}
+external class SliverLogicalContainerParentData {
+    construct
+}
+external class SliverPhysicalParentData {
+    construct
+    var paintOffset
+    fun applyPaintTransform
+    fun toString
+}
+external class SliverPhysicalContainerParentData {
+    construct
+}
+external class RenderSliverToBoxAdapter {
+    construct 
+    fun performLayout
+}

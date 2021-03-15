@@ -1,0 +1,217 @@
+external class AnnotationEntry {
+    construct 
+    get annotation
+    get localPosition
+    fun toString
+}
+external class AnnotationResult {
+    construct
+    fun add
+    get entries
+    get annotations
+}
+external class PictureLayer {
+    construct 
+    get canvasBounds
+    get picture
+    set picture(value)
+    get isComplexHint
+    set isComplexHint(value)
+    get willChangeHint
+    set willChangeHint(value)
+    fun addToScene
+    fun debugFillProperties
+    fun findAnnotations
+}
+external class TextureLayer {
+    construct 
+    get rect
+    get textureId
+    get freeze
+    get filterQuality
+    fun addToScene
+    fun findAnnotations
+}
+external class PlatformViewLayer {
+    construct 
+    get rect
+    get viewId
+    fun addToScene
+}
+external class PerformanceOverlayLayer {
+    construct 
+    get optionsMask
+    get rasterizerThreshold
+    get checkerboardRasterCacheImages
+    get checkerboardOffscreenLayers
+    get overlayRect
+    set overlayRect(value)
+    fun addToScene
+    fun findAnnotations
+}
+external class ContainerLayer {
+    construct
+    get firstChild
+    get lastChild
+    get hasChildren
+    fun buildScene
+    fun updateSubtreeNeedsAddToScene
+    fun findAnnotations
+    fun attach
+    fun detach
+    fun append
+    fun removeAllChildren
+    fun addToScene
+    fun addChildrenToScene
+    fun applyTransform
+    fun depthFirstIterateChildren
+    fun debugDescribeChildren
+}
+external class OffsetLayer {
+    construct 
+    get offset
+    set offset(value)
+    fun findAnnotations
+    fun applyTransform
+    fun addToScene
+    fun debugFillProperties
+    fun toImage
+}
+external class ClipRectLayer {
+    construct 
+    get clipRect
+    set clipRect(value)
+    get clipBehavior
+    set clipBehavior(value)
+    fun findAnnotations
+    fun addToScene
+    fun debugFillProperties
+}
+external class ClipRRectLayer {
+    construct 
+    get clipRRect
+    set clipRRect(value)
+    get clipBehavior
+    set clipBehavior(value)
+    fun findAnnotations
+    fun addToScene
+    fun debugFillProperties
+}
+external class ClipPathLayer {
+    construct 
+    get clipPath
+    set clipPath(value)
+    get clipBehavior
+    set clipBehavior(value)
+    fun findAnnotations
+    fun addToScene
+    fun debugFillProperties
+}
+external class ColorFilterLayer {
+    construct 
+    get colorFilter
+    set colorFilter(value)
+    fun addToScene
+    fun debugFillProperties
+}
+external class ImageFilterLayer {
+    construct 
+    get imageFilter
+    set imageFilter(value)
+    fun addToScene
+    fun debugFillProperties
+}
+external class TransformLayer {
+    construct 
+    get transform
+    set transform(value)
+    fun addToScene
+    fun findAnnotations
+    fun applyTransform
+    fun debugFillProperties
+}
+external class OpacityLayer {
+    construct 
+    get alpha
+    set alpha(value)
+    get offset
+    set offset(value)
+    fun applyTransform
+    fun addToScene
+    fun debugFillProperties
+}
+external class ShaderMaskLayer {
+    construct 
+    get shader
+    set shader(value)
+    get maskRect
+    set maskRect(value)
+    get blendMode
+    set blendMode(value)
+    fun addToScene
+    fun debugFillProperties
+}
+external class BackdropFilterLayer {
+    construct 
+    get filter
+    set filter(value)
+    fun addToScene
+}
+external class PhysicalModelLayer {
+    construct 
+    get clipPath
+    set clipPath(value)
+    get clipBehavior
+    set clipBehavior(value)
+    get elevation
+    set elevation(value)
+    get color
+    set color(value)
+    get shadowColor
+    set shadowColor(value)
+    fun findAnnotations
+    fun addToScene
+    fun debugFillProperties
+}
+external class LayerLink {
+    construct
+    var leaderSize
+    get leader
+    fun toString
+}
+external class LeaderLayer {
+    construct 
+    var offset
+    get link
+    set link(value)
+    get alwaysNeedsAddToScene
+    fun attach
+    fun detach
+    fun findAnnotations
+    fun addToScene
+    fun applyTransform
+    fun debugFillProperties
+}
+external class FollowerLayer {
+    construct 
+    var showWhenUnlinked
+    var unlinkedOffset
+    var linkedOffset
+    get link
+    set link(value)
+    fun findAnnotations
+    fun getLastTransform
+    get alwaysNeedsAddToScene
+    fun addToScene
+    fun applyTransform
+    fun debugFillProperties
+}
+external class AnnotatedRegionLayer {
+    construct 
+    get value
+    get size
+    get offset
+    get opaque
+    fun findAnnotations
+    fun debugFillProperties
+}

@@ -1,0 +1,68 @@
+external class OverlayVisibilityMode {
+    static var never
+    static var editing
+    static var notEditing
+    static var always
+}
+external class CupertinoTextField {
+    construct 
+    construct borderless
+    get controller
+    get focusNode
+    get decoration
+    get padding
+    get placeholder
+    get placeholderStyle
+    get prefix
+    get prefixMode
+    get suffix
+    get suffixMode
+    get clearButtonMode
+    get keyboardType
+    get textInputAction
+    get textCapitalization
+    get style
+    get strutStyle
+    get textAlign
+    get toolbarOptions
+    get textAlignVertical
+    get readOnly
+    get showCursor
+    get autofocus
+    get obscuringCharacter
+    get obscureText
+    get autocorrect
+    get smartDashesType
+    get smartQuotesType
+    get enableSuggestions
+    get maxLines
+    get minLines
+    get expands
+    get maxLength
+    get maxLengthEnforced
+    get maxLengthEnforcement
+    get onChanged
+    get onEditingComplete
+    get onSubmitted
+    get inputFormatters
+    get enabled
+    get cursorWidth
+    get cursorHeight
+    get cursorRadius
+    get cursorColor
+    get selectionHeightStyle
+    get selectionWidthStyle
+    get keyboardAppearance
+    get scrollPadding
+    get enableInteractiveSelection
+    get selectionControls
+    get dragStartBehavior
+    get scrollController
+    get scrollPhysics
+    get onTap
+    get autofillHints
+    get restorationId
+    get selectionEnabled
+    fun createState
+    fun debugFillProperties
+}

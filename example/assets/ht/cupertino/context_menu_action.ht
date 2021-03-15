@@ -1,0 +1,9 @@
+external class CupertinoContextMenuAction {
+    construct 
+    get child
+    get isDefaultAction
+    get isDestructiveAction
+    get onPressed
+    get trailingIcon
+    fun createState
+}

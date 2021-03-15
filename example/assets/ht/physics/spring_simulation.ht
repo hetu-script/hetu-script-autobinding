@@ -1,0 +1,25 @@
+external class SpringType {
+    static var criticallyDamped
+    static var underDamped
+    static var overDamped
+}
+external class SpringDescription {
+    construct 
+    construct withDampingRatio
+    get mass
+    get stiffness
+    get damping
+    fun toString
+}
+external class SpringSimulation {
+    construct 
+    get type
+    fun x
+    fun dx
+    fun isDone
+    fun toString
+}
+external class ScrollSpringSimulation {
+    construct 
+    fun x
+}

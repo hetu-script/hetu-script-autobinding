@@ -1,0 +1,7 @@
+external class ImageFiltered {
+    construct 
+    get imageFilter
+    fun createRenderObject
+    fun updateRenderObject
+    fun debugFillProperties
+}

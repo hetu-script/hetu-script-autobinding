@@ -1,0 +1,14 @@
+external class AnimatedSwitcher {
+    construct 
+    get child
+    get duration
+    get reverseDuration
+    get switchInCurve
+    get switchOutCurve
+    get transitionBuilder
+    get layoutBuilder
+    fun createState
+    fun debugFillProperties
+    static fun defaultTransitionBuilder (child, animation)
+    static fun defaultLayoutBuilder (currentChild, previousChildren)
+}

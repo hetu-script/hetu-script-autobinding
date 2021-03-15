@@ -1,0 +1,14 @@
+external class ChangeNotifier {
+    construct
+    get hasListeners
+    fun addListener
+    fun removeListener
+    fun dispose
+    fun notifyListeners
+}
+external class ValueNotifier {
+    construct 
+    get value
+    set value(value)
+    fun toString
+}

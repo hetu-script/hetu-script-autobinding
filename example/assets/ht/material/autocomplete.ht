@@ -1,0 +1,9 @@
+external class Autocomplete {
+    construct 
+    get displayStringForOption
+    get fieldViewBuilder
+    get onSelected
+    get optionsBuilder
+    get optionsViewBuilder
+    fun build
+}
