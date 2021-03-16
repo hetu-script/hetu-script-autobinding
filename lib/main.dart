@@ -167,7 +167,7 @@ void parseBegin(List<String> userPaths, String? flutterPath, List<String> packag
     'user_bindings': user_bindings,
     'ht_user_bindings': ht_user_bindings
   };
-  renderTemplate('bin/template/ht_script_binding.mustache', userTemplateVars,
+  renderTemplate('template/ht_script_binding.mustache', userTemplateVars,
       '$exportPath/ht_script_binding.dart');
 
   if (flutterPath != null) {
@@ -255,7 +255,7 @@ void parseBegin(List<String> userPaths, String? flutterPath, List<String> packag
       'bindings': lib_bindings,
       'ht_bindings': ht_lib_bindings
     };
-    renderTemplate('bin/template/ht_library_script_binding.mustache',
+    renderTemplate('template/ht_library_script_binding.mustache',
         libTemplateVars, '$exportPath/ht_library_script_binding.dart');
   }
 
@@ -267,7 +267,7 @@ void parseBegin(List<String> userPaths, String? flutterPath, List<String> packag
       'user_bindings': [],
       'ht_user_bindings': []
     };
-    renderTemplate('bin/template/ht_script_binding.mustache', userTemplateVars,
+    renderTemplate('template/ht_script_binding.mustache', userTemplateVars,
         '$exportPath/ht_script_binding.dart');
   }
   if (await FileSystemEntity.type('$exportPath/ht_library_script_binding.dart') == FileSystemEntityType.notFound) {
@@ -277,7 +277,7 @@ void parseBegin(List<String> userPaths, String? flutterPath, List<String> packag
       'bindings': [],
       'ht_bindings': []
     };
-    renderTemplate('bin/template/ht_library_script_binding.mustache',
+    renderTemplate('template/ht_library_script_binding.mustache',
         libTemplateVars, '$exportPath/ht_library_script_binding.dart');
   }
 

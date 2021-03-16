@@ -24,7 +24,7 @@ class HetuScriptBinding extends HetuLibraryScriptBinding {
     var futures = <Future>[];
     futures.add(future);
     {{#ht_user_bindings}}
-    futures.add(interpreter.evalf('$path/{{ht_file_relative_path}}'));
+    futures.add(interpreter.evalf(path + '/{{ht_file_relative_path}}'));
     {{/ht_user_bindings}}
     return Future.wait(futures);
   }

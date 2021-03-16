@@ -7,6 +7,7 @@ import 'package:mustache_template/mustache.dart';
 import 'package:path/path.dart' as path;
 
 import 'dart-visitor.dart';
+import 'default_templates.dart';
 import 'defines.dart';
 
 enum ExportType {
@@ -19,14 +20,20 @@ enum ExportType {
 void renderTemplate(String templateFile, Map<String, dynamic> templateVars,
     String opath) async {
   var f = File(templateFile);
-  var content = f.readAsStringSync();
+  var content;
+  if (!f.existsSync()) {
+    //读取默认模板
+    var baseName = path.basename(templateFile);
+    content = defaultTemplates[baseName];
+  } else {
+    content = f.readAsStringSync();
+  }
   var template = Template(content, lenient: true, htmlEscapeValues: false);
   var output = template.renderString(templateVars);
   var dirName = path.dirname(opath);
   await Directory(dirName).create(recursive: true);
   final file = File(opath);
-  var result = await file.writeAsString(output);
-  // print('Writing to file: $opath');
+  await file.writeAsString(output);
 }
 
 void writeJson(
@@ -419,7 +426,9 @@ Future<List<BindingDefine>> generateWrappers(
         'have_static_declarations': have_static_declarations,
       };
     }
-    var empty_instance_binding = !have_instance_setter && !have_instance_getter && binding_constructors.isEmpty;
+    var empty_instance_binding = !have_instance_setter &&
+        !have_instance_getter &&
+        binding_constructors.isEmpty;
     if (!empty_instance_binding) {
       have_instance_member = {
         'dart_class_name': dart_class_name,
@@ -428,7 +437,8 @@ Future<List<BindingDefine>> generateWrappers(
         'getter_case': instanceVarGetterList,
         'method_case': instanceMethodList,
         'setter_case': instanceVarSetterList,
-      };;
+      };
+      ;
     }
 
     var classMap = {};
@@ -450,8 +460,7 @@ Future<List<BindingDefine>> generateWrappers(
     }
   }
 
-  if (all_classes.isEmpty &&
-      have_enums.isEmpty) {
+  if (all_classes.isEmpty && have_enums.isEmpty) {
     return [];
   }
 
@@ -522,11 +531,10 @@ Future<List<BindingDefine>> generateWrappers(
   }
   // print('output: $dartPath$fileName.g.dart');
   // print('ht output: $htPath/$fileName.ht');
-  renderTemplate('bin/template/dart-classes.mustache', template_vars,
+  renderTemplate('template/dart-classes.mustache', template_vars,
       '$dartPath$fileName.g.dart');
-  renderTemplate('bin/template/ht-classes.mustache', ht_template_vars,
+  renderTemplate('template/ht-classes.mustache', ht_template_vars,
       '$htPath$fileName.ht');
-
 
   return bindings;
 }

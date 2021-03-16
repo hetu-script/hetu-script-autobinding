@@ -21,7 +21,7 @@ class HetuLibraryScriptBinding {
   Future loadAutoBindingScripts(HT_Interpreter interpreter, String path) {
     var futures = <Future>[];
     {{#ht_bindings}}
-    futures.add(interpreter.evalf('$path/{{ht_file_relative_path}}'));
+    futures.add(interpreter.evalf(path + '/{{ht_file_relative_path}}'));
     {{/ht_bindings}}
     return Future.wait(futures);
   }
