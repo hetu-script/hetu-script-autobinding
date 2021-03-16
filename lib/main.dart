@@ -7,7 +7,7 @@ import 'package:path/path.dart' as path;
 import 'binding-generator.dart';
 import 'defines.dart';
 
-var version = '1.0.3';
+var version = '1.0.4';
 
 var files = <FileSystemEntity>[];
 
@@ -77,13 +77,18 @@ Future<List<FileDefine>> parseDartFiles(
     var define = await generateDefines(p.path, jsonPath);
     if (define != null) {
       fileDefines.add(define);
-      define.classes.forEach((element) {
+
+      var allClasses = <ClassDefine>[];
+      allClasses.addAll(define.classes);
+      allClasses.addAll(define.privateClasses);
+      allClasses.forEach((element) {
         if (ignoredClasses.contains(element.name)) {
           element.ignored = true;
           return;
         }
         if (classDefineMap.containsKey(element.name)) {
-          print('WARNING: [${element.name}] Same Class Name Found!\n\tConflict: file://${classDefineMap[element.name]!.file.filePath}');
+          print(
+              'WARNING: [${element.name}] Same Class Name Found!\n\tConflict: file://${classDefineMap[element.name]!.file.filePath}');
         }
         classDefineMap[element.name] = element;
         if (element.superClassName != null) {
@@ -108,8 +113,14 @@ Future<List<FileDefine>> parseDartFiles(
   return fileDefines;
 }
 
-void parseBegin(List<String> userPaths, String? flutterPath, List<String> packagePaths, String exportPath,
-    String scriptExportPath, List<String> ignores, List<String> whitelist,
+void parseBegin(
+    List<String> userPaths,
+    String? flutterPath,
+    List<String> packagePaths,
+    String exportPath,
+    String scriptExportPath,
+    List<String> ignores,
+    List<String> whitelist,
     {String? jsonPath}) async {
   var allBindings = <BindingDefine>[];
 
@@ -152,8 +163,6 @@ void parseBegin(List<String> userPaths, String? flutterPath, List<String> packag
       }
     }
   }
-
-
 
   var user_api_import = [];
   var user_bindings = [];
@@ -279,8 +288,8 @@ void parseBegin(List<String> userPaths, String? flutterPath, List<String> packag
   }
 
   //检查是否有缺失的执行文件（库绑定、自定义绑定）
-  if (await FileSystemEntity.type('$exportPath/ht_script_binding.dart') == FileSystemEntityType.notFound) {
-
+  if (await FileSystemEntity.type('$exportPath/ht_script_binding.dart') ==
+      FileSystemEntityType.notFound) {
     var userTemplateVars = {
       'user_api_import': [],
       'user_bindings': [],
@@ -289,13 +298,10 @@ void parseBegin(List<String> userPaths, String? flutterPath, List<String> packag
     renderTemplate('template/ht_script_binding.mustache', userTemplateVars,
         '$exportPath/ht_script_binding.dart');
   }
-  if (await FileSystemEntity.type('$exportPath/ht_library_script_binding.dart') == FileSystemEntityType.notFound) {
-
-    var libTemplateVars = {
-      'api_import': [],
-      'bindings': [],
-      'ht_bindings': []
-    };
+  if (await FileSystemEntity.type(
+          '$exportPath/ht_library_script_binding.dart') ==
+      FileSystemEntityType.notFound) {
+    var libTemplateVars = {'api_import': [], 'bindings': [], 'ht_bindings': []};
     renderTemplate('template/ht_library_script_binding.mustache',
         libTemplateVars, '$exportPath/ht_library_script_binding.dart');
   }
@@ -305,19 +311,40 @@ void parseBegin(List<String> userPaths, String? flutterPath, List<String> packag
 
 void main(args) {
   var parser = ArgParser();
-  parser.addFlag( 'version', abbr: 'v', help: 'Show executable\'s version.', callback: (flag) async {
+  parser.addFlag('version', abbr: 'v', help: 'Show executable\'s version.',
+      callback: (flag) async {
     if (flag) {
       print('Hetu Binding Generator: Version $version');
     }
   }, negatable: false);
-  parser.addMultiOption('user-lib-paths', abbr: 'u', defaultsTo: [], valueHelp: 'path1, path2, ...', help: 'Will iterate over all the folders recursively.');
-  parser.addMultiOption('package-lib-paths', abbr: 'p', defaultsTo: [], valueHelp: 'package1/lib, package2/lib, ...', help: 'Will iterate over all the package cache folders.');
-  parser.addOption('flutter-lib-path', abbr: 'f', valueHelp: 'flutter-framework-path', help: 'Will iterate the Flutter/Dart framework recursively. The path should point to the Flutter root folder.');
+  parser.addMultiOption('user-lib-paths',
+      abbr: 'u',
+      defaultsTo: [],
+      valueHelp: 'path1, path2, ...',
+      help: 'Will iterate over all the folders recursively.');
+  parser.addMultiOption('package-lib-paths',
+      abbr: 'p',
+      defaultsTo: [],
+      valueHelp: 'package1/lib, package2/lib, ...',
+      help: 'Will iterate over all the package cache folders.');
+  parser.addOption('flutter-lib-path',
+      abbr: 'f',
+      valueHelp: 'flutter-framework-path',
+      help:
+          'Will iterate the Flutter/Dart framework recursively. The path should point to the Flutter root folder.');
   parser.addOption('output',
-      abbr: 'o', defaultsTo: Directory.current.path.toString() + '/gen/dart', help: 'The output path for .dart code generation and .json intermediate files.');
+      abbr: 'o',
+      defaultsTo: Directory.current.path.toString() + '/gen/dart',
+      help:
+          'The output path for .dart code generation and .json intermediate files.');
   parser.addOption('script-output',
-      abbr: 's', defaultsTo: Directory.current.path.toString() + '/gen/ht', help: 'The output path for .ht code generation.');
-  parser.addFlag('json-export', abbr: 'j', defaultsTo: false, help: 'Whether to export the intermediate JSON files for diagnostics.');
+      abbr: 's',
+      defaultsTo: Directory.current.path.toString() + '/gen/ht',
+      help: 'The output path for .ht code generation.');
+  parser.addFlag('json-export',
+      abbr: 'j',
+      defaultsTo: false,
+      help: 'Whether to export the intermediate JSON files for diagnostics.');
   parser.addFlag('help', abbr: 'h', negatable: false, callback: (f) {
     if (f) {
       print(parser.usage);
@@ -334,11 +361,14 @@ void main(args) {
         'ui/text.dart:StrutStyle',
         'ui/platform_dispatcher.dart:ViewConfiguration',
       ],
-      valueHelp:
-          'ignored-file-name, ignored-file-name:ignored-class-name, ...',
-  help: 'The files/classes from this list will be ignored during the code generation.');
-  parser.addMultiOption('whitelist', abbr: 'w', valueHelp:
-  'whitelist-file-name, whitelist-file-name2, ...', help: 'Only the files from the list will be parsed, working with \'ignores\' too.');
+      valueHelp: 'ignored-file-name, ignored-file-name:ignored-class-name, ...',
+      help:
+          'The files/classes from this list will be ignored during the code generation.');
+  parser.addMultiOption('whitelist',
+      abbr: 'w',
+      valueHelp: 'whitelist-file-name, whitelist-file-name2, ...',
+      help:
+          'Only the files from the list will be parsed, working with \'ignores\' too.');
   var results = parser.parse(args);
   var userPaths = results['user-lib-paths'];
 
@@ -352,8 +382,9 @@ void main(args) {
   }
   var flutterPath = results['flutter-lib-path'];
   var packagePaths = results['package-lib-paths'];
-  var jsonPath =
-      results['json-export'] ? Directory.current.path.toString() + '/gen' : null;
+  var jsonPath = results['json-export']
+      ? Directory.current.path.toString() + '/gen'
+      : null;
   var ignores = results['ignores'];
   ignores.addAll([
     'core/annotations.dart',
@@ -373,6 +404,7 @@ void main(args) {
   }
   print('Begin parsing...');
   Directory(output).create(recursive: true);
-  parseBegin(userPaths, flutterPath, packagePaths, output, scriptOutput, ignores, whitelist,
+  parseBegin(userPaths, flutterPath, packagePaths, output, scriptOutput,
+      ignores, whitelist,
       jsonPath: jsonPath);
 }

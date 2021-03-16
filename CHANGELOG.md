@@ -1,3 +1,7 @@
+## 1.0.4
+
+- Fix: Private super class can now be exported to child classes.
+
 ## 1.0.3
 
 - Add: Class will bind super class's variables and methods.
