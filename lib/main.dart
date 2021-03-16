@@ -7,6 +7,8 @@ import 'package:path/path.dart' as path;
 import 'binding-generator.dart';
 import 'defines.dart';
 
+var version = '1.0.2';
+
 var files = <FileSystemEntity>[];
 
 Future<List<FileSystemEntity>> dirContents(
@@ -124,20 +126,30 @@ void parseBegin(List<String> userPaths, String? flutterPath, List<String> packag
   }
 
   ///绑定包裹代码
-  files.clear();
   for (var a in packagePaths) {
+    files.clear();
     await dirContents(Directory(a), ignores, whitelist);
-  }
 
-  if (files.isEmpty) {
-  } else {
-    var fileDefines = await parseDartFiles(jsonPath, ignores);
-    for (var p in fileDefines) {
-      var b = await generateWrappers(p, exportPath, scriptExportPath,
-          library: ExportType.Package);
-      allBindings.addAll(b);
+    if (files.isNotEmpty) {
+      var packageName = path.basenameWithoutExtension(a);
+      if (packageName == 'lib') {
+        //上一级
+        packageName = path.basenameWithoutExtension(path.dirname(a));
+      }
+      if (packageName.contains('-')) {
+        packageName = packageName.substring(0, packageName.indexOf('-'));
+      }
+      print('parsing package: [$packageName]');
+      var fileDefines = await parseDartFiles(jsonPath, ignores);
+      for (var p in fileDefines) {
+        var b = await generateWrappers(p, exportPath, scriptExportPath,
+            library: ExportType.Package, libName: packageName);
+        allBindings.addAll(b);
+      }
     }
   }
+
+
 
   var user_api_import = [];
   var user_bindings = [];
@@ -171,6 +183,9 @@ void parseBegin(List<String> userPaths, String? flutterPath, List<String> packag
       '$exportPath/ht_script_binding.dart');
 
   if (flutterPath != null) {
+    if (flutterPath.endsWith('/')) {
+      flutterPath = flutterPath.substring(0, flutterPath.length - 1);
+    }
     var flutterSourceRoot = flutterPath + '/packages/flutter/lib/src/';
 
     ///绑定Dart库
@@ -286,6 +301,11 @@ void parseBegin(List<String> userPaths, String? flutterPath, List<String> packag
 
 void main(args) {
   var parser = ArgParser();
+  parser.addFlag( 'version', abbr: 'v', help: 'Show executable\'s version.', callback: (flag) async {
+    if (flag) {
+      print('Hetu Binding Generator: Version $version');
+    }
+  }, negatable: false);
   parser.addMultiOption('user-lib-paths', abbr: 'u', defaultsTo: [], valueHelp: 'path1, path2, ...', help: 'Will iterate over all the folders recursively.');
   parser.addMultiOption('package-lib-paths', abbr: 'p', defaultsTo: [], valueHelp: 'package1/lib, package2/lib, ...', help: 'Will iterate over all the package cache folders.');
   parser.addOption('flutter-lib-path', abbr: 'f', valueHelp: 'flutter-framework-path', help: 'Will iterate the Flutter/Dart framework recursively. The path should point to the Flutter root folder.');
@@ -294,11 +314,11 @@ void main(args) {
   parser.addOption('script-output',
       abbr: 's', defaultsTo: Directory.current.path.toString() + '/gen/ht', help: 'The output path for .ht code generation.');
   parser.addFlag('json-export', abbr: 'j', defaultsTo: false, help: 'Whether to export the intermediate JSON files for diagnostics.');
-  parser.addFlag('help', abbr: 'h', callback: (f) {
+  parser.addFlag('help', abbr: 'h', negatable: false, callback: (f) {
     if (f) {
       print(parser.usage);
     }
-  });
+  }, help: 'Show this help.');
   parser.addMultiOption('ignores',
       abbr: 'i',
       defaultsTo: [
@@ -340,7 +360,7 @@ void main(args) {
     'foundation/basic_types.dart',
   ]);
   var whitelist = results['whitelist'];
-  if (results['help'] == true) {
+  if (results['help'] == true || results['version'] == true) {
     return;
   }
   print('Begin parsing...');

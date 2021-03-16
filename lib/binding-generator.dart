@@ -516,17 +516,9 @@ Future<List<BindingDefine>> generateWrappers(
     template_vars['library_class_import'] = {
       'flutter_lib_name': "import '$relPath';",
     };
-  } else {
-    var packageName = path.basenameWithoutExtension(filePath);
-    if (packageName == 'lib') {
-      //上一级
-      packageName = path.basenameWithoutExtension(path.dirname(packageName));
-    }
-    if (packageName.contains('-')) {
-      packageName = packageName.substring(0, packageName.indexOf('-'));
-    }
+  } else if (library == ExportType.Package) {
     template_vars['library_class_import'] = {
-      'flutter_lib_name': "import 'package:$packageName/$packageName.dart';",
+      'flutter_lib_name': "import 'package:$libName/$libName.dart';",
     };
   }
   // print('output: $dartPath$fileName.g.dart');
