@@ -7,7 +7,7 @@ import 'package:path/path.dart' as path;
 import 'binding-generator.dart';
 import 'defines.dart';
 
-var version = '1.0.2';
+var version = '1.0.3';
 
 var files = <FileSystemEntity>[];
 
@@ -80,6 +80,10 @@ Future<List<FileDefine>> parseDartFiles(
       define.classes.forEach((element) {
         if (ignoredClasses.contains(element.name)) {
           element.ignored = true;
+          return;
+        }
+        if (classDefineMap.containsKey(element.name)) {
+          print('WARNING: [${element.name}] Same Class Name Found!\n\tConflict: file://${classDefineMap[element.name]!.file.filePath}');
         }
         classDefineMap[element.name] = element;
         if (element.superClassName != null) {
@@ -322,6 +326,10 @@ void main(args) {
   parser.addMultiOption('ignores',
       abbr: 'i',
       defaultsTo: [
+        'ui/painting.dart:Codec',
+        'ui/painting.dart:Image',
+        'ui/painting.dart:Gradient',
+        'convert/codec.dart',
         'ui/text.dart:TextStyle',
         'ui/text.dart:StrutStyle',
         'ui/platform_dispatcher.dart:ViewConfiguration',

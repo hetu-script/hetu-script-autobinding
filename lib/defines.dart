@@ -61,7 +61,7 @@ class FileDefine {
           }
           var e = element as Map<String, dynamic>;
           if (e['_'] == 'ClassDeclaration') {
-            var cd = ClassDefine(e);
+            var cd = ClassDefine(e, this);
             if (cd.isPrivate) {
               privateClasses.add(cd);
             } else {
@@ -93,10 +93,12 @@ class FileDefine {
 }
 
 class ClassDefine {
+  FileDefine file;
   late final String name;
   late final String? superClassName;
   ClassDefine? superClass;
   bool ignored = false;
+  bool superFetched = false;
 
   late final Set<String> annotations;
   late final List<ConstructorDefine> constructors;
@@ -111,7 +113,7 @@ class ClassDefine {
 
   bool get isPrivate => name.startsWith('_');
 
-  ClassDefine(Map<String, dynamic> json) {
+  ClassDefine(Map<String, dynamic> json, this.file) {
     parse(json);
   }
 

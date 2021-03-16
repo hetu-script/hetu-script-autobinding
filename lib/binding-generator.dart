@@ -61,6 +61,46 @@ Future<FileDefine?> generateDefines(String filePath, String? jsonPath) async {
   return FileDefine(js, filePath);
 }
 
+void fetchSuperClass(ClassDefine cls) {
+  if (cls.superFetched) {
+    return;
+  }
+  if (cls.superClass != null) {
+    var sp = cls.superClass!;
+    if (!sp.superFetched) {
+      //父类还没有获取过接口，递归调用
+      fetchSuperClass(sp);
+    }
+
+    //将父类成员变量、成员方法、Getter、Setter都拷贝到子类里
+    for (var v in sp.instanceVars) {
+      if (v.name.startsWith('_')) {
+        continue;
+      }
+      var idx = cls.instanceVars.indexWhere((element) => element.name == v.name);
+      if (idx == -1) {
+        //子类没有，复制
+        cls.instanceVars.add(v);
+        // print('Class [${cls.name}] add var ${v.name}');
+      }
+    }
+
+    for (var v in sp.instanceMethods) {
+      if (v.name.startsWith('_')) {
+        continue;
+      }
+      var idx = cls.instanceMethods.indexWhere((element) => element.name == v.name);
+      if (idx == -1) {
+        //子类没有，复制
+        cls.instanceMethods.add(v);
+        // print('Class [${cls.name}] add method ${v.name}');
+
+      }
+    }
+  }
+  cls.superFetched = true;
+}
+
 Future<List<BindingDefine>> generateWrappers(
     FileDefine fd, String outputPath, String scriptOutputPath,
     {ExportType library = ExportType.UserDefine, String? libName}) async {
@@ -68,6 +108,13 @@ Future<List<BindingDefine>> generateWrappers(
   var file_imports = [];
   var bindingExternals = <String>[];
   var bindings = <BindingDefine>[];
+
+  fd.classes.forEach((element) {
+    fetchSuperClass(element);
+  });
+  fd.privateClasses.forEach((element) {
+    fetchSuperClass(element);
+  });
 
   fd.imports.forEach((element) {
     var uri = element.uri;
@@ -139,11 +186,6 @@ Future<List<BindingDefine>> generateWrappers(
     if (kclass.superClassName != null &&
         !kclass.superClassName!.startsWith('_') &&
         kclass.superClass == null) {
-      var ignored = {'NativeFieldWrapperClass2', 'IterableBase'};
-      if (!ignored.contains(kclass.superClassName)) {
-        // print(
-        //     '[file://${fd.filePath}]\n\t\t[${kclass.name}] Cannot find super class: ${kclass.superClassName}');
-      }
     }
     var dart_class_name = kclass.name;
 

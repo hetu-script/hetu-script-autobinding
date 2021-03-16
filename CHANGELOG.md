@@ -1,3 +1,7 @@
+## 1.0.3
+
+- Add: Class will bind super class's variables and methods.
+
 ## 1.0.2
 
 - Fix: The name for the package is now correct parsed.
