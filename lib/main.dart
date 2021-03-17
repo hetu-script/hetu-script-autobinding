@@ -397,6 +397,7 @@ void main(args) {
     'foundation/annotations.dart',
     'foundation/assertions.dart',
     'foundation/basic_types.dart',
+    'material/date_picker_deprecated.dart',
   ]);
   var whitelist = results['whitelist'];
   if (results['help'] == true || results['version'] == true) {

@@ -4,6 +4,17 @@ import 'package:analyzer/dart/ast/visitor.dart';
 String nodeType(AstNode node) => '${node.runtimeType}'.replaceAll('Impl', '');
 
 class RootAstVisitor extends UnifyingAstVisitor<dynamic> {
+  ///检查Annotation
+  bool _checkAnnotation(NodeList<Annotation> metadata, String check) {
+    var annotations = _safelyVisitNodeList(metadata);
+    for (var a in annotations) {
+      if (a['annotation'].contains(check)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   /// 遍历节点
   dynamic _safelyVisitNode(AstNode? node) {
     if (node != null) {
@@ -78,16 +89,17 @@ class RootAstVisitor extends UnifyingAstVisitor<dynamic> {
       'meta': _safelyVisitNodeList(node.metadata),
       'members': _safelyVisitNodeList(node.members),
       'identifiers': node.accept(IdentifierASTVisitor()),
-      'abstract?': node.abstractKeyword != null
+      'abstract?': node.abstractKeyword != null,
+      'test?' : _checkAnnotation(node.metadata, 'visibleForTesting')
     };
   }
 
   @override
   dynamic visitExtendsClause(ExtendsClause node) {
-    var name =node.superclass.name.name;
+    var name = node.superclass.name.name;
     if (name.contains('.')) {
       var idx = name.lastIndexOf('.');
-      name = name.substring(idx+1);
+      name = name.substring(idx + 1);
     }
     return name;
   }
@@ -109,6 +121,7 @@ class RootAstVisitor extends UnifyingAstVisitor<dynamic> {
       'params_raw': node.parameters.toString(),
       'factory?':
           node.factoryKeyword != null || node.redirectedConstructor != null,
+      'deprecated?': _checkAnnotation(node.metadata, 'Deprecated'),
     };
   }
 
@@ -143,10 +156,12 @@ class RootAstVisitor extends UnifyingAstVisitor<dynamic> {
     node.constants.forEach((element) {
       enums.add(element.name.name);
     });
-    return {'_': nodeType(node),
+    return {
+      '_': nodeType(node),
       'name': node.name.name,
       'meta': _safelyVisitNodeList(node.metadata),
-      'enums': enums};
+      'enums': enums
+    };
   }
 
   @override
@@ -237,6 +252,8 @@ class RootAstVisitor extends UnifyingAstVisitor<dynamic> {
       '_': nodeType(node),
       'static': node.staticKeyword != null,
       'fields': _safelyVisitNode(node.fields),
+      'protected?': _checkAnnotation(node.metadata, 'protected'),
+      'deprecated?': _checkAnnotation(node.metadata, 'Deprecated'),
     };
   }
 
@@ -248,15 +265,6 @@ class RootAstVisitor extends UnifyingAstVisitor<dynamic> {
 
   @override
   dynamic visitMethodDeclaration(MethodDeclaration node) {
-    var annotations = _safelyVisitNodeList(node.metadata);
-    var test = false;
-    for (var value in annotations) {
-      if (value['annotation'] == 'visibleForTesting') {
-        test = true;
-        break;
-      }
-    }
-
     return {
       '_': nodeType(node),
       'static': node.isStatic,
@@ -270,7 +278,9 @@ class RootAstVisitor extends UnifyingAstVisitor<dynamic> {
       'raw': node.toString(),
       'getter?': node.isGetter,
       'setter?': node.isSetter,
-      'test?': test,
+      'test?': _checkAnnotation(node.metadata, 'visibleForTesting'),
+      'protected?': _checkAnnotation(node.metadata, 'protected'),
+      'deprecated?': _checkAnnotation(node.metadata, 'Deprecated'),
     };
   }
 

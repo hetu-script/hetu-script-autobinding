@@ -162,6 +162,9 @@ Future<List<BindingDefine>> generateWrappers(
   var all_classes = [];
   var added_classes = <String>{};
   for (var kclass in fd.classes) {
+    if (kclass.isTest) {
+      continue;
+    }
     if (!kclass.annotations.contains('HTBinding') &&
         library == ExportType.UserDefine) {
       continue;
@@ -298,18 +301,20 @@ Future<List<BindingDefine>> generateWrappers(
       }
     }
 
-    var staticClassOnly = false;
+    var staticClassOnly = true;
     for (var ctor in kclass.constructors) {
-      
+      if (!ctor.isPrivate) {
+        //有非私有构造函数，可以生成instance
+        staticClassOnly = false;
+      }
     }
     for (var ctor in kclass.constructors) {
       //确实有构造函数
       have_constructors = true;
-      if (ctor.isPrivate) {
-        //私有构造函数只导出静态变量/方法
-        staticClassOnly = true;
+      if (ctor.isPrivate || ctor.isDeprecated) {
+        //私有构造函数跳过
+        continue;
       }
-
       if (!staticClassOnly) {
         var constructor_name = '${ctor.name ?? ""}';
         if (constructor_name != '') {
@@ -370,7 +375,7 @@ Future<List<BindingDefine>> generateWrappers(
     var instanceMethodList = [];
     if (!staticClassOnly) {
       kclass.instanceVars.forEach((iv) {
-        if (iv.isPrivate) {
+        if (iv.isPrivate || iv.isProtected || iv.isDeprecated) {
           return;
         }
         var setter = false;
@@ -388,7 +393,7 @@ Future<List<BindingDefine>> generateWrappers(
         }
       });
       kclass.instanceMethods.forEach((m) {
-        if (m.isPrivate || m.isOperator) {
+        if (m.isPrivate || m.isOperator || m.isProtected || m.isDeprecated) {
           return;
         }
         if (m.isSetter) {
@@ -411,7 +416,11 @@ Future<List<BindingDefine>> generateWrappers(
     var binding_static_variables_getter = [];
     var binding_static_variables_setter = [];
     kclass.staticMethods.forEach((m) {
-      if (m.isPrivate || m.isTest || m.extendsTypes.isNotEmpty) {
+      if (m.isPrivate ||
+          m.isTest ||
+          m.isProtected ||
+          m.isDeprecated ||
+          m.extendsTypes.isNotEmpty) {
         return;
       }
       var static_method_private_defines = <Map<String, dynamic>>[];
@@ -432,7 +441,7 @@ Future<List<BindingDefine>> generateWrappers(
       ht_fields.add({'field': 'static fun ${m.name}${m.getHetuParams()}'});
     });
     kclass.staticVars.forEach((v) {
-      if (v.isPrivate) {
+      if (v.isPrivate || v.isProtected || v.isDeprecated) {
         return;
       }
       var setter = false;

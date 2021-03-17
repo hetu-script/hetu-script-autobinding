@@ -1,7 +1,8 @@
 ## 1.0.4
 
 - Fix: Private super class can now be exported to child classes.
-- Breaking Changes: Adapt to the Hetu script changes. 
+- Breaking Changes: Adapt to the Hetu script changes.
+- Add: Ignore protected and deprecated nodes. 
 
 ## 1.0.3
 

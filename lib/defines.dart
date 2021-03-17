@@ -73,7 +73,11 @@ class FileDefine {
             //variable list
             if (vars != null) {
               for (Map<String, dynamic> value in vars) {
-                var v = FieldVarDefine(value, isStatic: false, isTopLevel: true);
+                var v = FieldVarDefine(value,
+                    isStatic: false,
+                    isTopLevel: true,
+                    isDeprecated: false,
+                    isProtected: false);
                 globalVars.add(v);
               }
             }
@@ -109,6 +113,7 @@ class ClassDefine {
   late final String raw;
   final List<String> identifiers = [];
   late final bool isAbstract;
+  late final bool isTest;
   late final List<Map>? generics;
 
   bool get isPrivate => name.startsWith('_');
@@ -124,6 +129,7 @@ class ClassDefine {
     generics = json['generic'];
     identifiers.addAll(json['identifiers']);
     isAbstract = json['abstract?'];
+    isTest = json['test?'];
     constructors = [];
     instanceVars = [];
     instanceMethods = [];
@@ -143,11 +149,17 @@ class ClassDefine {
         switch (e['_']) {
           case 'FieldDeclaration':
             var isStatic = e['static'] as bool;
+            var isProtected = e['protected?'] as bool;
+            var isDeprecated = e['deprecated?'] as bool;
             var fieldList = e['fields'];
             var vars = fieldList['vars'] as List;
             //variable list
             for (Map<String, dynamic> value in vars) {
-              var v = FieldVarDefine(value, isStatic: isStatic, isTopLevel: false);
+              var v = FieldVarDefine(value,
+                  isStatic: isStatic,
+                  isTopLevel: false,
+                  isProtected: isProtected,
+                  isDeprecated: isDeprecated);
               if (isStatic) {
                 staticVars.add(v);
               } else {
@@ -217,11 +229,17 @@ class FieldVarDefine {
   final List<String> identifiers = [];
   final bool isTopLevel;
   final bool isStatic;
+  final bool isProtected;
+  final bool isDeprecated;
 
   bool get isPrivate => name.startsWith('_');
   late final bool isConst;
 
-  FieldVarDefine(Map<String, dynamic> json, {required this.isStatic,required this.isTopLevel}) {
+  FieldVarDefine(Map<String, dynamic> json,
+      {required this.isStatic,
+      required this.isTopLevel,
+      required this.isProtected,
+      required this.isDeprecated}) {
     parse(json);
   }
 
@@ -309,6 +327,7 @@ class ConstructorDefine {
   late final List<ParamDefine> params;
   String? paramRaw;
   late final bool isFactory;
+  late final bool isDeprecated;
 
   bool get isPrivate => name?.startsWith('_') ?? false;
 
@@ -323,6 +342,7 @@ class ConstructorDefine {
     paramRaw = json['params_raw'];
     params = [];
     isFactory = json['factory?'];
+    isDeprecated = json['deprecated?'];
     var p = json['params'] as List;
     p.forEach((param) {
       var v = ParamDefine(param);
@@ -407,6 +427,9 @@ class MethodDefine {
   late final bool isGetter;
   late final bool isSetter;
   late final bool isTest;
+  late final bool isProtected;
+  late final bool isDeprecated;
+
   final List<String> extendsTypes = [];
 
   bool get isPrivate => name.startsWith('_');
@@ -424,6 +447,8 @@ class MethodDefine {
     isGetter = json['getter?'];
     isSetter = json['setter?'];
     isTest = json['test?'];
+    isProtected = json['protected?'];
+    isDeprecated = json['deprecated?'];
     var genericType = json['type'] as List?;
     if (genericType != null) {
       genericType.forEach((element) {
