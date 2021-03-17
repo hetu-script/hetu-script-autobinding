@@ -393,7 +393,7 @@ void main(args) {
     'core/exceptions.dart',
     'core/expando.dart',
     'core/string.dart',
-    'core/string.dart',
+    'core/bool.dart',
     'foundation/annotations.dart',
     'foundation/assertions.dart',
     'foundation/basic_types.dart',
