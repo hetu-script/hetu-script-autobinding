@@ -1,4 +1,4 @@
-# Dart Binding Code Generator for Hetu Script Language
+# Autobinding Codes Generator for Hetu Script Language
 
 ## Introduction
 
