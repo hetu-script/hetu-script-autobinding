@@ -1,9 +1,0 @@
-external class PointerEventResampler {
-    construct
-    fun addEvent
-    fun sample
-    fun stop
-    get hasPendingEvents
-    get isTracked
-    get isDown
-}

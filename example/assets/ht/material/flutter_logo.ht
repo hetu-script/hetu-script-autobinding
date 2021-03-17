@@ -1,9 +1,0 @@
-external class FlutterLogo {
-    construct 
-    get size
-    get textColor
-    get style
-    get duration
-    get curve
-    fun build
-}

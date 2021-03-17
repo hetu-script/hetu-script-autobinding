@@ -1,5 +1,0 @@
-external class LayoutBuilder {
-    construct 
-    get builder
-    fun createRenderObject
-}

@@ -1,8 +1,0 @@
-external class SliverPersistentHeader {
-    construct 
-    get delegate
-    get pinned
-    get floating
-    fun build
-    fun debugFillProperties
-}

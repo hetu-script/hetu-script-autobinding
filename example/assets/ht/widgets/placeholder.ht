@@ -1,8 +1,0 @@
-external class Placeholder {
-    construct 
-    get color
-    get strokeWidth
-    get fallbackWidth
-    get fallbackHeight
-    fun build
-}

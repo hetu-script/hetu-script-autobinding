@@ -1,5 +1,0 @@
-external class PointerSignalResolver {
-    construct
-    fun register
-    fun resolve
-}

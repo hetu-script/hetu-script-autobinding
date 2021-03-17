@@ -1,6 +1,0 @@
-external class CupertinoIconThemeData {
-    construct 
-    fun resolve
-    fun copyWith
-    fun debugFillProperties
-}

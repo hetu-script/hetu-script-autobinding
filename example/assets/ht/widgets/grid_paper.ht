@@ -1,9 +1,0 @@
-external class GridPaper {
-    construct 
-    get color
-    get interval
-    get divisions
-    get subdivisions
-    get child
-    fun build
-}

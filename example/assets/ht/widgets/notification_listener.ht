@@ -1,9 +1,0 @@
-external class NotificationListener {
-    construct 
-    get child
-    get onNotification
-    fun build
-}
-external class LayoutChangedNotification {
-    construct
-}

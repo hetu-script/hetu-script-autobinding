@@ -1,7 +1,0 @@
-external class SizeChangedLayoutNotification {
-    construct
-}
-external class SizeChangedLayoutNotifier {
-    construct 
-    fun createRenderObject
-}

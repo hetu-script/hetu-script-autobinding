@@ -1,5 +1,0 @@
-external class RenderSliverFixedExtentList {
-    construct 
-    get itemExtent
-    set itemExtent(value)
-}

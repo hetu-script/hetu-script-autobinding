@@ -1,8 +1,0 @@
-external class InkHighlight {
-    construct 
-    get active
-    fun activate
-    fun deactivate
-    fun dispose
-    fun paintFeature
-}

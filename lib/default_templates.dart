@@ -1,3 +1,7 @@
+///
+///This file is generated.
+///
+
 var dart_classes = '''{{#library_class_import}}
 import 'package:hetu_script/hetu_script.dart';
 {{flutter_lib_name}}
@@ -126,52 +130,7 @@ class {{dart_class_name}}ObjectBinding extends HT_ExternObject<{{dart_class_name
 }
 {{/have_instance_member}}
 
-{{/all_classes}}
-''';
-
-var ht_classes = '''{{#ht_enums}}
-external class {{enum_name}} {
-{{#binding_enums}}
-    static var {{enum_constant_name}}
-{{/binding_enums}}
-}
-{{/ht_enums}}
-{{#ht_classes}}
-external class {{dart_class_name}} {
-{{#field_declaration}}
-    {{field}}
-{{/field_declaration}}
-}
-{{/ht_classes}}''';
-
-var ht_library_script_binding = '''import 'package:hetu_script/hetu_script.dart';
-import 'package:meta/meta.dart';
-{{#api_import}}
-import {{import_file}};
-{{/api_import}}
-
-class HetuLibraryScriptBinding {
-  @mustCallSuper
-  void loadAutoBinding(HT_Interpreter interpreter) {
-    var bindings = {
-      {{#bindings}}
-      '{{dart_class_name}}' : {{prefix}}{{dart_class_name}}ClassBinding(),
-      {{/bindings}}
-    };
-    bindings.forEach((key, value) {
-      interpreter.bindExternalNamespace(key, value);
-    });
-  }
-
-  @mustCallSuper
-  Future loadAutoBindingScripts(HT_Interpreter interpreter, String path) {
-    var futures = <Future>[];
-    {{#ht_bindings}}
-    futures.add(interpreter.evalf(path + '/{{ht_file_relative_path}}'));
-    {{/ht_bindings}}
-    return Future.wait(futures);
-  }
-}''';
+{{/all_classes}}''';
 
 var ht_script_binding = '''import 'package:hetu_script/hetu_script.dart';
 import 'ht_library_script_binding.dart';
@@ -205,9 +164,47 @@ class HetuScriptBinding extends HetuLibraryScriptBinding {
   }
 }''';
 
-var defaultTemplates = {
-  'dart-classes.mustache' : dart_classes,
-  'ht-classes.mustache' : ht_classes,
-  'ht_library_script_binding.mustache' : ht_library_script_binding,
-  'ht_script_binding.mustache' : ht_script_binding,
-};
+var ht_library_script_binding = '''import 'package:hetu_script/hetu_script.dart';
+import 'package:meta/meta.dart';
+{{#api_import}}
+import {{import_file}};
+{{/api_import}}
+
+class HetuLibraryScriptBinding {
+  @mustCallSuper
+  void loadAutoBinding(HT_Interpreter interpreter) {
+    var bindings = {
+      {{#bindings}}
+      '{{dart_class_name}}' : {{prefix}}{{dart_class_name}}ClassBinding(),
+      {{/bindings}}
+    };
+    bindings.forEach((key, value) {
+      interpreter.bindExternalNamespace(key, value);
+    });
+  }
+
+  @mustCallSuper
+  Future loadAutoBindingScripts(HT_Interpreter interpreter, String path) {
+    var futures = <Future>[];
+    {{#ht_bindings}}
+    futures.add(interpreter.evalf(path + '/{{ht_file_relative_path}}'));
+    {{/ht_bindings}}
+    return Future.wait(futures);
+  }
+}''';
+
+var ht_classes = '''{{#ht_enums}}
+external class {{enum_name}} {
+{{#binding_enums}}
+    static var {{enum_constant_name}}
+{{/binding_enums}}
+}
+{{/ht_enums}}
+{{#ht_classes}}
+external class {{dart_class_name}} {
+{{#field_declaration}}
+    {{field}}
+{{/field_declaration}}
+}
+{{/ht_classes}}''';
+

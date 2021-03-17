@@ -1,9 +1,0 @@
-external class PointerRouter {
-    construct
-    fun addRoute
-    fun removeRoute
-    fun addGlobalRoute
-    fun removeGlobalRoute
-    get debugGlobalRouteCount
-    fun route
-}

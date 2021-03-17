@@ -1,4 +1,0 @@
-external class SemanticsService {
-    static fun announce (message, textDirection)
-    static fun tooltip (message)
-}

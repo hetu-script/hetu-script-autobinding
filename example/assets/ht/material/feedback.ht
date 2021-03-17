@@ -1,6 +1,0 @@
-external class Feedback {
-    static fun forTap (context)
-    static fun wrapForTap (callback, context)
-    static fun forLongPress (context)
-    static fun wrapForLongPress (callback, context)
-}

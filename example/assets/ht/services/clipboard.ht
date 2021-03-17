@@ -1,9 +1,0 @@
-external class ClipboardData {
-    construct 
-    get text
-}
-external class Clipboard {
-    static fun setData (data)
-    static fun getData (format)
-    static get kTextPlain
-}

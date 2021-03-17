@@ -1,8 +1,0 @@
-external class CupertinoTextSelectionToolbar {
-    construct 
-    get anchorAbove
-    get anchorBelow
-    get children
-    get toolbarBuilder
-    fun build
-}

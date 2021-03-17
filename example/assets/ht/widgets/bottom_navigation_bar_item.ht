@@ -1,9 +1,0 @@
-external class BottomNavigationBarItem {
-    construct 
-    get icon
-    get activeIcon
-    get title
-    get label
-    get backgroundColor
-    get tooltip
-}

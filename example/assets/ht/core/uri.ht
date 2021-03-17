@@ -1,3 +1,0 @@
-external class UriData {
-    static fun parse (uri)
-}

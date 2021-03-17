@@ -1,6 +1,0 @@
-external class StreamView {
-    construct 
-    get isBroadcast
-    fun asBroadcastStream
-    fun listen
-}

@@ -1,6 +1,0 @@
-external class Priority {
-    static get idle
-    static get animation
-    static get touch
-    static get kMaxOffset
-}

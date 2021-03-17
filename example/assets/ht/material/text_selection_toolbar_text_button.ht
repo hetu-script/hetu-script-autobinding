@@ -1,8 +1,0 @@
-external class TextSelectionToolbarTextButton {
-    construct 
-    get child
-    get onPressed
-    get padding
-    fun build
-    static fun getPadding (index, total)
-}

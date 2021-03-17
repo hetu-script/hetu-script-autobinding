@@ -1,7 +1,0 @@
-external class ValueListenableBuilder {
-    construct 
-    get valueListenable
-    get builder
-    get child
-    fun createState
-}

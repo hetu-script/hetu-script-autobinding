@@ -1,5 +1,0 @@
-external class RaisedButton {
-    construct 
-    fun build
-    fun debugFillProperties
-}

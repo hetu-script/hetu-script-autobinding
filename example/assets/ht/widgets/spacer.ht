@@ -1,5 +1,0 @@
-external class Spacer {
-    construct 
-    get flex
-    fun build
-}

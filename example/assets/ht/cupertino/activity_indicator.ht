@@ -1,8 +1,0 @@
-external class CupertinoActivityIndicator {
-    construct 
-    construct partiallyRevealed
-    get animating
-    get radius
-    get progress
-    fun createState
-}

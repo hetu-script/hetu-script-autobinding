@@ -1,7 +1,0 @@
-external class TweenAnimationBuilder {
-    construct 
-    get tween
-    get builder
-    get child
-    fun createState
-}

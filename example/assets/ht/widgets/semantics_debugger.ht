@@ -1,6 +1,0 @@
-external class SemanticsDebugger {
-    construct 
-    get child
-    get labelStyle
-    fun createState
-}

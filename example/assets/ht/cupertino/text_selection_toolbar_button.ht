@@ -1,7 +1,0 @@
-external class CupertinoTextSelectionToolbarButton {
-    construct 
-    construct text
-    get child
-    get onPressed
-    fun build
-}

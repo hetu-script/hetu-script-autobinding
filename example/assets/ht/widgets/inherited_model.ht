@@ -1,6 +1,0 @@
-external class InheritedModelElement {
-    construct 
-    get widget
-    fun updateDependencies
-    fun notifyDependent
-}

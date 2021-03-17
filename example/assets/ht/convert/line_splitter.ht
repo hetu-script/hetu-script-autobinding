@@ -1,7 +1,0 @@
-external class LineSplitter {
-    construct 
-    fun convert
-    fun startChunkedConversion
-    fun bind
-    static fun split (lines, start, end)
-}

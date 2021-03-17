@@ -1,5 +1,0 @@
-external class FlutterErrorDetailsForPointerEventDispatcher {
-    construct 
-    get event
-    get hitTestEntry
-}

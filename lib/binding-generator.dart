@@ -10,6 +10,12 @@ import 'dart-visitor.dart';
 import 'default_templates.dart';
 import 'defines.dart';
 
+var defaultTemplates = {
+  'dart_classes.mustache' : dart_classes,
+  'ht_classes.mustache' : ht_classes,
+  'ht_library_script_binding.mustache' : ht_library_script_binding,
+  'ht_script_binding.mustache' : ht_script_binding,
+};
 enum ExportType {
   UserDefine,
   Package,
@@ -565,9 +571,9 @@ Future<List<BindingDefine>> generateWrappers(
   }
   // print('output: $dartPath$fileName.g.dart');
   // print('ht output: $htPath/$fileName.ht');
-  renderTemplate('template/dart-classes.mustache', template_vars,
+  renderTemplate('template/dart_classes.mustache', template_vars,
       '$dartPath$fileName.g.dart');
-  renderTemplate('template/ht-classes.mustache', ht_template_vars,
+  renderTemplate('template/ht_classes.mustache', ht_template_vars,
       '$htPath$fileName.ht');
 
   return bindings;

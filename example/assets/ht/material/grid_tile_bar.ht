@@ -1,9 +1,0 @@
-external class GridTileBar {
-    construct 
-    get backgroundColor
-    get leading
-    get title
-    get subtitle
-    get trailing
-    fun build
-}

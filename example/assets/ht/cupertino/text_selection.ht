@@ -1,7 +1,0 @@
-external class CupertinoTextSelectionControls {
-    construct
-    fun getHandleSize
-    fun buildToolbar
-    fun buildHandle
-    fun getHandleAnchor
-}

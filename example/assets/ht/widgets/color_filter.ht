@@ -1,7 +1,0 @@
-external class ColorFiltered {
-    construct 
-    get colorFilter
-    fun createRenderObject
-    fun updateRenderObject
-    fun debugFillProperties
-}

@@ -1,7 +1,0 @@
-external class OSError {
-    construct 
-    get message
-    get errorCode
-    fun toString
-    static get noErrorCode
-}

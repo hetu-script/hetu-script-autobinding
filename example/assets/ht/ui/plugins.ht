@@ -1,5 +1,0 @@
-external class CallbackHandle {
-    construct fromRawHandle
-    fun toRawHandle
-    get hashCode
-}

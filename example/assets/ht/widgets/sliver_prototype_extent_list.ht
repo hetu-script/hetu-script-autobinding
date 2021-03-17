@@ -1,6 +1,0 @@
-external class SliverPrototypeExtentList {
-    construct 
-    get prototypeItem
-    fun createRenderObject
-    fun createElement
-}

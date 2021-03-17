@@ -1,6 +1,0 @@
-external class SecureServerSocket {
-    static fun bind (address, port, context, {backlog, v6Only, requestClientCertificate, requireClientCertificate, supportedProtocols, shared})
-}
-external class RawSecureServerSocket {
-    static fun bind (address, port, context, {backlog, v6Only, requestClientCertificate, requireClientCertificate, supportedProtocols, shared})
-}

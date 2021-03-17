@@ -1,6 +1,0 @@
-external class ElevatedButton {
-    construct 
-    fun defaultStyleOf
-    fun themeStyleOf
-    static fun styleFrom ({primary, onPrimary, onSurface, shadowColor, elevation, textStyle, padding, minimumSize, side, shape, enabledMouseCursor, disabledMouseCursor, visualDensity, tapTargetSize, animationDuration, enableFeedback, alignment})
-}

@@ -1,3 +1,0 @@
-external class PointerEventConverter {
-    static fun expand (data, devicePixelRatio)
-}

@@ -1,8 +1,0 @@
-external class Title {
-    construct 
-    get title
-    get color
-    get child
-    fun build
-    fun debugFillProperties
-}

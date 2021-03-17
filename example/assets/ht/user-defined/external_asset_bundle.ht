@@ -1,7 +1,0 @@
-external class ExternalAssetBundle {
-    construct 
-    fun evict
-    fun load
-    fun loadString
-    fun loadStructuredData
-}

@@ -1,7 +1,0 @@
-external class CupertinoContextMenu {
-    construct 
-    get child
-    get actions
-    get previewBuilder
-    fun createState
-}

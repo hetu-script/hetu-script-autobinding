@@ -1,8 +1,0 @@
-external class PrimaryScrollController {
-    construct 
-    construct none
-    get controller
-    fun updateShouldNotify
-    fun debugFillProperties
-    static fun of (context)
-}

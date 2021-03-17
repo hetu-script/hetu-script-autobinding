@@ -1,8 +1,0 @@
-external class CupertinoPageScaffold {
-    construct 
-    get navigationBar
-    get child
-    get backgroundColor
-    get resizeToAvoidBottomInset
-    fun createState
-}
