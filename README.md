@@ -9,14 +9,14 @@ Then you can use them in the Hetu script:
 
 The classes and enums that need to be used in the scripts:
 ```dart
-@HT_Binding()
+@HTBinding()
 enum Ingredients {
    Apple,
    Banana,
    Cinnamon,
 }
 
-@HT_Binding()
+@HTBinding()
 class RootAssetBundle extends services.AssetBundle{
    @override
    Future<services.ByteData> load(String key) {
@@ -34,7 +34,7 @@ class RootAssetBundle extends services.AssetBundle{
    }
 }
 
-@HT_Binding()
+@HTBinding()
 class ScriptHelper {
    ScriptHelper._();
 
@@ -163,14 +163,14 @@ You can build the executable file by the script: ```build.sh```
    
 3. Your own codes  (-u)
 
-   *Point to the folder that containing your codes. You should also add a ```@HT_Binding()``` annotation to your custom class/enum for binding:*
+   *Point to the folder that containing your codes. You should also add a ```@HTBinding()``` annotation to your custom class/enum for binding:*
 ```dart
-@HT_Binding()
+@HTBinding()
 class CustomClass {
   var m;
 }
 
-@HT_Binding()
+@HTBinding()
 enum CustomEnum { 
   a,
   b,
@@ -215,7 +215,7 @@ call ```loadAutoBinding``` and ```loadAutoBindingScripts``` on a ```HetuScriptBi
 
 ```dart
   void initBinding() async {
-    var hetu = HT_Interpreter(readFileMethod: (path) {
+    var hetu = HTInterpreter(readFileMethod: (path) {
       return rootBundle.loadString(path);
     });
     var binding = HetuScriptBinding();
@@ -236,7 +236,7 @@ The auto-binding codes will be loaded by calling the ```super```.
 
 class ManualBinding extends HetuScriptBinding {
   @override
-  void loadAutoBinding(HT_Interpreter interpreter) {
+  void loadAutoBinding(HTInterpreter interpreter) {
     super.loadAutoBinding(interpreter);
     var bindings = {
       'RootAssetBundle' : RootAssetBundleClassBinding(),
@@ -249,7 +249,7 @@ class ManualBinding extends HetuScriptBinding {
   }
 
   @override
-  Future loadAutoBindingScripts(HT_Interpreter interpreter, String path) {
+  Future loadAutoBindingScripts(HTInterpreter interpreter, String path) {
     var future = super.loadAutoBindingScripts(interpreter, path);
     var futures = <Future>[];
     futures.add(future);

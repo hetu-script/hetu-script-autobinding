@@ -11,10 +11,10 @@ import 'default_templates.dart';
 import 'defines.dart';
 
 var defaultTemplates = {
-  'dart_classes.mustache' : dart_classes,
-  'ht_classes.mustache' : ht_classes,
-  'ht_library_script_binding.mustache' : ht_library_script_binding,
-  'ht_script_binding.mustache' : ht_script_binding,
+  'dart_classes.mustache': dart_classes,
+  'ht_classes.mustache': ht_classes,
+  'ht_library_script_binding.mustache': ht_library_script_binding,
+  'ht_script_binding.mustache': ht_script_binding,
 };
 enum ExportType {
   UserDefine,
@@ -83,7 +83,8 @@ void fetchSuperClass(ClassDefine cls) {
       if (v.name.startsWith('_')) {
         continue;
       }
-      var idx = cls.instanceVars.indexWhere((element) => element.name == v.name);
+      var idx =
+          cls.instanceVars.indexWhere((element) => element.name == v.name);
       if (idx == -1) {
         //子类没有，复制
         cls.instanceVars.add(v);
@@ -95,7 +96,8 @@ void fetchSuperClass(ClassDefine cls) {
       if (v.name.startsWith('_')) {
         continue;
       }
-      var idx = cls.instanceMethods.indexWhere((element) => element.name == v.name);
+      var idx =
+          cls.instanceMethods.indexWhere((element) => element.name == v.name);
       if (idx == -1) {
         //子类没有，复制
         cls.instanceMethods.add(v);
@@ -141,7 +143,7 @@ Future<List<BindingDefine>> generateWrappers(
   var ht_classes = [];
 
   for (var e in fd.enums) {
-    if (!e.annotations.contains('HT_Binding') &&
+    if (!e.annotations.contains('HTBinding') &&
         library == ExportType.UserDefine) {
       continue;
     }
@@ -160,7 +162,7 @@ Future<List<BindingDefine>> generateWrappers(
   var all_classes = [];
   var added_classes = <String>{};
   for (var kclass in fd.classes) {
-    if (!kclass.annotations.contains('HT_Binding') &&
+    if (!kclass.annotations.contains('HTBinding') &&
         library == ExportType.UserDefine) {
       continue;
     }
@@ -191,8 +193,7 @@ Future<List<BindingDefine>> generateWrappers(
     }
     if (kclass.superClassName != null &&
         !kclass.superClassName!.startsWith('_') &&
-        kclass.superClass == null) {
-    }
+        kclass.superClass == null) {}
     var dart_class_name = kclass.name;
 
     var binding_constructors = [];
@@ -299,12 +300,11 @@ Future<List<BindingDefine>> generateWrappers(
 
     var staticClassOnly = false;
     for (var ctor in kclass.constructors) {
+      
+    }
+    for (var ctor in kclass.constructors) {
       //确实有构造函数
       have_constructors = true;
-      if (ctor.isFactory) {
-        //工厂构造函数不导出
-        continue;
-      }
       if (ctor.isPrivate) {
         //私有构造函数只导出静态变量/方法
         staticClassOnly = true;
@@ -472,6 +472,8 @@ Future<List<BindingDefine>> generateWrappers(
         'have_class_assign': have_class_assign,
         'binding_static_variables_setter': binding_static_variables_setter,
         'have_static_declarations': have_static_declarations,
+        'have_instance_getter': have_instance_getter,
+        'have_instance_setter': have_instance_setter,
       };
     }
     var empty_instance_binding = !have_instance_setter &&
@@ -486,7 +488,6 @@ Future<List<BindingDefine>> generateWrappers(
         'method_case': instanceMethodList,
         'setter_case': instanceVarSetterList,
       };
-      ;
     }
 
     var classMap = {};
@@ -495,6 +496,8 @@ Future<List<BindingDefine>> generateWrappers(
     }
     if (have_instance_member != null) {
       classMap['have_instance_member'] = have_instance_member;
+    } else {
+      classMap['have_instance_member'] = false;
     }
 
     if (classMap.isNotEmpty) {
@@ -573,8 +576,8 @@ Future<List<BindingDefine>> generateWrappers(
   // print('ht output: $htPath/$fileName.ht');
   renderTemplate('template/dart_classes.mustache', template_vars,
       '$dartPath$fileName.g.dart');
-  renderTemplate('template/ht_classes.mustache', ht_template_vars,
-      '$htPath$fileName.ht');
+  renderTemplate(
+      'template/ht_classes.mustache', ht_template_vars, '$htPath$fileName.ht');
 
   return bindings;
 }

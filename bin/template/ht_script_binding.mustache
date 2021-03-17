@@ -6,20 +6,20 @@ import {{import_file}};
 
 class HetuScriptBinding extends HetuLibraryScriptBinding {
   @override
-  void loadAutoBinding(HT_Interpreter interpreter) {
+  void loadAutoBinding(HTInterpreter interpreter) {
     super.loadAutoBinding(interpreter);
     var bindings = {
       {{#user_bindings}}
-      '{{dart_class_name}}' : {{prefix}}{{dart_class_name}}ClassBinding(),
+      '{{dart_class_name}}' : {{prefix}}{{dart_class_name}}HTBinding(),
       {{/user_bindings}}
     };
     bindings.forEach((key, value) {
-      interpreter.bindExternalNamespace(key, value);
+      interpreter.bindExternalClass(key, value);
     });
   }
 
   @override
-  Future loadAutoBindingScripts(HT_Interpreter interpreter, String path) {
+  Future loadAutoBindingScripts(HTInterpreter interpreter, String path) {
     var future = super.loadAutoBindingScripts(interpreter, path);
     var futures = <Future>[];
     futures.add(future);
