@@ -350,44 +350,25 @@ class ConstructorDefine {
     });
   }
 
-  String getParams() {
-    var allParams = [];
-    var latterParams = [];
-    var isNamed = false;
-    params.forEach((p) {
-      if (p.isPositional && !p.isOptional) {
-        allParams.add(p.name);
-      } else {
-        if (p.defaultValue != null) {
-          latterParams.add('${p.name} = ${p.defaultValue}');
-        } else {
-          latterParams.add('${p.name}');
-        }
-        if (p.isNamed) {
-          isNamed = true;
-        }
-      }
-    });
-    if (latterParams.isNotEmpty) {
-      if (isNamed) {
-        allParams.add('{${latterParams.join(', ')}}');
-      } else {
-        allParams.add('[${latterParams.join(', ')}]');
-      }
-    }
-    return '(${allParams.join(', ')})';
-  }
-
   String getInvokeParam() {
-    var paramList = [];
+    var allParams = [];
+    var index = 0;
     params.forEach((p) {
       if (p.isPositional) {
-        paramList.add(p.name);
-      } else if (p.isNamed) {
-        paramList.add('${p.name} : ${p.name}');
+        //顺序参数
+        if (!p.isOptional) {
+          allParams.add('posArgs[$index]');
+        } else {
+          //顺序可选参数
+          allParams.add('posArgs.length > $index ? posArgs[$index] : ${p.defaultValue}');
+        }
+        index++;
+      } else {
+        //命名参数
+        allParams.add('${p.name} : namedArgs.containsKey(\'${p.name}\') ? namedArgs[\'${p.name}\'] : ${p.defaultValue}');
       }
     });
-    return '(${paramList.join(', ')})';
+    return '(${allParams.join(', ')})';
   }
 
   List<String> getDefaultIdentifiers() {
@@ -503,15 +484,24 @@ class MethodDefine {
     if (isGetter) {
       return '';
     }
-    var paramList = [];
+    var allParams = [];
+    var index = 0;
     params.forEach((p) {
       if (p.isPositional) {
-        paramList.add(p.name);
-      } else if (p.isNamed) {
-        paramList.add('${p.name} : ${p.name}');
+        //顺序参数
+        if (!p.isOptional) {
+          allParams.add('posArgs[$index]');
+        } else {
+          //顺序可选参数
+          allParams.add('posArgs.length > $index ? posArgs[$index] : ${p.defaultValue}');
+        }
+        index++;
+      } else {
+        //命名参数
+        allParams.add('${p.name} : namedArgs.containsKey(\'${p.name}\') ? namedArgs[\'${p.name}\'] : ${p.defaultValue}');
       }
     });
-    return '(${paramList.join(', ')})';
+    return '(${allParams.join(', ')})';
   }
 
   String getHetuParams() {

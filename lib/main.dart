@@ -398,6 +398,8 @@ void main(args) {
     'foundation/assertions.dart',
     'foundation/basic_types.dart',
     'material/date_picker_deprecated.dart',
+    'rendering/object.dart',
+    'widgets/framework.dart',
   ]);
   var whitelist = results['whitelist'];
   if (results['help'] == true || results['version'] == true) {

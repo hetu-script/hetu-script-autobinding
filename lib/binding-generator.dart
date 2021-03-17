@@ -302,10 +302,15 @@ Future<List<BindingDefine>> generateWrappers(
     }
 
     var staticClassOnly = true;
-    for (var ctor in kclass.constructors) {
-      if (!ctor.isPrivate) {
-        //有非私有构造函数，可以生成instance
-        staticClassOnly = false;
+    if (kclass.constructors.isEmpty) {
+      //一个构造函数都没定义，会添加一个默认的，所以不是静态专用类
+      staticClassOnly = false;
+    } else {
+      for (var ctor in kclass.constructors) {
+        if (!ctor.isPrivate) {
+          //有非私有构造函数，可以生成instance
+          staticClassOnly = false;
+        }
       }
     }
     for (var ctor in kclass.constructors) {
@@ -320,7 +325,7 @@ Future<List<BindingDefine>> generateWrappers(
         if (constructor_name != '') {
           constructor_name = '.$constructor_name';
         }
-        var constructor_params = ctor.getParams();
+
         var constructor_invoke_params = ctor.getInvokeParam();
 
         var default_identifiers = ctor.getDefaultIdentifiers();
@@ -340,7 +345,6 @@ Future<List<BindingDefine>> generateWrappers(
         binding_constructors.add({
           'dart_class_name': dart_class_name,
           'constructor_name': constructor_name,
-          'constructor_params': constructor_params,
           'generic_types': generic_types,
           'constructor_invoke_params': constructor_invoke_params,
           'constructor_private_defines': constructor_private_defines
@@ -363,7 +367,6 @@ Future<List<BindingDefine>> generateWrappers(
       binding_constructors.add({
         'dart_class_name': dart_class_name,
         'constructor_name': '',
-        'constructor_params': '()',
         'generic_types': '',
         'constructor_invoke_params': '()',
         'constructor_private_defines': []
@@ -403,7 +406,21 @@ Future<List<BindingDefine>> generateWrappers(
           instanceVarGetterList.add({'instance_identifier': m.name});
           ht_fields.add({'field': 'get ${m.name}'});
         } else {
-          instanceMethodList.add({'method_identifier': m.name});
+          var instance_method_private_defines = <Map<String, dynamic>>[];
+          var default_identifiers = m.getDefaultIdentifiers();
+          var added_identifiers = <String>{};
+          default_identifiers.forEach((id) {
+            if (id.startsWith('_')) {
+              checkIdentifier(
+                  id, added_identifiers, instance_method_private_defines);
+            }
+          });
+          instanceMethodList.add({
+            'method_identifier': m.name,
+            'instance_method_invoke_params': m.getInvokeParam(),
+            'instance_method_private_defines': instance_method_private_defines
+          });
+
           ht_fields.add({'field': 'fun ${m.name}'});
         }
       });
@@ -542,47 +559,44 @@ Future<List<BindingDefine>> generateWrappers(
     'have_enums': have_enums,
   };
 
+  var ht_template_vars = <String, dynamic>{
+    'ht_classes': ht_classes,
+    'ht_enums': ht_enums,
+  };
+
   var fileName = path.basenameWithoutExtension(filePath);
   late String dartPath;
   late String htPath;
   var dirName = path.basename(path.dirname(filePath));
-  if (library == ExportType.UserDefine || library == ExportType.Package) {
+  if (library == ExportType.FlutterLibrary) {
+    dirName = 'flutter/$dirName';
+    template_vars['library_class_import'] = {
+      'flutter_lib_name': "import 'package:flutter/${libName!}.dart';",
+    };
+  } else if (library == ExportType.DartLibrary) {
+    dirName = 'dart/$dirName';
+
+    template_vars['library_class_import'] = {
+      'flutter_lib_name': "import 'dart:${libName!}';",
+    };
+  } else if (library == ExportType.UserDefine) {
     dirName = 'user-defined';
+    var relPath = path.relative(filePath, from: '$outputPath/$dirName');
+    template_vars['library_class_import'] = {
+      'flutter_lib_name': "import '$relPath';",
+    };
+  } else if (library == ExportType.Package) {
+    dirName = 'packages/$libName';
+    template_vars['library_class_import'] = {
+      'flutter_lib_name': "import 'package:$libName/$libName.dart';",
+    };
   }
   dartPath = '$outputPath/$dirName/';
   htPath = '$scriptOutputPath/$dirName/';
   await Directory(dartPath).create(recursive: true);
   await Directory(htPath).create(recursive: true);
-
   bindings.add(BindingDefine('$dirName/$fileName', bindingExternals));
 
-  var ht_template_vars = <String, dynamic>{
-    'ht_classes': ht_classes,
-    'ht_enums': ht_enums,
-  };
-  if (library == ExportType.FlutterLibrary) {
-    template_vars['library_class_import'] = {
-      'flutter_lib_name': "import 'package:flutter/${libName!}.dart';",
-    };
-  } else if (library == ExportType.DartLibrary) {
-    template_vars['library_class_import'] = {
-      'flutter_lib_name': "import 'dart:${libName!}';",
-    };
-  } else if (library == ExportType.UserDefine) {
-    var from = dartPath;
-    var to = filePath;
-    // print('from: $from\nto: $to\nrel:${path.relative(to, from: from)}');
-    var relPath = path.relative(to, from: from);
-    template_vars['library_class_import'] = {
-      'flutter_lib_name': "import '$relPath';",
-    };
-  } else if (library == ExportType.Package) {
-    template_vars['library_class_import'] = {
-      'flutter_lib_name': "import 'package:$libName/$libName.dart';",
-    };
-  }
-  // print('output: $dartPath$fileName.g.dart');
-  // print('ht output: $htPath/$fileName.ht');
   renderTemplate('template/dart_classes.mustache', template_vars,
       '$dartPath$fileName.g.dart');
   renderTemplate(

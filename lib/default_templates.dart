@@ -29,11 +29,28 @@ class {{enum_name}}HTBinding extends HTExternClass {
 
   @override
   dynamic fetch(String varName, {String from = HTLexicon.global}) {
-    switch (id) {
+    switch (varName) {
+      case 'values':
+        return {{enum_name}}.values;
       {{#binding_enums}}
       case '{{enum_constant_name}}':
         return {{enum_name}}.{{enum_constant_name}};
       {{/binding_enums}}
+      default:
+        throw HTErrorUndefined(varName);
+    }
+  }
+
+
+  @override
+  dynamic instanceFetch(dynamic instance, String varName) {
+    switch (varName) {
+      case 'typeid':
+        return HTTypeId('{{enum_name}}');
+      case 'index':
+        return (instance as {{enum_name}}).index;
+      case 'toString':
+        return (List<dynamic> positionalArgs, Map<String, dynamic> namedArgs) => (instance as {{enum_name}}).toString();
       default:
         throw HTErrorUndefined(varName);
     }
@@ -55,14 +72,14 @@ class {{dart_class_name}}HTBinding extends HTExternClass {
         {{#constructor_private_defines}}
         {{private_impl}}
         {{/constructor_private_defines}}
-        return {{constructor_params}} => {{dart_class_name}}{{generic_types}}{{constructor_name}}{{constructor_invoke_params}};
+        return (posArgs, namedArgs) => {{dart_class_name}}{{generic_types}}{{constructor_name}}{{constructor_invoke_params}};
       {{/binding_constructors}}
       {{#binding_static_methods}}
       case '{{static_method_name}}':
         {{#static_method_private_defines}}
         {{private_impl}}
         {{/static_method_private_defines}}
-        return {{static_method_params}} => {{dart_class_name}}.{{static_method_name}}{{static_method_invoke_params}};
+        return (posArgs, namedArgs) => {{dart_class_name}}.{{static_method_name}}{{static_method_invoke_params}};
       {{/binding_static_methods}}
       {{#binding_static_variables_getter}}
       case '{{dart_class_name}}.{{static_variable_name}}':
@@ -120,7 +137,10 @@ extension {{dart_class_name}}Binding on {{dart_class_name}} {
     {{/getter_case}}
     {{#method_case}}
       case '{{method_identifier}}':
-        return {{method_identifier}};
+        {{#instance_method_private_defines}}
+        {{private_impl}}
+        {{/instance_method_private_defines}}
+        return (posArgs, namedArgs) => this.{{method_identifier}}{{instance_method_invoke_params}};
     {{/method_case}}
       default:
         throw HTErrorUndefined(varName);
