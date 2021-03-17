@@ -253,8 +253,8 @@ class ManualBinding extends HetuScriptBinding {
     var future = super.loadAutoBindingScripts(interpreter, path);
     var futures = <Future>[];
     futures.add(future);
-    futures.add(interpreter.evalf('$path/user-defined/root_asset_bundle.ht'));
-    futures.add(interpreter.evalf('$path/user-defined/external_asset_bundle.ht'));
+    futures.add(interpreter.evalf('$path/user/root_asset_bundle.ht'));
+    futures.add(interpreter.evalf('$path/user/external_asset_bundle.ht'));
     return Future.wait(futures);
   }
 }

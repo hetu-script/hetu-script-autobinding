@@ -580,7 +580,7 @@ Future<List<BindingDefine>> generateWrappers(
       'flutter_lib_name': "import 'dart:${libName!}';",
     };
   } else if (library == ExportType.UserDefine) {
-    dirName = 'user-defined';
+    dirName = 'user';
     var relPath = path.relative(filePath, from: '$outputPath/$dirName');
     template_vars['library_class_import'] = {
       'flutter_lib_name': "import '$relPath';",
