@@ -20,7 +20,7 @@ enum {{private_enum_name}}{
 {{/private_classes}}
 
 {{#have_enums}}
-class {{enum_name}}HTBinding extends HTExternClass {
+class {{enum_name}}HTBinding extends HTExternalClass {
   {{enum_name}}HTBinding() : super('{{enum_name}}');
 
   @override
@@ -56,7 +56,7 @@ class {{enum_name}}HTBinding extends HTExternClass {
 
 {{#all_classes}}
 {{#have_class_member}}
-class {{dart_class_name}}HTBinding extends HTExternClass {
+class {{dart_class_name}}HTBinding extends HTExternalClass {
   {{dart_class_name}}HTBinding() : super('{{dart_class_name}}');
 
   {{#have_class_fetch}}

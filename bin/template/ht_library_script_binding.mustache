@@ -6,7 +6,17 @@ import {{import_file}};
 
 class HetuLibraryScriptBinding {
   @mustCallSuper
+  Function? funcWrap(positionalArgs, namedArgs) {
+    String functionType = positionalArgs[0];
+    HTFunction function = positionalArgs[1];
+    switch (functionType) {
+    }
+    return null;
+  }
+
+  @mustCallSuper
   void loadAutoBinding(HTInterpreter interpreter) {
+    interpreter.bindExternalFunction('funcwrap', funcWrap);
     var bindings = {
       {{#bindings}}
       '{{dart_class_name}}' : {{prefix}}{{dart_class_name}}HTBinding(),
@@ -21,7 +31,7 @@ class HetuLibraryScriptBinding {
   Future loadAutoBindingScripts(HTInterpreter interpreter, String path) {
     var futures = <Future>[];
     {{#ht_bindings}}
-    futures.add(interpreter.evalf(path + '/{{ht_file_relative_path}}'));
+    futures.add(interpreter.import(path + '/{{ht_file_relative_path}}'));
     {{/ht_bindings}}
     return Future.wait(futures);
   }

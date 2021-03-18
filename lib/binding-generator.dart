@@ -46,7 +46,7 @@ void writeJson(
     String? jsonPath, String filePath, Map<String, dynamic>? astData) async {
   if (jsonPath != null) {
     var dirName = path.basename(path.dirname(filePath));
-    var outputPath = '$jsonPath/json/$dirName/';
+    var outputPath = '$jsonPath/$dirName/';
     await Directory(outputPath).create(recursive: true);
     var output = '$outputPath/${path.basenameWithoutExtension(filePath)}.json';
     var encoder = JsonEncoder.withIndent('  ');
@@ -455,7 +455,14 @@ Future<List<BindingDefine>> generateWrappers(
         'static_method_invoke_params': m.getInvokeParam(),
         'static_method_private_defines': static_method_private_defines,
       });
-      ht_fields.add({'field': 'static fun ${m.name}${m.getHetuParams()}'});
+      if (m.isGetter) {
+        ht_fields.add({'field': 'static get ${m.name}${m.getHetuParams()}'});
+      } else if (m.isSetter) {
+        ht_fields.add({'field': 'static set ${m.name}${m.getHetuParams()}'});
+      } else {
+        ht_fields.add({'field': 'static fun ${m.name}${m.getHetuParams()}'});
+      }
+
     });
     kclass.staticVars.forEach((v) {
       if (v.isPrivate || v.isProtected || v.isDeprecated) {
@@ -475,7 +482,7 @@ Future<List<BindingDefine>> generateWrappers(
       if (setter) {
         ht_fields.add({'field': 'static var ${v.name}'});
       } else {
-        ht_fields.add({'field': 'static get ${v.name}'});
+        ht_fields.add({'field': 'static const ${v.name}'});
       }
     });
 

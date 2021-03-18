@@ -6,6 +6,19 @@ import {{import_file}};
 
 class HetuScriptBinding extends HetuLibraryScriptBinding {
   @override
+  Function? funcWrap(positionalArgs, namedArgs) {
+    var f = super.funcWrap(positionalArgs, namedArgs);
+    if (f != null) {
+      return f;
+    }
+    String functionType = positionalArgs[0];
+    HTFunction function = positionalArgs[1];
+    switch (functionType) {
+    }
+    return null;
+  }
+
+  @override
   void loadAutoBinding(HTInterpreter interpreter) {
     super.loadAutoBinding(interpreter);
     var bindings = {
@@ -24,7 +37,7 @@ class HetuScriptBinding extends HetuLibraryScriptBinding {
     var futures = <Future>[];
     futures.add(future);
     {{#ht_user_bindings}}
-    futures.add(interpreter.evalf(path + '/{{ht_file_relative_path}}'));
+    futures.add(interpreter.import(path + '/{{ht_file_relative_path}}'));
     {{/ht_user_bindings}}
     return Future.wait(futures);
   }

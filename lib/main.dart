@@ -69,8 +69,12 @@ Future<List<FileDefine>> parseDartFiles(
     var ignoredClasses = <String>{};
     ignores.forEach((element) {
       if (element.contains(':')) {
-        var ignoredClassName = element.substring(element.indexOf(':') + 1);
-        ignoredClasses.add(ignoredClassName);
+        var index = element.indexOf(':');
+        var ignoredClassName = element.substring(index + 1);
+        var ignoredFileName = element.substring(0, index);
+        if (p.path.contains(ignoredFileName)) {
+          ignoredClasses.add(ignoredClassName);
+        }
       }
     });
 
@@ -84,6 +88,7 @@ Future<List<FileDefine>> parseDartFiles(
       allClasses.forEach((element) {
         if (ignoredClasses.contains(element.name)) {
           element.ignored = true;
+          print('ignored: ${p.path} matched class: ${element.name}');
           return;
         }
         if (classDefineMap.containsKey(element.name)) {
@@ -341,9 +346,9 @@ void main(args) {
       abbr: 's',
       defaultsTo: Directory.current.path.toString() + '/gen/ht',
       help: 'The output path for .ht code generation.');
-  parser.addFlag('json-export',
+  parser.addOption('json-export',
       abbr: 'j',
-      defaultsTo: false,
+      defaultsTo: null,
       help: 'Whether to export the intermediate JSON files for diagnostics.');
   parser.addFlag('help', abbr: 'h', negatable: false, callback: (f) {
     if (f) {
@@ -353,10 +358,23 @@ void main(args) {
   parser.addMultiOption('ignores',
       abbr: 'i',
       defaultsTo: [
+        'core/annotations.dart',
+        'core/object.dart',
+        'core/errors.dart',
+        'core/exceptions.dart',
+        'core/expando.dart',
+        'core/string.dart',
+        'core/bool.dart',
+        'convert/codec.dart',
+        'foundation/annotations.dart',
+        'foundation/assertions.dart',
+        'foundation/basic_types.dart',
+        'material/date_picker_deprecated.dart',
+        'rendering/object.dart',
+        'widgets/framework.dart',
         'ui/painting.dart:Codec',
         'ui/painting.dart:Image',
         'ui/painting.dart:Gradient',
-        'convert/codec.dart',
         'ui/text.dart:TextStyle',
         'ui/text.dart:StrutStyle',
         'ui/platform_dispatcher.dart:ViewConfiguration',
@@ -382,25 +400,14 @@ void main(args) {
   }
   var flutterPath = results['flutter-lib-path'];
   var packagePaths = results['package-lib-paths'];
-  var jsonPath = results['json-export']
-      ? Directory.current.path.toString() + '/gen'
-      : null;
+  var jsonPath = results['json-export'];
+  if (jsonPath != null) {
+    if (path.isRelative(jsonPath)) {
+      jsonPath = path.absolute(jsonPath);
+    }
+  }
+  print('json: $jsonPath');
   var ignores = results['ignores'];
-  ignores.addAll([
-    'core/annotations.dart',
-    'core/object.dart',
-    'core/errors.dart',
-    'core/exceptions.dart',
-    'core/expando.dart',
-    'core/string.dart',
-    'core/bool.dart',
-    'foundation/annotations.dart',
-    'foundation/assertions.dart',
-    'foundation/basic_types.dart',
-    'material/date_picker_deprecated.dart',
-    'rendering/object.dart',
-    'widgets/framework.dart',
-  ]);
   var whitelist = results['whitelist'];
   if (results['help'] == true || results['version'] == true) {
     return;
