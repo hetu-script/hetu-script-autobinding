@@ -2,6 +2,10 @@
 ///This file is generated.
 ///
 
+var import_entry = '''{{#import_files}}
+import '{{import_file_name}}'
+{{/import_files}}''';
+
 var dart_classes = '''{{#library_class_import}}
 import 'package:hetu_script/hetu_script.dart';
 {{flutter_lib_name}}

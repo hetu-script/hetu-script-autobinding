@@ -155,6 +155,7 @@ void parseBegin(
     await dirContents(Directory(a), ignores, whitelist);
 
     if (files.isNotEmpty) {
+      var fileEntries = [];
       var packageName = path.basenameWithoutExtension(a);
       if (packageName == 'lib') {
         //上一级
@@ -166,10 +167,15 @@ void parseBegin(
       print('parsing package: [$packageName]');
       var fileDefines = await parseDartFiles(jsonPath, ignores);
       for (var p in fileDefines) {
+        fileEntries.add({
+          'import_file_name':
+        });
         var b = await generateWrappers(p, exportPath, scriptExportPath,
             library: ExportType.Package, libName: packageName);
         allBindings.addAll(b);
       }
+
+
     }
   }
 
