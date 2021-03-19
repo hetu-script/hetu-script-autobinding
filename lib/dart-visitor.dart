@@ -365,6 +365,7 @@ class RootAstVisitor extends UnifyingAstVisitor<dynamic> {
       'pos?': node.isPositional,
       'named?': node.isNamed,
       'optional?': node.isOptional,
+      'required?': node.isRequired,
     };
   }
 
@@ -378,6 +379,7 @@ class RootAstVisitor extends UnifyingAstVisitor<dynamic> {
       'pos?': node.isPositional,
       'named?': node.isNamed,
       'optional?': node.isOptional,
+      'required?': node.isRequired,
     };
   }
 
@@ -390,6 +392,7 @@ class RootAstVisitor extends UnifyingAstVisitor<dynamic> {
       'pos?': node.isPositional,
       'named?': node.isNamed,
       'optional?': node.isOptional,
+      'required?': node.isRequired,
     };
   }
 
@@ -400,7 +403,7 @@ class RootAstVisitor extends UnifyingAstVisitor<dynamic> {
       '_': nodeType(node),
       'param': _safelyVisitNode(node.parameter),
       'default': node.defaultValue?.toString(),
-      'default_identifiers': identifiers
+      'default_identifiers': identifiers,
     };
   }
 

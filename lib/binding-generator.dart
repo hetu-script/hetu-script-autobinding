@@ -136,7 +136,7 @@ Future<List<BindingDefine>> generateWrappers(
     }
   });
   var have_enums = <Map<String, dynamic>>[];
-  var private_enums = [];
+  // var private_enums = [];
   var privateClasses = <Map<String, dynamic>>[];
   var privateTopVars = <Map<String, dynamic>>[];
   var ht_enums = [];
@@ -177,23 +177,23 @@ Future<List<BindingDefine>> generateWrappers(
       //私有类不能绑定
       continue;
     }
-    // if (kclass.generics != null) {
-    //   //有泛型的类不支持导出
-    //   continue;
-    // }
-    var generic_types = '';
     if (kclass.generics != null) {
-      var types = <String>[];
-      kclass.generics!.forEach((element) {
-        var genericType = element['type'];
-        if (genericType != null) {
-          types.add(genericType);
-        }
-      });
-      if (types.isNotEmpty) {
-        generic_types = '<${types.join(', ')}>';
-      }
+      //有泛型的类不支持导出，需要用户自己实现不带泛型的类然后标记导出
+      continue;
     }
+    // var generic_types = '';
+    // if (kclass.generics != null) {
+    //   var types = <String>[];
+    //   kclass.generics!.forEach((element) {
+    //     var genericType = element['type'];
+    //     if (genericType != null) {
+    //       types.add(genericType);
+    //     }
+    //   });
+    //   if (types.isNotEmpty) {
+    //     generic_types = '<${types.join(', ')}>';
+    //   }
+    // }
     if (kclass.superClassName != null &&
         !kclass.superClassName!.startsWith('_') &&
         kclass.superClass == null) {}
@@ -345,7 +345,7 @@ Future<List<BindingDefine>> generateWrappers(
         binding_constructors.add({
           'dart_class_name': dart_class_name,
           'constructor_name': constructor_name,
-          'generic_types': generic_types,
+          'generic_types': '',
           'constructor_invoke_params': constructor_invoke_params,
           'constructor_private_defines': constructor_private_defines
         });

@@ -270,6 +270,7 @@ class ParamDefine {
   late final bool isOptional;
   late final bool isNamed;
   late final bool isFinal;
+  late final bool isRequired;
 
   ParamDefine(Map<String, dynamic> json) {
     parse(json);
@@ -288,7 +289,7 @@ class ParamDefine {
           isPositional = js['pos?'];
           isOptional = js['optional?'];
           isNamed = js['named?'] ?? false;
-          isFinal = json['final?'] ?? false;
+          isRequired = js['required?'] ?? false;
           break;
         case 'DefaultFormalParameter':
           var param = js['param'];
@@ -304,20 +305,21 @@ class ParamDefine {
           isPositional = js['pos?'];
           isOptional = js['optional?'];
           isNamed = js['named?'] ?? false;
-          isFinal = json['final?'] ?? false;
+          isRequired = js['required?'] ?? false;
           break;
         case 'FunctionTypedFormalParameter':
           name = js['name'];
           isPositional = js['pos?'];
           isOptional = js['optional?'];
           isNamed = js['named?'] ?? false;
-          isFinal = json['final?'] ?? false;
+          isRequired = js['required?'] ?? false;
           break;
         default:
           assert(false, 'Unknown Parameter [$js]!');
       }
     }
 
+    isFinal = json['final?'] ?? false;
     parseParameter(json);
   }
 }
@@ -354,18 +356,40 @@ class ConstructorDefine {
     var allParams = [];
     var index = 0;
     params.forEach((p) {
+      String? wrapListType;
+      if (p.type?.contains('List<') ?? false) {
+        wrapListType = p.type!;
+        if (wrapListType.endsWith('?')) {
+          wrapListType = wrapListType.substring(0, wrapListType.length -1);
+        }
+      }
+      String checkWrapValue(String v) {
+        if (wrapListType != null) {
+          return '$wrapListType.from($v)';
+        }
+        return v;
+      }
       if (p.isPositional) {
         //顺序参数
+        var value = checkWrapValue('posArgs[$index]');
         if (!p.isOptional) {
-          allParams.add('posArgs[$index]');
+          allParams.add(value);
         } else {
           //顺序可选参数
-          allParams.add('posArgs.length > $index ? posArgs[$index] : ${p.defaultValue}');
+          allParams.add('posArgs.length > $index ? $value : ${p.defaultValue}');
         }
         index++;
       } else {
         //命名参数
-        allParams.add('${p.name} : namedArgs.containsKey(\'${p.name}\') ? namedArgs[\'${p.name}\'] : ${p.defaultValue}');
+        var value = checkWrapValue('namedArgs[\'${p.name}\']');
+        if (p.isRequired && p.defaultValue == null) {
+          //没有默认值并且要求非null，这种情况用户必须保证提供了这个参数值
+          allParams.add('${p.name} : $value');
+        } else {
+          allParams.add(
+              '${p.name} : namedArgs.containsKey(\'${p.name}\') ? $value : ${p
+                  .defaultValue}');
+        }
       }
     });
     return '(${allParams.join(', ')})';
