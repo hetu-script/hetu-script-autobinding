@@ -375,7 +375,7 @@ class RootAstVisitor extends UnifyingAstVisitor<dynamic> {
     return {
       '_': nodeType(node),
       'type': node.type.toString(),
-      'name': node.identifier!.name,
+      'name': node.identifier?.name,
       'pos?': node.isPositional,
       'named?': node.isNamed,
       'optional?': node.isOptional,
