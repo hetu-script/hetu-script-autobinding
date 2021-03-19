@@ -1,3 +1,6 @@
+## 1.0.5
+- Add: Function typedef binding.
+
 ## 1.0.4
 
 - Fix: Private super class can now be exported to child classes.

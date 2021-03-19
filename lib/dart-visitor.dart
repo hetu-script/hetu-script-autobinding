@@ -68,6 +68,25 @@ class RootAstVisitor extends UnifyingAstVisitor<dynamic> {
   }
 
   @override
+  dynamic visitFunctionTypeAlias(FunctionTypeAlias node) {
+    return {
+      '_': nodeType(node),
+      'name': node.name.name,
+      'params': _safelyVisitNode(node.parameters),
+    };
+  }
+
+  @override
+  dynamic visitGenericTypeAlias(GenericTypeAlias node) {
+    return {
+      '_': nodeType(node),
+      'name': node.name.name,
+      'params': _safelyVisitNode(node.functionType?.parameters),
+    };
+  }
+
+
+  @override
   dynamic visitClassTypeAlias(ClassTypeAlias node) {
     return {'_': nodeType(node), 'raw': node.toString()};
   }
@@ -132,11 +151,6 @@ class RootAstVisitor extends UnifyingAstVisitor<dynamic> {
 
   @override
   dynamic visitAssertStatement(AssertStatement node) {
-    return {'_': nodeType(node), 'raw': node.toString()};
-  }
-
-  @override
-  dynamic visitGenericTypeAlias(GenericTypeAlias node) {
     return {'_': nodeType(node), 'raw': node.toString()};
   }
 

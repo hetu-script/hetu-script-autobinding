@@ -7,7 +7,7 @@ import 'package:path/path.dart' as path;
 import 'binding-generator.dart';
 import 'defines.dart';
 
-var version = '1.0.4';
+var version = '1.0.5';
 
 var files = <FileSystemEntity>[];
 
@@ -34,22 +34,22 @@ Future<List<FileSystemEntity>> dirContents(
           return;
         }
       }
-      if (ignores.isNotEmpty) {
-        var idx = ignores.indexWhere((element) {
-          var ignoreClass = element.contains(':');
-          if (!ignoreClass) {
-            if (file.path.contains(element)) {
-              print('ignored: ${file.path} matched: $element');
-              return true;
-            }
-          }
-
-          return false;
-        });
-        if (idx != -1) {
-          return;
-        }
-      }
+      // if (ignores.isNotEmpty) {
+      //   var idx = ignores.indexWhere((element) {
+      //     var ignoreClass = element.contains(':');
+      //     if (!ignoreClass) {
+      //       if (file.path.contains(element)) {
+      //         print('ignored: ${file.path} matched: $element');
+      //         return true;
+      //       }
+      //     }
+      //
+      //     return false;
+      //   });
+      //   if (idx != -1) {
+      //     return;
+      //   }
+      // }
       files.add(file);
     }
   },
@@ -75,6 +75,10 @@ Future<List<FileDefine>> parseDartFiles(
         if (p.path.contains(ignoredFileName)) {
           ignoredClasses.add(ignoredClassName);
         }
+      } else {
+        if (p.path.contains(element)) {
+          ignoredClasses.add('-all-');
+        }
       }
     });
 
@@ -86,7 +90,7 @@ Future<List<FileDefine>> parseDartFiles(
       allClasses.addAll(define.classes);
       allClasses.addAll(define.privateClasses);
       allClasses.forEach((element) {
-        if (ignoredClasses.contains(element.name)) {
+        if (ignoredClasses.contains(element.name) || ignoredClasses.contains('-all-')) {
           element.ignored = true;
           print('ignored: ${p.path} matched class: ${element.name}');
           return;
@@ -172,6 +176,7 @@ void parseBegin(
   var user_api_import = [];
   var user_bindings = [];
   var ht_user_bindings = [];
+  var function_defs = [];
   allBindings.forEach((element) {
     var importPath = element.filePath;
     var prefix = '';
@@ -191,11 +196,13 @@ void parseBegin(
     ht_user_bindings.add({
       'ht_file_relative_path': ht_file_relative_path,
     });
+    function_defs.addAll(element.funcTypeDefs);
   });
   var userTemplateVars = {
     'user_api_import': user_api_import,
     'user_bindings': user_bindings,
-    'ht_user_bindings': ht_user_bindings
+    'ht_user_bindings': ht_user_bindings,
+    'function_defs': function_defs,
   };
   renderTemplate('template/ht_script_binding.mustache', userTemplateVars,
       '$exportPath/ht_script_binding.dart');
@@ -263,6 +270,7 @@ void parseBegin(
     var api_import = [];
     var lib_bindings = [];
     var ht_lib_bindings = [];
+    var function_defs = [];
     allBindings.forEach((element) {
       var importPath = element.filePath;
       var prefix = '';
@@ -282,11 +290,14 @@ void parseBegin(
       ht_lib_bindings.add({
         'ht_file_relative_path': ht_file_relative_path,
       });
+
+      function_defs.addAll(element.funcTypeDefs);
     });
     var libTemplateVars = {
       'api_import': api_import,
       'bindings': lib_bindings,
-      'ht_bindings': ht_lib_bindings
+      'ht_bindings': ht_lib_bindings,
+      'function_defs': function_defs,
     };
     renderTemplate('template/ht_library_script_binding.mustache',
         libTemplateVars, '$exportPath/ht_library_script_binding.dart');
@@ -381,7 +392,7 @@ void main(args) {
       ],
       valueHelp: 'ignored-file-name, ignored-file-name:ignored-class-name, ...',
       help:
-          'The files/classes from this list will be ignored during the code generation.');
+          "The files/classes from this list will be ignored during the code generation. If only file name is provided, all classes from the file won't be exported. All function typedefs will be exported even the file is ignored.");
   parser.addMultiOption('whitelist',
       abbr: 'w',
       valueHelp: 'whitelist-file-name, whitelist-file-name2, ...',

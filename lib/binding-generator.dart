@@ -115,6 +115,7 @@ Future<List<BindingDefine>> generateWrappers(
   var filePath = fd.filePath;
   var file_imports = [];
   var bindingExternals = <String>[];
+  var bindingFunctionTypes = <Map<String, dynamic>>[];
   var bindings = <BindingDefine>[];
 
   fd.classes.forEach((element) {
@@ -134,6 +135,17 @@ Future<List<BindingDefine>> generateWrappers(
         });
       }
     }
+  });
+
+  fd.functionTypedefs.forEach((element) {
+    if (element.name.startsWith('_')) {
+      return;
+    }
+    bindingFunctionTypes.add({
+      'function_type_name': element.name,
+      'function_args': element.getParams(),
+      'function_invoke_args': element.getInvokeParams(),
+    });
   });
   var have_enums = <Map<String, dynamic>>[];
   // var private_enums = [];
@@ -602,7 +614,7 @@ Future<List<BindingDefine>> generateWrappers(
   htPath = '$scriptOutputPath/$dirName/';
   await Directory(dartPath).create(recursive: true);
   await Directory(htPath).create(recursive: true);
-  bindings.add(BindingDefine('$dirName/$fileName', bindingExternals));
+  bindings.add(BindingDefine('$dirName/$fileName', bindingExternals, bindingFunctionTypes));
 
   renderTemplate('template/dart_classes.mustache', template_vars,
       '$dartPath$fileName.g.dart');

@@ -6,10 +6,19 @@ class FileDefine {
   late final List<ClassDefine> classes;
   late final List<ClassDefine> privateClasses;
   late final List<ImportDefine> imports = [];
+  late final List<FunctionTypeDefine> functionTypedefs = [];
 
-  FileDefine(Map<String, dynamic> json, String path) {
-    filePath = path;
-    parse(json);
+  FileDefine
+
+  (
+
+  Map<String, dynamic> json, String
+
+  path
+
+  ) {
+  filePath = path;
+  parse(json);
   }
 
   dynamic findIdentifier(String id) {
@@ -53,6 +62,7 @@ class FileDefine {
         var i = ImportDefine(element);
         imports.add(i);
       });
+
       var root = json['top'] as List?;
       if (root != null) {
         root.forEach((element) {
@@ -87,6 +97,9 @@ class FileDefine {
           } else if (e['_'] == 'EnumDeclaration') {
             var v = EnumDefine(e);
             enums.add(v);
+          } else if (e['_'] == 'FunctionTypeAlias' || e['_'] == 'GenericTypeAlias') {
+            var f = FunctionTypeDefine(e);
+            functionTypedefs.add(f);
           }
         });
       }
@@ -237,9 +250,9 @@ class FieldVarDefine {
 
   FieldVarDefine(Map<String, dynamic> json,
       {required this.isStatic,
-      required this.isTopLevel,
-      required this.isProtected,
-      required this.isDeprecated}) {
+        required this.isTopLevel,
+        required this.isProtected,
+        required this.isDeprecated}) {
     parse(json);
   }
 
@@ -360,7 +373,7 @@ class ConstructorDefine {
       if (p.type?.contains('List<') ?? false) {
         wrapListType = p.type!;
         if (wrapListType.endsWith('?')) {
-          wrapListType = wrapListType.substring(0, wrapListType.length -1);
+          wrapListType = wrapListType.substring(0, wrapListType.length - 1);
         }
       }
       String checkWrapValue(String v) {
@@ -517,12 +530,15 @@ class MethodDefine {
           allParams.add('posArgs[$index]');
         } else {
           //顺序可选参数
-          allParams.add('posArgs.length > $index ? posArgs[$index] : ${p.defaultValue}');
+          allParams.add(
+              'posArgs.length > $index ? posArgs[$index] : ${p.defaultValue}');
         }
         index++;
       } else {
         //命名参数
-        allParams.add('${p.name} : namedArgs.containsKey(\'${p.name}\') ? namedArgs[\'${p.name}\'] : ${p.defaultValue}');
+        allParams.add(
+            '${p.name} : namedArgs.containsKey(\'${p.name}\') ? namedArgs[\'${p
+                .name}\'] : ${p.defaultValue}');
       }
     });
     return '(${allParams.join(', ')})';
@@ -595,6 +611,72 @@ class EnumDefine {
 class BindingDefine {
   final String filePath;
   final List<String> externalVars;
+  final List<Map<String, dynamic>> funcTypeDefs;
 
-  BindingDefine(this.filePath, this.externalVars);
+
+  BindingDefine(this.filePath, this.externalVars, this.funcTypeDefs);
 }
+
+
+class FunctionTypeDefine {
+  late final String name;
+  late final List<ParamDefine> params;
+
+  FunctionTypeDefine(Map<String, dynamic> json) {
+    parse(json);
+  }
+
+  void parse(Map<String, dynamic> json) {
+    name = json['name'];
+    params = <ParamDefine>[];
+
+    var ps = json['params'];
+    if (ps != null) {
+      ps.forEach((element) {
+        var v = ParamDefine(element);
+        params.add(v);
+      });
+    }
+  }
+
+  String getParams() {
+    var allParams = [];
+    var latterParams = [];
+    var isNamed = false;
+    params.forEach((p) {
+      if (p.isPositional && !p.isOptional) {
+        allParams.add(p.name);
+      } else {
+        latterParams.add('${p.name}');
+        if (p.isNamed) {
+          isNamed = true;
+        }
+      }
+    });
+    if (latterParams.isNotEmpty) {
+      if (isNamed) {
+        allParams.add('{${latterParams.join(', ')}}');
+      } else {
+        allParams.add('[${latterParams.join(', ')}]');
+      }
+    }
+    return '(${allParams.join(', ')})';
+  }
+
+
+  String getInvokeParams() {
+    var posParams = [];
+    var namedParams = [];
+
+    params.forEach((p) {
+      if (p.isPositional) {
+        posParams.add(p.name);
+      } else {
+        namedParams.add("'${p.name}': ${p.name}");
+      }
+    });
+
+    return '(positionalArgs: [${posParams.join(', ')}], namedArgs: {${namedParams.join(', ')}})';
+  }
+
+  }

@@ -182,6 +182,10 @@ class HetuScriptBinding extends HetuLibraryScriptBinding {
     String functionType = positionalArgs[0];
     HTFunction function = positionalArgs[1];
     switch (functionType) {
+      {{#function_defs}}
+        case '{{function_type_name}}':
+          return {{function_args}} => function.call{{function_invoke_args}};
+      {{/function_defs}}
     }
     return null;
   }
@@ -223,6 +227,10 @@ class HetuLibraryScriptBinding {
     String functionType = positionalArgs[0];
     HTFunction function = positionalArgs[1];
     switch (functionType) {
+      {{#function_defs}}
+        case '{{function_type_name}}':
+          return {{function_args}} => function.call{{function_invoke_args}};
+      {{/function_defs}}
     }
     return null;
   }
