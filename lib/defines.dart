@@ -617,6 +617,7 @@ class BindingDefine {
 class FunctionTypeDefine {
   late final String name;
   late final List<ParamDefine> params;
+  late final String returnType;
 
   FunctionTypeDefine(Map<String, dynamic> json) {
     parse(json);
@@ -624,6 +625,7 @@ class FunctionTypeDefine {
 
   void parse(Map<String, dynamic> json) {
     name = json['name'];
+    returnType = json['returnType'];
     params = <ParamDefine>[];
 
     var ps = json['params'];

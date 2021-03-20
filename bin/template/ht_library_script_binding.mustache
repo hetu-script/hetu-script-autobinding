@@ -5,21 +5,25 @@ import {{import_file}};
 {{/api_import}}
 
 class HetuLibraryScriptBinding {
-  @mustCallSuper
+  var functionWrappers = <String, Function>{};
+
   Function? funcWrap(positionalArgs, namedArgs) {
     String functionType = positionalArgs[0];
     HTFunction function = positionalArgs[1];
-    switch (functionType) {
-      {{#function_defs}}
-        case '{{function_type_name}}':
-          return {{function_args}} => function.call{{function_invoke_args}};
-      {{/function_defs}}
-    }
-    return null;
+    var f = functionWrappers[functionType];
+    return f?.call(function);
+  }
+
+  @mustCallSuper
+  void loadAutoBindingFunction() {
+    {{#function_defs}}
+    functionWrappers.addAll({{dart_class_name}}HTBinding.functionWrapper());
+    {{/function_defs}}
   }
 
   @mustCallSuper
   void loadAutoBinding(HTInterpreter interpreter) {
+    loadAutoBindingFunction();
     interpreter.bindExternalFunction('funcwrap', funcWrap);
     var bindings = {
       {{#bindings}}

@@ -122,6 +122,16 @@ class {{dart_class_name}}HTBinding extends HTExternalClass {
   }
   {{/have_instance_setter}}
 
+  {{#have_function_params}}
+  static Map<String, Function> functionWrapper() {
+    return <String, Function>{
+      {{#function_bindings}}
+      '{{function_type_name}}': (HTFunction function) => {{function_args}} => function.call{{function_invoke_args}}{{function_return_type}},
+      {{/function_bindings}}
+    };
+  }
+  {{/have_function_params}}
+
   {{#have_static_declarations}}
   {{static_declaration}}
   {{/have_static_declarations}}
@@ -178,20 +188,11 @@ import {{import_file}};
 
 class HetuScriptBinding extends HetuLibraryScriptBinding {
   @override
-  Function? funcWrap(positionalArgs, namedArgs) {
-    var f = super.funcWrap(positionalArgs, namedArgs);
-    if (f != null) {
-      return f;
-    }
-    String functionType = positionalArgs[0];
-    HTFunction function = positionalArgs[1];
-    switch (functionType) {
-      {{#function_defs}}
-        case '{{function_type_name}}':
-          return {{function_args}} => function.call{{function_invoke_args}};
-      {{/function_defs}}
-    }
-    return null;
+  void loadAutoBindingFunction() {
+    super.loadAutoBindingFunction();
+    {{#function_defs}}
+    functionWrappers.addAll({{dart_class_name}}HTBinding.functionWrapper());
+    {{/function_defs}}
   }
 
   @override
@@ -226,21 +227,25 @@ import {{import_file}};
 {{/api_import}}
 
 class HetuLibraryScriptBinding {
-  @mustCallSuper
+  var functionWrappers = <String, Function>{};
+
   Function? funcWrap(positionalArgs, namedArgs) {
     String functionType = positionalArgs[0];
     HTFunction function = positionalArgs[1];
-    switch (functionType) {
-      {{#function_defs}}
-        case '{{function_type_name}}':
-          return {{function_args}} => function.call{{function_invoke_args}};
-      {{/function_defs}}
-    }
-    return null;
+    var f = functionWrappers[functionType];
+    return f?.call(function);
+  }
+
+  @mustCallSuper
+  void loadAutoBindingFunction() {
+    {{#function_defs}}
+    functionWrappers.addAll({{dart_class_name}}HTBinding.functionWrapper());
+    {{/function_defs}}
   }
 
   @mustCallSuper
   void loadAutoBinding(HTInterpreter interpreter) {
+    loadAutoBindingFunction();
     interpreter.bindExternalFunction('funcwrap', funcWrap);
     var bindings = {
       {{#bindings}}

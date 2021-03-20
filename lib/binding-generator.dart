@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:analyzer/dart/analysis/features.dart';
 import 'package:analyzer/dart/analysis/utilities.dart';
+import 'package:hetu_binding_generator/main.dart';
 import 'package:mustache_template/mustache.dart';
 import 'package:path/path.dart' as path;
 
@@ -74,7 +75,7 @@ void fetchSuperClass(ClassDefine cls) {
   }
   if (cls.superClass != null) {
     var sp = cls.superClass!;
-    if (!sp.superFetched) {
+    if (!sp.superFetched && !sp.ignored) {
       //父类还没有获取过接口，递归调用
       fetchSuperClass(sp);
     }
@@ -138,16 +139,6 @@ Future<List<BindingDefine>> generateWrappers(
     }
   });
 
-  fd.functionTypedefs.forEach((element) {
-    if (element.name.startsWith('_')) {
-      return;
-    }
-    bindingFunctionTypes.add({
-      'function_type_name': element.name,
-      'function_args': element.getParams(),
-      'function_invoke_args': element.getInvokeParams(),
-    });
-  });
   var have_enums = <Map<String, dynamic>>[];
   // var private_enums = [];
   var privateClasses = <Map<String, dynamic>>[];
@@ -219,6 +210,7 @@ Future<List<BindingDefine>> generateWrappers(
     var have_instance_getter = true;
     var have_instance_setter = true;
     var failed = false;
+
     void checkIdentifier(String id, Set<String> added,
         List<Map<String, dynamic>> privateDefines) {
       var isPrefixedId = id.contains('.');
@@ -314,6 +306,34 @@ Future<List<BindingDefine>> generateWrappers(
       }
     }
 
+    var function_bindings = [];
+
+    void checkFunctionParamType(ParamDefine param) {
+      if (functionTypedefMap.containsKey(param.type)) {
+        //是函数类型变量，生成
+
+        var element = functionTypedefMap[param.type]!;
+        if (bindingFunctionTypes.indexWhere(
+                (e) => e['dart_class_name'] == dart_class_name) ==
+            -1) {
+          bindingFunctionTypes.add({
+            'dart_class_name': dart_class_name,
+          });
+        }
+        if (function_bindings.indexWhere(
+                (e) => e['function_type_name'] == element.name) ==
+            -1) {
+          function_bindings.add({
+            'function_type_name': element.name,
+            'function_args': element.getParams(),
+            'function_return_type':
+                element.returnType == 'void' ? '' : ' as ${element.returnType}',
+            'function_invoke_args': element.getInvokeParams(),
+          });
+        }
+      }
+    }
+
     var staticClassOnly = true;
     if (kclass.constructors.isEmpty) {
       //一个构造函数都没定义，会添加一个默认的，所以不是静态专用类
@@ -338,6 +358,9 @@ Future<List<BindingDefine>> generateWrappers(
         if (constructor_name != '') {
           constructor_name = '.$constructor_name';
         }
+        ctor.params.forEach((p) {
+          checkFunctionParamType(p);
+        });
 
         var constructor_invoke_params = ctor.getInvokeParam();
 
@@ -412,6 +435,9 @@ Future<List<BindingDefine>> generateWrappers(
         if (m.isPrivate || m.isOperator || m.isProtected || m.isDeprecated) {
           return;
         }
+        m.params.forEach((p) {
+          checkFunctionParamType(p);
+        });
         if (m.isSetter) {
           instanceVarSetterList.add({'instance_identifier': m.name});
           ht_fields.add({'field': 'set ${m.name}(value)'});
@@ -453,6 +479,9 @@ Future<List<BindingDefine>> generateWrappers(
           m.extendsTypes.isNotEmpty) {
         return;
       }
+      m.params.forEach((p) {
+        checkFunctionParamType(p);
+      });
       var static_method_private_defines = <Map<String, dynamic>>[];
       var default_identifiers = m.getDefaultIdentifiers();
       var added_identifiers = <String>{};
@@ -483,7 +512,6 @@ Future<List<BindingDefine>> generateWrappers(
         });
         ht_fields.add({'field': 'static fun ${m.name}${m.getHetuParams()}'});
       }
-
     });
     kclass.staticVars.forEach((v) {
       if (v.isPrivate || v.isProtected || v.isDeprecated) {
@@ -512,6 +540,10 @@ Future<List<BindingDefine>> generateWrappers(
         binding_static_variables_getter.isNotEmpty;
 
     var have_class_assign = binding_static_variables_setter.isNotEmpty;
+    var have_function_params;
+    if (function_bindings.isNotEmpty) {
+      have_function_params = {'function_bindings': function_bindings};
+    }
 
     var empty_class_binding = !have_class_fetch && !have_class_assign;
     var have_class_member;
@@ -528,6 +560,7 @@ Future<List<BindingDefine>> generateWrappers(
         'have_static_declarations': have_static_declarations,
         'have_instance_getter': have_instance_getter,
         'have_instance_setter': have_instance_setter,
+        'have_function_params': have_function_params,
       };
     }
     var empty_instance_binding = !have_instance_setter &&
@@ -633,7 +666,8 @@ Future<List<BindingDefine>> generateWrappers(
   htPath = '$scriptOutputPath/$dirName/';
   await Directory(dartPath).create(recursive: true);
   await Directory(htPath).create(recursive: true);
-  bindings.add(BindingDefine('$dirName/$fileName', bindingExternals, bindingFunctionTypes));
+  bindings.add(BindingDefine(
+      '$dirName/$fileName', bindingExternals, bindingFunctionTypes));
 
   renderTemplate('template/dart_classes.mustache', template_vars,
       '$dartPath$fileName.g.dart');

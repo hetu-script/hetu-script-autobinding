@@ -60,6 +60,7 @@ Future<List<FileSystemEntity>> dirContents(
 
 var classDefineMap = <String, ClassDefine>{};
 var super_childMap = <String, List<ClassDefine>>{};
+var functionTypedefMap = <String, FunctionTypeDefine>{};
 
 Future<List<FileDefine>> parseDartFiles(
     String? jsonPath, List<String> ignores) async {
@@ -85,6 +86,9 @@ Future<List<FileDefine>> parseDartFiles(
     var define = await generateDefines(p.path, jsonPath);
     if (define != null) {
       fileDefines.add(define);
+      define.functionTypedefs.forEach((element) {
+        functionTypedefMap[element.name] = element;
+      });
 
       var allClasses = <ClassDefine>[];
       allClasses.addAll(define.classes);
@@ -436,6 +440,7 @@ void main(args) {
         'ui/painting.dart:Codec',
         'ui/painting.dart:Image',
         'ui/painting.dart:Gradient',
+        'painting/image_provider.dart:AssetBundleImageProvider',
         'ui/text.dart:TextStyle',
         'ui/text.dart:StrutStyle',
         'ui/platform_dispatcher.dart:ViewConfiguration',
