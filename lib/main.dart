@@ -90,7 +90,8 @@ Future<List<FileDefine>> parseDartFiles(
       allClasses.addAll(define.classes);
       allClasses.addAll(define.privateClasses);
       allClasses.forEach((element) {
-        if (ignoredClasses.contains(element.name) || ignoredClasses.contains('-all-')) {
+        if (ignoredClasses.contains(element.name) ||
+            ignoredClasses.contains('-all-')) {
           element.ignored = true;
           print('ignored: ${p.path} matched class: ${element.name}');
           return;
@@ -168,22 +169,21 @@ void parseBegin(
 
       var fileDefines = await parseDartFiles(jsonPath, ignores);
       for (var p in fileDefines) {
-
         var b = await generateWrappers(p, exportPath, scriptExportPath,
             library: ExportType.Package, libName: packageName);
         if (b.isNotEmpty) {
           allBindings.addAll(b);
           fileEntries.add({
-            'import_file_name': '$packageName/${path.basenameWithoutExtension(p.filePath)}.ht'
+            'import_file_name':
+                'package://$packageName/${path.basenameWithoutExtension(p.filePath)}.ht'
           });
         }
       }
 
-      var templateVars = {
-        'import_files' : fileEntries
-      };
+      var templateVars = {'import_files': fileEntries};
 
-      renderTemplate('template/import_entry.mustache', templateVars, '$scriptExportPath/packages/$packageName.ht');
+      renderTemplate('template/import_entry.mustache', templateVars,
+          '$scriptExportPath/packages/$packageName.ht');
     }
   }
 
@@ -278,16 +278,14 @@ void parseBegin(
       if (b.isNotEmpty) {
         allBindings.addAll(b);
         fileEntries?.add({
-          'import_file_name': '$libName/${path.basenameWithoutExtension(
-              p.filePath)}.ht'
+          'import_file_name':
+              'dart://$libName/${path.basenameWithoutExtension(p.filePath)}.ht'
         });
       }
     }
     packages.forEach((key, value) {
       if (value.isNotEmpty) {
-        var templateVars = {
-          'import_files': value
-        };
+        var templateVars = {'import_files': value};
         renderTemplate('template/import_entry.mustache', templateVars,
             '$scriptExportPath/dart/$key.ht');
       }
@@ -305,16 +303,14 @@ void parseBegin(
       if (b.isNotEmpty) {
         allBindings.addAll(b);
         fileEntries?.add({
-          'import_file_name': '$libName/${path.basenameWithoutExtension(
-              p.filePath)}.ht'
+          'import_file_name':
+              'flutter://$libName/${path.basenameWithoutExtension(p.filePath)}.ht'
         });
       }
     }
     packages.forEach((key, value) {
       if (value.isNotEmpty) {
-        var templateVars = {
-          'import_files': value
-        };
+        var templateVars = {'import_files': value};
         renderTemplate('template/import_entry.mustache', templateVars,
             '$scriptExportPath/flutter/$key.ht');
       }
