@@ -274,7 +274,7 @@ class FieldVarDefine {
 }
 
 class ParamDefine {
-  late final String name;
+  late final String? name;
   String? type;
   String? defaultValue;
   final List<String> defaultValueIdentifiers = [];
@@ -287,10 +287,6 @@ class ParamDefine {
 
   ParamDefine(Map<String, dynamic> json) {
     parse(json);
-  }
-
-  String toCtorParam() {
-    return name;
   }
 
   void parse(Map<String, dynamic> json) {
@@ -643,16 +639,18 @@ class FunctionTypeDefine {
     var allParams = [];
     var latterParams = [];
     var isNamed = false;
-    params.forEach((p) {
+    for (var i =0; i< params.length; ++i) {
+      var p = params[i];
+      var name = p.name ?? 'arg${i+1}';
       if (p.isPositional && !p.isOptional) {
-        allParams.add(p.name);
+        allParams.add(name);
       } else {
-        latterParams.add('${p.name}');
+        latterParams.add('$name');
         if (p.isNamed) {
           isNamed = true;
         }
       }
-    });
+    }
     if (latterParams.isNotEmpty) {
       if (isNamed) {
         allParams.add('{${latterParams.join(', ')}}');
@@ -668,13 +666,15 @@ class FunctionTypeDefine {
     var posParams = [];
     var namedParams = [];
 
-    params.forEach((p) {
+    for (var i =0; i< params.length; ++i) {
+      var p = params[i];
+      var name = p.name ?? 'arg${i+1}';
       if (p.isPositional) {
-        posParams.add(p.name);
+        posParams.add(name);
       } else {
-        namedParams.add("'${p.name}': ${p.name}");
+        namedParams.add("'$name': $name");
       }
-    });
+    };
 
     return '(positionalArgs: [${posParams.join(', ')}], namedArgs: {${namedParams.join(', ')}})';
   }

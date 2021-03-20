@@ -11,6 +11,7 @@ import 'default_templates.dart';
 import 'defines.dart';
 
 var defaultTemplates = {
+  'import_entry.mustache': import_entry,
   'dart_classes.mustache': dart_classes,
   'ht_classes.mustache': ht_classes,
   'ht_library_script_binding.mustache': ht_library_script_binding,
@@ -586,14 +587,24 @@ Future<List<BindingDefine>> generateWrappers(
   var fileName = path.basenameWithoutExtension(filePath);
   late String dartPath;
   late String htPath;
-  var dirName = path.basename(path.dirname(filePath));
+  late String dirName;
+  // String getPackageName(String name) {
+  //   var dn = path.basename(path.dirname(name));
+  //   if (dn == libName) {
+  //     return path.basenameWithoutExtension(name);
+  //   } else {
+  //     return getPackageName(path.dirname(name));
+  //   }
+  // }
   if (library == ExportType.FlutterLibrary) {
-    dirName = 'flutter/$dirName';
+    // dirName = getPackageName(filePath);
+    dirName = 'flutter/$libName';
     template_vars['library_class_import'] = {
       'flutter_lib_name': "import 'package:flutter/${libName!}.dart';",
     };
   } else if (library == ExportType.DartLibrary) {
-    dirName = 'dart/$dirName';
+    // dirName = getPackageName(filePath);
+    dirName = 'dart/$libName';
 
     template_vars['library_class_import'] = {
       'flutter_lib_name': "import 'dart:${libName!}';",

@@ -165,17 +165,25 @@ void parseBegin(
         packageName = packageName.substring(0, packageName.indexOf('-'));
       }
       print('parsing package: [$packageName]');
+
       var fileDefines = await parseDartFiles(jsonPath, ignores);
       for (var p in fileDefines) {
-        fileEntries.add({
-          'import_file_name':
-        });
+
         var b = await generateWrappers(p, exportPath, scriptExportPath,
             library: ExportType.Package, libName: packageName);
-        allBindings.addAll(b);
+        if (b.isNotEmpty) {
+          allBindings.addAll(b);
+          fileEntries.add({
+            'import_file_name': '$packageName/${path.basenameWithoutExtension(p.filePath)}.ht'
+          });
+        }
       }
 
+      var templateVars = {
+        'import_files' : fileEntries
+      };
 
+      renderTemplate('template/import_entry.mustache', templateVars, '$scriptExportPath/packages/$packageName.ht');
     }
   }
 
@@ -257,20 +265,60 @@ void parseBegin(
     }
 
     allBindings.clear();
+    var packages = <String, List>{};
     for (var p in dartDefines) {
       var libName =
           path.split(path.relative(p.filePath, from: dartSourceRoot)).first;
+      packages[libName] ??= [];
+      var fileEntries = packages[libName];
+
       var b = await generateWrappers(p, exportPath, scriptExportPath,
           library: ExportType.DartLibrary, libName: libName);
-      allBindings.addAll(b);
+
+      if (b.isNotEmpty) {
+        allBindings.addAll(b);
+        fileEntries?.add({
+          'import_file_name': '$libName/${path.basenameWithoutExtension(
+              p.filePath)}.ht'
+        });
+      }
     }
+    packages.forEach((key, value) {
+      if (value.isNotEmpty) {
+        var templateVars = {
+          'import_files': value
+        };
+        renderTemplate('template/import_entry.mustache', templateVars,
+            '$scriptExportPath/dart/$key.ht');
+      }
+    });
+    packages.clear();
     for (var p in flutterDefines) {
       var libName =
           path.split(path.relative(p.filePath, from: flutterSourceRoot)).first;
+      packages[libName] ??= [];
+      var fileEntries = packages[libName];
+
       var b = await generateWrappers(p, exportPath, scriptExportPath,
           library: ExportType.FlutterLibrary, libName: libName);
-      allBindings.addAll(b);
+
+      if (b.isNotEmpty) {
+        allBindings.addAll(b);
+        fileEntries?.add({
+          'import_file_name': '$libName/${path.basenameWithoutExtension(
+              p.filePath)}.ht'
+        });
+      }
     }
+    packages.forEach((key, value) {
+      if (value.isNotEmpty) {
+        var templateVars = {
+          'import_files': value
+        };
+        renderTemplate('template/import_entry.mustache', templateVars,
+            '$scriptExportPath/flutter/$key.ht');
+      }
+    });
 
     //生成库自动绑定的接口文件
     var api_import = [];
