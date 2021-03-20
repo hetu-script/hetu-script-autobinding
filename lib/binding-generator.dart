@@ -85,12 +85,13 @@ void fetchSuperClass(ClassDefine cls) {
       if (v.name.startsWith('_')) {
         continue;
       }
-      var idx =
-          cls.instanceVars.indexWhere((element) => element.name == v.name);
-      if (idx == -1) {
+      var exist =
+          cls.instanceMethods.indexWhere((element) => element.name == v.name) != -1 ||
+              cls.instanceVars.indexWhere((element) => element.name == v.name) != -1;
+      if (!exist) {
         //子类没有，复制
         cls.instanceVars.add(v);
-        // print('Class [${cls.name}] add var ${v.name}');
+        print('Class [${cls.name}] add var ${v.name}');
       }
     }
 
@@ -98,12 +99,13 @@ void fetchSuperClass(ClassDefine cls) {
       if (v.name.startsWith('_')) {
         continue;
       }
-      var idx =
-          cls.instanceMethods.indexWhere((element) => element.name == v.name);
-      if (idx == -1) {
+      var exist =
+          cls.instanceMethods.indexWhere((element) => element.name == v.name) != -1 ||
+              cls.instanceVars.indexWhere((element) => element.name == v.name) != -1;
+      if (!exist) {
         //子类没有，复制
         cls.instanceMethods.add(v);
-        // print('Class [${cls.name}] add method ${v.name}');
+        print('Class [${cls.name}] add method ${v.name}');
 
       }
     }
