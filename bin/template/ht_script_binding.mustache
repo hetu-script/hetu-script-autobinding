@@ -14,7 +14,7 @@ class HetuScriptBinding extends HetuLibraryScriptBinding {
   }
 
   @override
-  void loadAutoBinding(HTInterpreter interpreter) {
+  void loadAutoBinding(HTAstInterpreter interpreter) {
     super.loadAutoBinding(interpreter);
     var bindings = {
       {{#user_bindings}}
@@ -27,7 +27,7 @@ class HetuScriptBinding extends HetuLibraryScriptBinding {
   }
 
   @override
-  Future loadAutoBindingScripts(HTInterpreter interpreter, String path) {
+  Future loadAutoBindingScripts(HTAstInterpreter interpreter, String path) {
     var future = super.loadAutoBindingScripts(interpreter, path);
     var futures = <Future>[];
     futures.add(future);

@@ -215,7 +215,7 @@ call ```loadAutoBinding``` and ```loadAutoBindingScripts``` on a ```HetuScriptBi
 
 ```dart
   void initBinding() async {
-    var hetu = HTInterpreter(readFileMethod: (path) {
+    var hetu = HTAstInterpreter(readFileMethod: (path) {
       return rootBundle.loadString(path);
     });
     var binding = HetuScriptBinding();
@@ -236,7 +236,7 @@ The auto-binding codes will be loaded by calling the ```super```.
 
 class ManualBinding extends HetuScriptBinding {
   @override
-  void loadAutoBinding(HTInterpreter interpreter) {
+  void loadAutoBinding(HTAstInterpreter interpreter) {
     super.loadAutoBinding(interpreter);
     var bindings = {
       'RootAssetBundle' : RootAssetBundleClassBinding(),
@@ -249,7 +249,7 @@ class ManualBinding extends HetuScriptBinding {
   }
 
   @override
-  Future loadAutoBindingScripts(HTInterpreter interpreter, String path) {
+  Future loadAutoBindingScripts(HTAstInterpreter interpreter, String path) {
     var future = super.loadAutoBindingScripts(interpreter, path);
     var futures = <Future>[];
     futures.add(future);

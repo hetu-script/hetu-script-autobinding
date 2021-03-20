@@ -22,7 +22,7 @@ class HetuLibraryScriptBinding {
   }
 
   @mustCallSuper
-  void loadAutoBinding(HTInterpreter interpreter) {
+  void loadAutoBinding(HTAstInterpreter interpreter) {
     loadAutoBindingFunction();
     interpreter.bindExternalFunction('funcwrap', funcWrap);
     var bindings = {
@@ -36,7 +36,7 @@ class HetuLibraryScriptBinding {
   }
 
   @mustCallSuper
-  Future loadAutoBindingScripts(HTInterpreter interpreter, String path) {
+  Future loadAutoBindingScripts(HTAstInterpreter interpreter, String path) {
     var futures = <Future>[];
     {{#ht_bindings}}
     futures.add(interpreter.import(path + '/{{ht_file_relative_path}}'));
