@@ -24,6 +24,7 @@ class HetuLibraryScriptBinding {
   @mustCallSuper
   void loadAutoBinding(HTInterpreter interpreter) {
     loadAutoBindingFunction();
+    interpreter.eval('external fun funcwrap(type : String, func)');
     interpreter.bindExternalFunction('funcwrap', funcWrap);
     var bindings = {
       {{#bindings}}
