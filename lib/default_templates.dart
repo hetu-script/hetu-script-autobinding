@@ -37,7 +37,7 @@ class {{enum_name}}HTBinding extends HTExternalClass {
       case 'values':
         return {{enum_name}}.values;
       {{#binding_enums}}
-      case '{{enum_constant_name}}':
+      case '{{enum_name}}.{{enum_constant_name}}':
         return {{enum_name}}.{{enum_constant_name}};
       {{/binding_enums}}
       default:
@@ -79,7 +79,7 @@ class {{dart_class_name}}HTBinding extends HTExternalClass {
         return (posArgs, namedArgs) => {{dart_class_name}}{{generic_types}}{{constructor_name}}{{constructor_invoke_params}};
       {{/binding_constructors}}
       {{#binding_static_methods}}
-      case '{{static_method_name}}':
+      case '{{dart_class_name}}.{{static_method_name}}':
         {{#static_method_private_defines}}
         {{private_impl}}
         {{/static_method_private_defines}}

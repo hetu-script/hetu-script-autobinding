@@ -461,18 +461,26 @@ Future<List<BindingDefine>> generateWrappers(
           checkIdentifier(id, added_identifiers, static_method_private_defines);
         }
       });
-      binding_static_methods.add({
-        'dart_class_name': dart_class_name,
-        'static_method_name': m.name,
-        'static_method_params': m.getParams(),
-        'static_method_invoke_params': m.getInvokeParam(),
-        'static_method_private_defines': static_method_private_defines,
-      });
       if (m.isGetter) {
+        binding_static_variables_getter.add({
+          'dart_class_name': dart_class_name,
+          'static_variable_name': m.name
+        });
         ht_fields.add({'field': 'static get ${m.name}${m.getHetuParams()}'});
       } else if (m.isSetter) {
+        binding_static_variables_setter.add({
+          'dart_class_name': dart_class_name,
+          'static_variable_name': m.name
+        });
         ht_fields.add({'field': 'static set ${m.name}${m.getHetuParams()}'});
       } else {
+        binding_static_methods.add({
+          'dart_class_name': dart_class_name,
+          'static_method_name': m.name,
+          'static_method_params': m.getParams(),
+          'static_method_invoke_params': m.getInvokeParam(),
+          'static_method_private_defines': static_method_private_defines,
+        });
         ht_fields.add({'field': 'static fun ${m.name}${m.getHetuParams()}'});
       }
 
