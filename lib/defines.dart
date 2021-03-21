@@ -8,17 +8,9 @@ class FileDefine {
   late final List<ImportDefine> imports = [];
   late final List<FunctionTypeDefine> functionTypedefs = [];
 
-  FileDefine
-
-  (
-
-  Map<String, dynamic> json, String
-
-  path
-
-  ) {
-  filePath = path;
-  parse(json);
+  FileDefine(Map<String, dynamic> json, String path) {
+    filePath = path;
+    parse(json);
   }
 
   dynamic findIdentifier(String id) {
@@ -78,8 +70,9 @@ class FileDefine {
               classes.add(cd);
             }
           } else if (e['_'] == 'TopLevelVariableDeclaration') {
-            var vars = e['var']['vars'] as List?;
-
+            var fieldList = e['var'];
+            var vars = fieldList['vars'] as List?;
+            var fieldType = fieldList['type'];
             //variable list
             if (vars != null) {
               for (Map<String, dynamic> value in vars) {
@@ -87,7 +80,8 @@ class FileDefine {
                     isStatic: false,
                     isTopLevel: true,
                     isDeprecated: false,
-                    isProtected: false);
+                    isProtected: false,
+                    type: fieldType);
                 globalVars.add(v);
               }
             }
@@ -97,7 +91,8 @@ class FileDefine {
           } else if (e['_'] == 'EnumDeclaration') {
             var v = EnumDefine(e);
             enums.add(v);
-          } else if (e['_'] == 'FunctionTypeAlias' || e['_'] == 'GenericTypeAlias') {
+          } else if (e['_'] == 'FunctionTypeAlias' ||
+              e['_'] == 'GenericTypeAlias') {
             var f = FunctionTypeDefine(e);
             functionTypedefs.add(f);
           }
@@ -165,6 +160,7 @@ class ClassDefine {
             var isProtected = e['protected?'] as bool;
             var isDeprecated = e['deprecated?'] as bool;
             var fieldList = e['fields'];
+            var fieldType = fieldList['type'];
             var vars = fieldList['vars'] as List;
             //variable list
             for (Map<String, dynamic> value in vars) {
@@ -172,7 +168,8 @@ class ClassDefine {
                   isStatic: isStatic,
                   isTopLevel: false,
                   isProtected: isProtected,
-                  isDeprecated: isDeprecated);
+                  isDeprecated: isDeprecated,
+                  type: fieldType);
               if (isStatic) {
                 staticVars.add(v);
               } else {
@@ -198,6 +195,25 @@ class ClassDefine {
         }
       }
     }
+
+    //对this参数进行type赋值
+    FieldVarDefine findVar(String name) {
+      return instanceVars.singleWhere((element) => element.name == name);
+    }
+
+    void checkThisType(List<ParamDefine> params) {
+      params.forEach((element) {
+        if (element.thisPeriod) {
+          //在定义中寻找
+          var v = findVar(element.name!);
+          element.type = v.type;
+        }
+      });
+    }
+
+    constructors.forEach((element) {
+      checkThisType(element.params);
+    });
   }
 }
 
@@ -250,9 +266,10 @@ class FieldVarDefine {
 
   FieldVarDefine(Map<String, dynamic> json,
       {required this.isStatic,
-        required this.isTopLevel,
-        required this.isProtected,
-        required this.isDeprecated}) {
+      required this.isTopLevel,
+      required this.isProtected,
+      required this.isDeprecated,
+      required this.type}) {
     parse(json);
   }
 
@@ -278,7 +295,7 @@ class ParamDefine {
   String? type;
   String? defaultValue;
   final List<String> defaultValueIdentifiers = [];
-  late final bool thisPeriod;
+  bool thisPeriod = false;
   late final bool isPositional;
   late final bool isOptional;
   late final bool isNamed;
@@ -378,6 +395,7 @@ class ConstructorDefine {
         }
         return v;
       }
+
       if (p.isPositional) {
         //顺序参数
         var value = checkWrapValue('posArgs[$index]');
@@ -396,8 +414,7 @@ class ConstructorDefine {
           allParams.add('${p.name} : $value');
         } else {
           allParams.add(
-              '${p.name} : namedArgs.containsKey(\'${p.name}\') ? $value : ${p
-                  .defaultValue}');
+              '${p.name} : namedArgs.containsKey(\'${p.name}\') ? $value : ${p.defaultValue}');
         }
       }
     });
@@ -533,8 +550,7 @@ class MethodDefine {
       } else {
         //命名参数
         allParams.add(
-            '${p.name} : namedArgs.containsKey(\'${p.name}\') ? namedArgs[\'${p
-                .name}\'] : ${p.defaultValue}');
+            '${p.name} : namedArgs.containsKey(\'${p.name}\') ? namedArgs[\'${p.name}\'] : ${p.defaultValue}');
       }
     });
     return '(${allParams.join(', ')})';
@@ -609,10 +625,8 @@ class BindingDefine {
   final List<String> externalVars;
   final List<Map<String, dynamic>> funcTypeDefs;
 
-
   BindingDefine(this.filePath, this.externalVars, this.funcTypeDefs);
 }
-
 
 class FunctionTypeDefine {
   late final String name;
@@ -641,9 +655,9 @@ class FunctionTypeDefine {
     var allParams = [];
     var latterParams = [];
     var isNamed = false;
-    for (var i =0; i< params.length; ++i) {
+    for (var i = 0; i < params.length; ++i) {
       var p = params[i];
-      var name = p.name ?? 'arg${i+1}';
+      var name = p.name ?? 'arg${i + 1}';
       if (p.isPositional && !p.isOptional) {
         allParams.add(name);
       } else {
@@ -663,22 +677,21 @@ class FunctionTypeDefine {
     return '(${allParams.join(', ')})';
   }
 
-
   String getInvokeParams() {
     var posParams = [];
     var namedParams = [];
 
-    for (var i =0; i< params.length; ++i) {
+    for (var i = 0; i < params.length; ++i) {
       var p = params[i];
-      var name = p.name ?? 'arg${i+1}';
+      var name = p.name ?? 'arg${i + 1}';
       if (p.isPositional) {
         posParams.add(name);
       } else {
         namedParams.add("'$name': $name");
       }
-    };
+    }
+    ;
 
     return '(positionalArgs: [${posParams.join(', ')}], namedArgs: {${namedParams.join(', ')}})';
   }
-
-  }
+}

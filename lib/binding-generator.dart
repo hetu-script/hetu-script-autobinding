@@ -91,7 +91,7 @@ void fetchSuperClass(ClassDefine cls) {
       if (!exist) {
         //子类没有，复制
         cls.instanceVars.add(v);
-        print('Class [${cls.name}] add var ${v.name}');
+        // print('Class [${cls.name}] add var ${v.name}');
       }
     }
 
@@ -105,7 +105,7 @@ void fetchSuperClass(ClassDefine cls) {
       if (!exist) {
         //子类没有，复制
         cls.instanceMethods.add(v);
-        print('Class [${cls.name}] add method ${v.name}');
+        // print('Class [${cls.name}] add method ${v.name}');
 
       }
     }
