@@ -1,3 +1,6 @@
+## 1.0.6
+- Add: Extension binding.
+
 ## 1.0.5
 - Add: Function typedef binding.
 
