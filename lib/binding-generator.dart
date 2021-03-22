@@ -111,12 +111,19 @@ void fetchSuperClass(ClassDefine cls) {
         cls.instanceMethods.add(v);
         // print('Class [${cls.name}] add method ${v.name}');
 
+        //基础了父类的方法，也需要集成因extension而新import的文件
+        sp.file.extImports.forEach((ex) {
+          if (!cls.file.extImports.contains(ex)) {
+            cls.file.extImports.add(ex);
+          }
+        });
       }
     }
   }
   //添加extensions
   if (extensionMap.containsKey(cls.name)) {
     var exts = extensionMap[cls.name];
+    var added = false;
     exts?.forEach((e) {
       e.instanceMethods.forEach((m) {
         var idx =
@@ -125,6 +132,23 @@ void fetchSuperClass(ClassDefine cls) {
           cls.instanceMethods.removeAt(idx);
         }
         cls.instanceMethods.add(m);
+        added = true;
+        var importUri = e.fileDefine.filePath;
+        var url;
+        if (customImportMap.containsKey(importUri)) {
+          url = customImportMap[importUri] as String;
+          if (url == '') {
+            //用户文件
+            url = path.relative(cls.file.filePath, from: importUri);
+          } else {
+            //库文件
+          }
+          url = '\'$url\'';
+        }
+        if (cls.file.extImports.indexWhere((element) => element.uri == url) ==
+            -1) {
+          cls.file.extImports.add(ImportDefine({'id': url, 'prefix': null}));
+        }
       });
     });
   }
@@ -166,13 +190,21 @@ Future<List<BindingDefine>> generateWrappers(
         //引入私有文件pass
         return;
       }
-      if (importName.startsWith('dart:') ||
-          importName.startsWith('package:')) {
+      if (importName.startsWith('dart:') || importName.startsWith('package:')) {
         file_imports.add({
           'import_uri': uri,
           'import_prefix': element.prefix == null ? '' : 'as ${element.prefix}',
         });
       }
+    }
+  });
+  fd.extImports.forEach((element) {
+    var uri = element.uri;
+    if (uri != null) {
+      file_imports.add({
+        'import_uri': uri,
+        'import_prefix': element.prefix == null ? '' : 'as ${element.prefix}',
+      });
     }
   });
 
@@ -357,7 +389,7 @@ Future<List<BindingDefine>> generateWrappers(
     void checkFunctionParamType(ParamDefine param) {
       var type = param.type ?? '';
       if (type.endsWith('?')) {
-        type = type.substring(0, type.length-1);
+        type = type.substring(0, type.length - 1);
       }
       if (functionTypedefMap.containsKey(type)) {
         //是函数类型变量，生成

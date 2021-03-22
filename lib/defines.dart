@@ -1,3 +1,4 @@
+
 class FileDefine {
   late final String filePath;
   late final List<FieldVarDefine> globalVars;
@@ -7,6 +8,7 @@ class FileDefine {
   late final List<ClassDefine> classes;
   late final List<ClassDefine> privateClasses;
   late final List<ImportDefine> imports = [];
+  late final List<ImportDefine> extImports = [];
   String ? library;
   String ? partOf;
   late final List<FunctionTypeDefine> functionTypedefs = [];
@@ -110,7 +112,7 @@ class FileDefine {
             var f = FunctionTypeDefine(e);
             functionTypedefs.add(f);
           } else if (e['_'] == 'ExtensionDeclaration') {
-            var ex = ExtensionDefine(e);
+            var ex = ExtensionDefine(e, this);
             extensions.add(ex);
           }
         });
@@ -125,8 +127,9 @@ class ExtensionDefine {
   late final String name;
   late final String superName;
   late final List<MethodDefine> instanceMethods;
+  late final FileDefine fileDefine;
 
-  ExtensionDefine(Map<String, dynamic> json) {
+  ExtensionDefine(Map<String, dynamic> json, this.fileDefine) {
     parse(json);
   }
 

@@ -137,6 +137,7 @@ Future<List<FileDefine>> parseDartFiles(
   return fileDefines;
 }
 
+var customImportMap =<String, String>{};
 void parseBegin(
     List<String> userPaths,
     String? flutterPath,
@@ -161,6 +162,7 @@ void parseBegin(
       var b = await generateWrappers(p, exportPath, scriptExportPath,
           library: ExportType.UserDefine);
       allBindings.addAll(b);
+      customImportMap[p.filePath] = '';
     }
   }
 
@@ -185,6 +187,7 @@ void parseBegin(
       for (var p in fileDefines) {
         var b = await generateWrappers(p, exportPath, scriptExportPath,
             library: ExportType.Package, libName: packageName);
+        customImportMap[p.filePath] = 'package:$packageName/$packageName.dart';
         if (b.isNotEmpty) {
           allBindings.addAll(b);
           fileEntries.add({
