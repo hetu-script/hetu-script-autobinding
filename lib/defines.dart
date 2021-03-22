@@ -504,6 +504,7 @@ class FunctionDefine {
 class MethodDefine {
   late final String name;
   late final String? returnType;
+  late final bool generic;
   late final List<ParamDefine> params;
   late final String body;
   late final bool isOperator;
@@ -527,6 +528,8 @@ class MethodDefine {
   void parse(Map<String, dynamic> json) {
     name = json['name'];
     returnType = json['ret'];
+    var genericTypes = json['generic?'] ?? [];
+    generic = genericTypes.isNotEmpty;
     isStatic = json['static'];
     body = json['body'];
     raw = json['raw'];
@@ -689,6 +692,7 @@ class FunctionTypeDefine {
   late final String name;
   late final List<ParamDefine> params;
   late final String returnType;
+  late final bool generic;
 
   FunctionTypeDefine(Map<String, dynamic> json) {
     parse(json);
@@ -697,6 +701,9 @@ class FunctionTypeDefine {
   void parse(Map<String, dynamic> json) {
     name = json['name'];
     returnType = json['returnType'];
+    var genericTypes = json['generic?'] ?? [];
+    generic = genericTypes.isNotEmpty;
+
     params = <ParamDefine>[];
 
     var ps = json['params'];

@@ -359,14 +359,18 @@ Future<List<BindingDefine>> generateWrappers(
       if (type.endsWith('?')) {
         type = type.substring(0, type.length-1);
       }
-      if (functionTypedefMap.containsKey(param.type)) {
+      if (functionTypedefMap.containsKey(type)) {
         //是函数类型变量，生成
 
-        var element = functionTypedefMap[param.type]!;
-        if (element.returnType.contains('<')) {
+        var element = functionTypedefMap[type]!;
+        if (element.generic) {
           //泛型不支持
           return;
         }
+        // if (element.returnType.contains('<')) {
+        //
+        //   return;
+        // }
         if (bindingFunctionTypes
                 .indexWhere((e) => e['dart_class_name'] == dart_class_name) ==
             -1) {

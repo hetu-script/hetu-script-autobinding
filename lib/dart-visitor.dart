@@ -89,7 +89,8 @@ class RootAstVisitor extends UnifyingAstVisitor<dynamic> {
       '_': nodeType(node),
       'name': node.name.name,
       'params': _safelyVisitNode(node.parameters),
-      'returnType': node.returnType.toString()
+      'returnType': node.returnType.toString(),
+      'generic?': _safelyVisitNode(node.typeParameters),
     };
   }
 
@@ -99,7 +100,8 @@ class RootAstVisitor extends UnifyingAstVisitor<dynamic> {
       '_': nodeType(node),
       'name': node.name.name,
       'params': _safelyVisitNode(node.functionType?.parameters),
-      'returnType': node.functionType?.returnType.toString()
+      'returnType': node.functionType?.returnType.toString(),
+      'generic?': _safelyVisitNode(node.functionType?.typeParameters),
     };
   }
 
