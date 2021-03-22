@@ -3,9 +3,12 @@ class FileDefine {
   late final List<FieldVarDefine> globalVars;
   late final List<FunctionDefine> globalFunctions;
   late final List<EnumDefine> enums;
+  late final List<ExtensionDefine> extensions;
   late final List<ClassDefine> classes;
   late final List<ClassDefine> privateClasses;
   late final List<ImportDefine> imports = [];
+  String ? library;
+  String ? partOf;
   late final List<FunctionTypeDefine> functionTypedefs = [];
 
   FileDefine(Map<String, dynamic> json, String path) {
@@ -47,12 +50,20 @@ class FileDefine {
     enums = [];
     classes = [];
     privateClasses = [];
+    extensions = [];
 
     try {
       var im = json['import'] as List?;
       im?.forEach((element) {
-        var i = ImportDefine(element);
-        imports.add(i);
+        if (element['_'] == 'ImportDirective') {
+          var i = ImportDefine(element);
+          imports.add(i);
+        } else if (element['_'] == 'PartOfDirective') {
+          partOf = element['lib'];
+        } else if (element['_'] == 'LibraryDirective') {
+          library = element['lib'];
+          print('library: $library');
+        }
       });
 
       var root = json['top'] as List?;
@@ -73,6 +84,9 @@ class FileDefine {
             var fieldList = e['var'];
             var vars = fieldList['vars'] as List?;
             var fieldType = fieldList['type'];
+            if (fieldType != null && fieldType.endsWith('?')) {
+              fieldType = fieldType.substring(0, fieldType.length - 1);
+            }
             //variable list
             if (vars != null) {
               for (Map<String, dynamic> value in vars) {
@@ -95,11 +109,45 @@ class FileDefine {
               e['_'] == 'GenericTypeAlias') {
             var f = FunctionTypeDefine(e);
             functionTypedefs.add(f);
+          } else if (e['_'] == 'ExtensionDeclaration') {
+            var ex = ExtensionDefine(e);
+            extensions.add(ex);
           }
         });
       }
     } catch (err, stack) {
       print('$err\n$stack');
+    }
+  }
+}
+
+class ExtensionDefine {
+  late final String name;
+  late final String superName;
+  late final List<MethodDefine> instanceMethods;
+
+  ExtensionDefine(Map<String, dynamic> json) {
+    parse(json);
+  }
+
+  void parse(Map<String, dynamic> json) {
+    instanceMethods = [];
+    name = json['name'];
+    superName = json['super'];
+
+    var members = json['members'] as List?;
+    if (members != null) {
+      for (var value in members) {
+        var e = value as Map<String, dynamic>;
+        switch (e['_']) {
+          case 'MethodDeclaration':
+            var m = MethodDefine(e);
+            instanceMethods.add(m);
+            break;
+          default:
+            assert(false, 'Unknown Declaration[${e['_']}!');
+        }
+      }
     }
   }
 }
@@ -160,7 +208,11 @@ class ClassDefine {
             var isProtected = e['protected?'] as bool;
             var isDeprecated = e['deprecated?'] as bool;
             var fieldList = e['fields'];
-            var fieldType = fieldList['type'];
+            var fieldType = fieldList['type'] as String?;
+            if (fieldType != null && fieldType.endsWith('?')) {
+              fieldType = fieldType.substring(0, fieldType.length - 1);
+            }
+            // print('fieldType: $fieldType');
             var vars = fieldList['vars'] as List;
             //variable list
             for (Map<String, dynamic> value in vars) {
@@ -350,12 +402,27 @@ class ParamDefine {
   }
 }
 
+String checkWrapValue(String v, String ? type) {
+  String? wrapListType;
+  if (type?.startsWith('List<') ?? false) {
+    wrapListType = type!;
+    if (wrapListType.endsWith('?')) {
+      wrapListType = wrapListType.substring(0, wrapListType.length - 1);
+    }
+  }
+  if (wrapListType != null) {
+    return '$wrapListType.from($v)';
+  }
+  return v;
+}
+
 class ConstructorDefine {
   late final String? name;
   late final List<ParamDefine> params;
   String? paramRaw;
   late final bool isFactory;
   late final bool isDeprecated;
+  late final bool isConst;
 
   bool get isPrivate => name?.startsWith('_') ?? false;
 
@@ -370,6 +437,7 @@ class ConstructorDefine {
     paramRaw = json['params_raw'];
     params = [];
     isFactory = json['factory?'];
+    isConst = json['const?'];
     isDeprecated = json['deprecated?'];
     var p = json['params'] as List;
     p.forEach((param) {
@@ -382,23 +450,10 @@ class ConstructorDefine {
     var allParams = [];
     var index = 0;
     params.forEach((p) {
-      String? wrapListType;
-      if (p.type?.contains('List<') ?? false) {
-        wrapListType = p.type!;
-        if (wrapListType.endsWith('?')) {
-          wrapListType = wrapListType.substring(0, wrapListType.length - 1);
-        }
-      }
-      String checkWrapValue(String v) {
-        if (wrapListType != null) {
-          return '$wrapListType.from($v)';
-        }
-        return v;
-      }
 
       if (p.isPositional) {
         //顺序参数
-        var value = checkWrapValue('posArgs[$index]');
+        var value = checkWrapValue('posArgs[$index]', p.type);
         if (!p.isOptional) {
           allParams.add(value);
         } else {
@@ -408,7 +463,7 @@ class ConstructorDefine {
         index++;
       } else {
         //命名参数
-        var value = checkWrapValue('namedArgs[\'${p.name}\']');
+        var value = checkWrapValue('namedArgs[\'${p.name}\']', p.type);
         if (p.isRequired && p.defaultValue == null) {
           //没有默认值并且要求非null，这种情况用户必须保证提供了这个参数值
           allParams.add('${p.name} : $value');
@@ -448,7 +503,7 @@ class FunctionDefine {
 
 class MethodDefine {
   late final String name;
-  late final String returnType;
+  late final String? returnType;
   late final List<ParamDefine> params;
   late final String body;
   late final bool isOperator;
@@ -539,18 +594,20 @@ class MethodDefine {
     params.forEach((p) {
       if (p.isPositional) {
         //顺序参数
+        var value = checkWrapValue('posArgs[$index]', p.type);
         if (!p.isOptional) {
-          allParams.add('posArgs[$index]');
+          allParams.add(value);
         } else {
           //顺序可选参数
           allParams.add(
-              'posArgs.length > $index ? posArgs[$index] : ${p.defaultValue}');
+              'posArgs.length > $index ? $value : ${p.defaultValue}');
         }
         index++;
       } else {
         //命名参数
+        var value = checkWrapValue('namedArgs[\'${p.name}\']', p.type);
         allParams.add(
-            '${p.name} : namedArgs.containsKey(\'${p.name}\') ? namedArgs[\'${p.name}\'] : ${p.defaultValue}');
+            '${p.name} : namedArgs.containsKey(\'${p.name}\') ? $value : ${p.defaultValue}');
       }
     });
     return '(${allParams.join(', ')})';

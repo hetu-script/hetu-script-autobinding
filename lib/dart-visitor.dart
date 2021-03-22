@@ -63,6 +63,22 @@ class RootAstVisitor extends UnifyingAstVisitor<dynamic> {
   }
 
   @override
+  dynamic visitLibraryDirective(LibraryDirective node) {
+    return {
+      '_': nodeType(node),
+      'lib': node.name.toString(),
+    };
+  }
+
+  @override
+  dynamic visitPartOfDirective(PartOfDirective node) {
+    return {
+      '_': nodeType(node),
+      'lib': node.libraryName.toString(),
+    };
+  }
+
+  @override
   dynamic visitAnnotation(Annotation node) {
     return {'_': nodeType(node), 'annotation': node.name.name};
   }
@@ -87,10 +103,19 @@ class RootAstVisitor extends UnifyingAstVisitor<dynamic> {
     };
   }
 
-
   @override
   dynamic visitClassTypeAlias(ClassTypeAlias node) {
     return {'_': nodeType(node), 'raw': node.toString()};
+  }
+
+  @override
+  dynamic visitExtensionDeclaration(ExtensionDeclaration node) {
+    return {
+      '_': nodeType(node),
+      'name': node.name?.name,
+      'super': node.extendedType.toString(),
+      'members': _safelyVisitNodeList(node.members),
+    };
   }
 
   @override
@@ -111,7 +136,7 @@ class RootAstVisitor extends UnifyingAstVisitor<dynamic> {
       'members': _safelyVisitNodeList(node.members),
       'identifiers': node.accept(IdentifierASTVisitor()),
       'abstract?': node.abstractKeyword != null,
-      'test?' : _checkAnnotation(node.metadata, 'visibleForTesting')
+      'test?': _checkAnnotation(node.metadata, 'visibleForTesting')
     };
   }
 
@@ -140,6 +165,7 @@ class RootAstVisitor extends UnifyingAstVisitor<dynamic> {
       'init': _safelyVisitNodeList(node.initializers),
       'body': node.body.toString(),
       'params_raw': node.parameters.toString(),
+      'const?': node.constKeyword != null,
       'factory?':
           node.factoryKeyword != null || node.redirectedConstructor != null,
       'deprecated?': _checkAnnotation(node.metadata, 'Deprecated'),
@@ -284,7 +310,7 @@ class RootAstVisitor extends UnifyingAstVisitor<dynamic> {
     return {
       '_': nodeType(node),
       'static': node.isStatic,
-      'ret': node.returnType.toString(),
+      'ret': node.returnType?.toString(),
       'name': node.name.toString(),
       'operator?': node.operatorKeyword != null,
       'type': _safelyVisitNode(node.typeParameters),
@@ -376,12 +402,20 @@ class RootAstVisitor extends UnifyingAstVisitor<dynamic> {
   dynamic visitSimpleFormalParameter(SimpleFormalParameter node) {
     return {
       '_': nodeType(node),
-      'type': node.type.toString(),
+      'type': node.type?.toString(),
       'name': node.identifier?.name,
       'pos?': node.isPositional,
       'named?': node.isNamed,
       'optional?': node.isOptional,
       'required?': node.isRequired,
+    };
+  }
+
+  @override
+  dynamic visitGenericFunctionType(GenericFunctionType node) {
+    return {
+      '_': nodeType(node),
+      'ret': node.returnType?.toString(),
     };
   }
 
@@ -403,7 +437,7 @@ class RootAstVisitor extends UnifyingAstVisitor<dynamic> {
   dynamic visitFunctionTypedFormalParameter(FunctionTypedFormalParameter node) {
     return {
       '_': nodeType(node),
-      'ret': node.returnType.toString(),
+      'ret': node.returnType?.toString(),
       'name': node.identifier.name,
       'pos?': node.isPositional,
       'named?': node.isNamed,

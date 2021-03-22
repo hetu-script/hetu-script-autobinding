@@ -85,9 +85,11 @@ void fetchSuperClass(ClassDefine cls) {
       if (v.name.startsWith('_')) {
         continue;
       }
-      var exist =
-          cls.instanceMethods.indexWhere((element) => element.name == v.name) != -1 ||
-              cls.instanceVars.indexWhere((element) => element.name == v.name) != -1;
+      var exist = cls.instanceMethods
+                  .indexWhere((element) => element.name == v.name) !=
+              -1 ||
+          cls.instanceVars.indexWhere((element) => element.name == v.name) !=
+              -1;
       if (!exist) {
         //子类没有，复制
         cls.instanceVars.add(v);
@@ -99,9 +101,11 @@ void fetchSuperClass(ClassDefine cls) {
       if (v.name.startsWith('_')) {
         continue;
       }
-      var exist =
-          cls.instanceMethods.indexWhere((element) => element.name == v.name) != -1 ||
-              cls.instanceVars.indexWhere((element) => element.name == v.name) != -1;
+      var exist = cls.instanceMethods
+                  .indexWhere((element) => element.name == v.name) !=
+              -1 ||
+          cls.instanceVars.indexWhere((element) => element.name == v.name) !=
+              -1;
       if (!exist) {
         //子类没有，复制
         cls.instanceMethods.add(v);
@@ -110,6 +114,21 @@ void fetchSuperClass(ClassDefine cls) {
       }
     }
   }
+  //添加extensions
+  if (extensionMap.containsKey(cls.name)) {
+    var exts = extensionMap[cls.name];
+    exts?.forEach((e) {
+      e.instanceMethods.forEach((m) {
+        var idx =
+            cls.instanceMethods.indexWhere((element) => element.name == m.name);
+        if (idx != -1) {
+          cls.instanceMethods.removeAt(idx);
+        }
+        cls.instanceMethods.add(m);
+      });
+    });
+  }
+
   cls.superFetched = true;
 }
 
@@ -129,10 +148,26 @@ Future<List<BindingDefine>> generateWrappers(
     fetchSuperClass(element);
   });
 
+  if (fd.partOf != null) {
+    //查找对应的library文件，引入对应的import
+    if (libraryFileMap.containsKey(fd.partOf)) {
+      var fileDefine = libraryFileMap[fd.partOf];
+      if (fileDefine != null) {
+        fd.imports.addAll(fileDefine.imports);
+      }
+    }
+  }
+
   fd.imports.forEach((element) {
     var uri = element.uri;
     if (uri != null) {
-      if (uri.startsWith('\'dart:') || uri.startsWith('\'package:flutter/')) {
+      var importName = uri.substring(1); //去掉第一个字符' 或者 "
+      if (importName.contains(':_')) {
+        //引入私有文件pass
+        return;
+      }
+      if (importName.startsWith('dart:') ||
+          importName.startsWith('package:')) {
         file_imports.add({
           'import_uri': uri,
           'import_prefix': element.prefix == null ? '' : 'as ${element.prefix}',
@@ -149,7 +184,7 @@ Future<List<BindingDefine>> generateWrappers(
   var ht_classes = [];
 
   for (var e in fd.enums) {
-    if (!e.annotations.contains('HTBinding') &&
+    if (!e.annotations.contains('HTAutoBinding') &&
         library == ExportType.UserDefine) {
       continue;
     }
@@ -167,26 +202,36 @@ Future<List<BindingDefine>> generateWrappers(
 
   var all_classes = [];
   var added_classes = <String>{};
-  for (var kclass in fd.classes) {
+  var classes = [];
+  classes.addAll(fd.classes);
+
+  for (var kclass in classes) {
+    var dart_class_name = kclass.name;
     if (kclass.isTest) {
+      print('class pass: [${kclass.name}] test only');
       continue;
     }
-    if (!kclass.annotations.contains('HTBinding') &&
+    if (!kclass.annotations.contains('HTAutoBinding') &&
         library == ExportType.UserDefine) {
+      print('class pass: [${kclass.name}] user defined but not annotated');
       continue;
     }
     if (kclass.ignored) {
       //被用户忽略的类
+      print('class pass: [${kclass.name}] user ignored');
       continue;
     }
-    if (kclass.name.startsWith('_') || kclass.isAbstract) {
+    if (kclass.isPrivate) {
       //私有类不能绑定
+      print('class pass: [${kclass.name}] private class');
       continue;
     }
     if (kclass.generics != null) {
       //有泛型的类不支持导出，需要用户自己实现不带泛型的类然后标记导出
+      print('class pass: [${kclass.name}] generic unsupported');
       continue;
     }
+
     // var generic_types = '';
     // if (kclass.generics != null) {
     //   var types = <String>[];
@@ -203,7 +248,6 @@ Future<List<BindingDefine>> generateWrappers(
     if (kclass.superClassName != null &&
         !kclass.superClassName!.startsWith('_') &&
         kclass.superClass == null) {}
-    var dart_class_name = kclass.name;
 
     var binding_constructors = [];
     var have_static_declarations = [];
@@ -311,19 +355,27 @@ Future<List<BindingDefine>> generateWrappers(
     var function_bindings = [];
 
     void checkFunctionParamType(ParamDefine param) {
+      var type = param.type ?? '';
+      if (type.endsWith('?')) {
+        type = type.substring(0, type.length-1);
+      }
       if (functionTypedefMap.containsKey(param.type)) {
         //是函数类型变量，生成
 
         var element = functionTypedefMap[param.type]!;
-        if (bindingFunctionTypes.indexWhere(
-                (e) => e['dart_class_name'] == dart_class_name) ==
+        if (element.returnType.contains('<')) {
+          //泛型不支持
+          return;
+        }
+        if (bindingFunctionTypes
+                .indexWhere((e) => e['dart_class_name'] == dart_class_name) ==
             -1) {
           bindingFunctionTypes.add({
             'dart_class_name': dart_class_name,
           });
         }
-        if (function_bindings.indexWhere(
-                (e) => e['function_type_name'] == element.name) ==
+        if (function_bindings
+                .indexWhere((e) => e['function_type_name'] == element.name) ==
             -1) {
           function_bindings.add({
             'function_type_name': element.name,
@@ -337,7 +389,7 @@ Future<List<BindingDefine>> generateWrappers(
     }
 
     var staticClassOnly = true;
-    if (kclass.constructors.isEmpty) {
+    if (kclass.constructors.isEmpty && !kclass.isAbstract) {
       //一个构造函数都没定义，会添加一个默认的，所以不是静态专用类
       staticClassOnly = false;
     } else {
@@ -355,6 +407,11 @@ Future<List<BindingDefine>> generateWrappers(
         //私有构造函数跳过
         continue;
       }
+      if (kclass.isAbstract && !ctor.isFactory) {
+        //抽象类只有factory构造函数导出
+        continue;
+      }
+      // print('add ctor: ${dart_class_name} ${ctor.name} const: ${ctor.isConst}');
       if (!staticClassOnly) {
         var constructor_name = '${ctor.name ?? ""}';
         if (constructor_name != '') {
@@ -393,14 +450,16 @@ Future<List<BindingDefine>> generateWrappers(
     }
     if (failed) {
       //TODO:有无法使用的默认参数，暂时不导出
+      print('class pass: [$dart_class_name] contains undefined default values');
       continue;
     }
 
     if (have_constructors && binding_constructors.isEmpty && !staticClassOnly) {
       //有构造函数，但是没有可以导出的，并且不是静态专用类，不导出此类。
+      print('class pass: [$dart_class_name] no constructors & not static only');
       continue;
     }
-    if (!have_constructors) {
+    if (!have_constructors && !kclass.isAbstract) {
       //一个构造函数都没有，绑定一个默认的
       binding_constructors.add({
         'dart_class_name': dart_class_name,

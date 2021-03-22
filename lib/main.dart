@@ -7,7 +7,7 @@ import 'package:path/path.dart' as path;
 import 'binding-generator.dart';
 import 'defines.dart';
 
-var version = '1.0.5';
+var version = '1.0.6';
 
 var files = <FileSystemEntity>[];
 
@@ -61,6 +61,8 @@ Future<List<FileSystemEntity>> dirContents(
 var classDefineMap = <String, ClassDefine>{};
 var super_childMap = <String, List<ClassDefine>>{};
 var functionTypedefMap = <String, FunctionTypeDefine>{};
+var extensionMap = <String, List<ExtensionDefine>>{};
+var libraryFileMap = <String, FileDefine>{};
 
 Future<List<FileDefine>> parseDartFiles(
     String? jsonPath, List<String> ignores) async {
@@ -86,8 +88,16 @@ Future<List<FileDefine>> parseDartFiles(
     var define = await generateDefines(p.path, jsonPath);
     if (define != null) {
       fileDefines.add(define);
+      if (define.library != null) {
+        libraryFileMap[define.library!] = define;
+      }
       define.functionTypedefs.forEach((element) {
         functionTypedefMap[element.name] = element;
+      });
+
+      define.extensions.forEach((element) {
+        extensionMap[element.superName] ??= [];
+        extensionMap[element.superName]!.add(element);
       });
 
       var allClasses = <ClassDefine>[];
@@ -430,6 +440,7 @@ void main(args) {
         'core/expando.dart',
         'core/string.dart',
         'core/bool.dart',
+        'core/num.dart',
         'convert/codec.dart',
         'foundation/annotations.dart',
         'foundation/assertions.dart',
@@ -472,7 +483,7 @@ void main(args) {
       jsonPath = path.absolute(jsonPath);
     }
   }
-  print('json: $jsonPath');
+  // print('json: $jsonPath');
   var ignores = results['ignores'];
   var whitelist = results['whitelist'];
   if (results['help'] == true || results['version'] == true) {
