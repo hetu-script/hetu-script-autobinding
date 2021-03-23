@@ -134,6 +134,7 @@ class RootAstVisitor extends UnifyingAstVisitor<dynamic> {
       'name': node.name.name,
       'generic': _safelyVisitNode(node.typeParameters),
       'super': _safelyVisitNode(node.extendsClause),
+      // 'implements': _safelyVisitNode(node.implementsClause),
       'meta': _safelyVisitNodeList(node.metadata),
       'members': _safelyVisitNodeList(node.members),
       'identifiers': node.accept(IdentifierASTVisitor()),
@@ -150,6 +151,14 @@ class RootAstVisitor extends UnifyingAstVisitor<dynamic> {
       name = name.substring(idx + 1);
     }
     return name;
+  }
+  
+  @override
+  dynamic visitImplementsClause(ImplementsClause node) {
+    return {
+      '_': nodeType(node),
+      'supers': _safelyVisitNodeList(node.interfaces)
+    };
   }
 
   @override

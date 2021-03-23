@@ -22,3 +22,4 @@ doc/api/
 .idea/
 gen/*
 bin/
+generate-glue-code.sh
