@@ -137,7 +137,8 @@ Future<List<FileDefine>> parseDartFiles(
   return fileDefines;
 }
 
-var customImportMap =<String, String>{};
+var customImportMap = <String, String>{};
+
 void parseBegin(
     List<String> userPaths,
     String? flutterPath,
@@ -435,30 +436,7 @@ void main(args) {
   }, help: 'Show this help.');
   parser.addMultiOption('ignores',
       abbr: 'i',
-      defaultsTo: [
-        'core/annotations.dart',
-        'core/object.dart',
-        'core/errors.dart',
-        'core/exceptions.dart',
-        'core/expando.dart',
-        'core/string.dart',
-        'core/bool.dart',
-        'core/num.dart',
-        'convert/codec.dart',
-        'foundation/annotations.dart',
-        'foundation/assertions.dart',
-        'foundation/basic_types.dart',
-        'material/date_picker_deprecated.dart',
-        'rendering/object.dart',
-        'widgets/framework.dart',
-        'ui/painting.dart:Codec',
-        'ui/painting.dart:Image',
-        'ui/painting.dart:Gradient',
-        'painting/image_provider.dart:AssetBundleImageProvider',
-        'ui/text.dart:TextStyle',
-        'ui/text.dart:StrutStyle',
-        'ui/platform_dispatcher.dart:ViewConfiguration',
-      ],
+      defaultsTo: [],
       valueHelp: 'ignored-file-name, ignored-file-name:ignored-class-name, ...',
       help:
           "The files/classes from this list will be ignored during the code generation. If only file name is provided, all classes from the file won't be exported. All function typedefs will be exported even the file is ignored.");
@@ -488,6 +466,30 @@ void main(args) {
   }
   // print('json: $jsonPath');
   var ignores = results['ignores'];
+  ignores.addAll([
+    'core/annotations.dart',
+    'core/object.dart',
+    'core/errors.dart',
+    'core/exceptions.dart',
+    'core/expando.dart',
+    'core/string.dart',
+    'core/bool.dart',
+    'core/num.dart',
+    'convert/codec.dart',
+    'foundation/annotations.dart',
+    'foundation/assertions.dart',
+    'foundation/basic_types.dart',
+    'material/date_picker_deprecated.dart',
+    'rendering/object.dart',
+    'widgets/framework.dart',
+    'ui/painting.dart:Codec',
+    'ui/painting.dart:Image',
+    'ui/painting.dart:Gradient',
+    'painting/image_provider.dart:AssetBundleImageProvider',
+    'ui/text.dart:TextStyle',
+    'ui/text.dart:StrutStyle',
+    'ui/platform_dispatcher.dart:ViewConfiguration',
+  ]);
   var whitelist = results['whitelist'];
   if (results['help'] == true || results['version'] == true) {
     return;
