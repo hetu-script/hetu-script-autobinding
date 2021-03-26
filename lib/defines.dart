@@ -1,4 +1,3 @@
-
 class FileDefine {
   late final String filePath;
   late final List<FieldVarDefine> globalVars;
@@ -7,10 +6,11 @@ class FileDefine {
   late final List<ExtensionDefine> extensions;
   late final List<ClassDefine> classes;
   late final List<ClassDefine> privateClasses;
+  late final List<MixinDefine> mixins = [];
   late final List<ImportDefine> imports = [];
   late final List<ImportDefine> extImports = [];
-  String ? library;
-  String ? partOf;
+  String? library;
+  String? partOf;
   late final List<FunctionTypeDefine> functionTypedefs = [];
 
   FileDefine(Map<String, dynamic> json, String path) {
@@ -114,6 +114,9 @@ class FileDefine {
           } else if (e['_'] == 'ExtensionDeclaration') {
             var ex = ExtensionDefine(e, this);
             extensions.add(ex);
+          } else if (e['_'] == 'MixinDeclaration') {
+            var m = MixinDefine(e);
+            mixins.add(m);
           }
         });
       }
@@ -160,6 +163,8 @@ class ClassDefine {
   late final String name;
   late final String? superClassName;
   ClassDefine? superClass;
+  late final List<String> mixinNames = [];
+  late final List<MixinDefine> withMixins;
   bool ignored = false;
   bool superFetched = false;
 
@@ -195,6 +200,11 @@ class ClassDefine {
     staticVars = [];
     staticMethods = [];
     annotations = {};
+    withMixins = [];
+    var mixins = json['with'];
+    if (mixins != null) {
+      mixinNames.addAll(mixins);
+    }
 
     // var missingTypeVars = [];
     var meta = json['meta'] as List;
@@ -405,7 +415,7 @@ class ParamDefine {
   }
 }
 
-String checkWrapValue(String v, String ? type) {
+String checkWrapValue(String v, String? type) {
   String? wrapListType;
   if (type?.startsWith('List<') ?? false) {
     wrapListType = type!;
@@ -453,7 +463,6 @@ class ConstructorDefine {
     var allParams = [];
     var index = 0;
     params.forEach((p) {
-
       if (p.isPositional) {
         //顺序参数
         var value = checkWrapValue('posArgs[$index]', p.type);
@@ -605,8 +614,7 @@ class MethodDefine {
           allParams.add(value);
         } else {
           //顺序可选参数
-          allParams.add(
-              'posArgs.length > $index ? $value : ${p.defaultValue}');
+          allParams.add('posArgs.length > $index ? $value : ${p.defaultValue}');
         }
         index++;
       } else {
@@ -760,5 +768,39 @@ class FunctionTypeDefine {
     ;
 
     return '(positionalArgs: [${posParams.join(', ')}], namedArgs: {${namedParams.join(', ')}})';
+  }
+}
+
+class MixinDefine {
+  // late final List<FieldVarDefine> instanceVars;
+  bool ignored = false;
+  late final String name;
+  late final List<MethodDefine> instanceMethods;
+
+  MixinDefine(Map<String, dynamic> json) {
+    parse(json);
+  }
+
+  void parse(Map<String, dynamic> json) {
+    instanceMethods = [];
+    name = json['name'];
+    var members = json['members'] as List?;
+    if (members != null) {
+      for (var value in members) {
+        var e = value as Map<String, dynamic>;
+        switch (e['_']) {
+          case 'MethodDeclaration':
+            var m = MethodDefine(e);
+            if (!m.isStatic) {
+              instanceMethods.add(m);
+            }
+            break;
+          case 'FieldDeclaration':
+            break;
+          default:
+            assert(false, 'Unknown Declaration ${e['_']}!');
+        }
+      }
+    }
   }
 }

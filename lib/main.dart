@@ -63,6 +63,7 @@ var super_childMap = <String, List<ClassDefine>>{};
 var functionTypedefMap = <String, FunctionTypeDefine>{};
 var extensionMap = <String, List<ExtensionDefine>>{};
 var libraryFileMap = <String, FileDefine>{};
+var mixinMap = <String, MixinDefine>{};
 
 Future<List<FileDefine>> parseDartFiles(
     String? jsonPath, List<String> ignores) async {
@@ -98,6 +99,16 @@ Future<List<FileDefine>> parseDartFiles(
       define.extensions.forEach((element) {
         extensionMap[element.superName] ??= [];
         extensionMap[element.superName]!.add(element);
+      });
+
+      define.mixins.forEach((element) {
+        if (ignoredClasses.contains(element.name) ||
+            ignoredClasses.contains('-all-')) {
+          element.ignored = true;
+          print('ignored: ${p.path} matched mixin: ${element.name}');
+          return;
+        }
+        mixinMap[element.name] = element;
       });
 
       var allClasses = <ClassDefine>[];
@@ -489,6 +500,7 @@ void main(args) {
     'ui/text.dart:TextStyle',
     'ui/text.dart:StrutStyle',
     'ui/platform_dispatcher.dart:ViewConfiguration',
+    'foundation/diagnostics.dart',
   ]);
   var whitelist = results['whitelist'];
   if (results['help'] == true || results['version'] == true) {

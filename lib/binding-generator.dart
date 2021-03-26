@@ -73,6 +73,42 @@ void fetchSuperClass(ClassDefine cls) {
   if (cls.superFetched) {
     return;
   }
+  if (cls.mixinNames.isNotEmpty) {
+    cls.mixinNames.forEach((element) {
+
+      var mixin = mixinMap[element];
+      if (mixin != null && !mixin.ignored) {
+
+        cls.withMixins.add(mixin);
+
+        //添加mixin的接口
+
+        for (var v in mixin.instanceMethods) {
+          if (v.name.startsWith('_')) {
+            continue;
+          }
+          var exist = cls.instanceMethods
+              .indexWhere((element) => element.name == v.name) !=
+              -1 ||
+              cls.instanceVars.indexWhere((element) => element.name == v.name) !=
+                  -1;
+          if (!exist) {
+            //子类没有，复制
+            cls.instanceMethods.add(v);
+            // print('Class [${cls.name}] add method ${v.name}');
+
+            // //基础了父类的方法，也需要集成因extension而新import的文件
+            // mixin.file.extImports.forEach((ex) {
+            //   if (!cls.file.extImports.contains(ex)) {
+            //     cls.file.extImports.add(ex);
+            //   }
+            // });
+          }
+        }
+      }
+    });
+  }
+
   if (cls.superClass != null) {
     var sp = cls.superClass!;
     if (!sp.superFetched && !sp.ignored) {
@@ -291,6 +327,9 @@ Future<List<BindingDefine>> generateWrappers(
 
     void checkIdentifier(String id, Set<String> added,
         List<Map<String, dynamic>> privateDefines) {
+      if (id == '_TextSelectionToolbarContainer') {
+        print('111');
+      }
       var isPrefixedId = id.contains('.');
 
       if (isPrefixedId) {

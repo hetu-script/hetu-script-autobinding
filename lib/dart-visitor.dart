@@ -134,12 +134,22 @@ class RootAstVisitor extends UnifyingAstVisitor<dynamic> {
       'name': node.name.name,
       'generic': _safelyVisitNode(node.typeParameters),
       'super': _safelyVisitNode(node.extendsClause),
+      'with': _safelyVisitNode(node.withClause),
       // 'implements': _safelyVisitNode(node.implementsClause),
       'meta': _safelyVisitNodeList(node.metadata),
       'members': _safelyVisitNodeList(node.members),
       'identifiers': node.accept(IdentifierASTVisitor()),
       'abstract?': node.abstractKeyword != null,
       'test?': _checkAnnotation(node.metadata, 'visibleForTesting')
+    };
+  }
+
+  @override
+  dynamic visitMixinDeclaration(MixinDeclaration node) {
+    return {
+      '_': nodeType(node),
+      'name': node.name.name,
+      'members': _safelyVisitNodeList(node.members),
     };
   }
 
@@ -152,13 +162,23 @@ class RootAstVisitor extends UnifyingAstVisitor<dynamic> {
     }
     return name;
   }
-  
+
+  // @override
+  // dynamic visitImplementsClause(ImplementsClause node) {
+  //   return {
+  //     '_': nodeType(node),
+  //     'supers': _safelyVisitNodeList(node.interfaces)
+  //   };
+  // }
+
   @override
-  dynamic visitImplementsClause(ImplementsClause node) {
-    return {
-      '_': nodeType(node),
-      'supers': _safelyVisitNodeList(node.interfaces)
-    };
+  dynamic visitWithClause(WithClause node) {
+    var arr = <String>[];
+    node.mixinTypes.forEach((element) {
+      String s = _safelyVisitNode(element);
+      arr.add(s);
+    });
+    return arr;
   }
 
   @override
@@ -195,11 +215,6 @@ class RootAstVisitor extends UnifyingAstVisitor<dynamic> {
 
   @override
   dynamic visitExpressionFunctionBody(ExpressionFunctionBody node) {
-    return {'_': nodeType(node), 'raw': node.toString()};
-  }
-
-  @override
-  dynamic visitMixinDeclaration(MixinDeclaration node) {
     return {'_': nodeType(node), 'raw': node.toString()};
   }
 
