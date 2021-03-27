@@ -75,10 +75,8 @@ void fetchSuperClass(ClassDefine cls) {
   }
   if (cls.mixinNames.isNotEmpty) {
     cls.mixinNames.forEach((element) {
-
       var mixin = mixinMap[element];
       if (mixin != null && !mixin.ignored) {
-
         cls.withMixins.add(mixin);
 
         //添加mixin的接口
@@ -88,9 +86,10 @@ void fetchSuperClass(ClassDefine cls) {
             continue;
           }
           var exist = cls.instanceMethods
-              .indexWhere((element) => element.name == v.name) !=
-              -1 ||
-              cls.instanceVars.indexWhere((element) => element.name == v.name) !=
+                      .indexWhere((element) => element.name == v.name) !=
+                  -1 ||
+              cls.instanceVars
+                      .indexWhere((element) => element.name == v.name) !=
                   -1;
           if (!exist) {
             //子类没有，复制
@@ -231,6 +230,24 @@ Future<List<BindingDefine>> generateWrappers(
           'import_uri': uri,
           'import_prefix': element.prefix == null ? '' : 'as ${element.prefix}',
         });
+      }
+      //packages需要添加文件自己作为引用
+      if (library == ExportType.Package) {
+        if (fd.partOf == null) {
+          var idx = filePath.indexOf('/lib/');
+          var p = filePath.substring(idx + 5);
+          var u = '\'package:$libName/$p\'';
+          print(p);
+          if (file_imports.isEmpty ||
+              file_imports
+                      .indexWhere((element) => element['import_uri'] == u) ==
+                  -1) {
+            file_imports.add({
+              'import_uri': u,
+              'import_prefix': '',
+            });
+          }
+        }
       }
     }
   });
