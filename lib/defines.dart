@@ -774,7 +774,7 @@ class FunctionTypeDefine {
       namedArgs = '{${namedParams.join(', ')}}';
     }
 
-    return '($posArgs, $namedArgs)';
+    return '(positionalArgs: $posArgs, namedArgs: $namedArgs)';
   }
 }
 
