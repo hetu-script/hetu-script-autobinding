@@ -28,11 +28,11 @@ enum {{private_enum_name}}{
 {{/private_classes}}
 
 {{#have_enums}}
-class {{enum_name}}HTBinding extends HTExternalClass {
-  {{enum_name}}HTBinding() : super('{{enum_name}}');
+class {{enum_name}}AutoBinding extends HTExternalClass {
+  {{enum_name}}AutoBinding() : super('{{enum_name}}');
 
   @override
-  dynamic fetch(String varName, {String from = HTLexicon.global}) {
+  dynamic memberGet(String varName, {String from = HTLexicon.global}) {
     switch (varName) {
       case 'values':
         return {{enum_name}}.values;
@@ -47,14 +47,14 @@ class {{enum_name}}HTBinding extends HTExternalClass {
 
 
   @override
-  dynamic instanceFetch(dynamic instance, String varName) {
+  dynamic instanceMemberGet(dynamic instance, String varName) {
     switch (varName) {
       case 'typeid':
         return HTTypeId('{{enum_name}}');
       case 'index':
         return (instance as {{enum_name}}).index;
       case 'toString':
-        return (List<dynamic> positionalArgs, Map<String, dynamic> namedArgs) => (instance as {{enum_name}}).toString();
+        return ([positionalArgs, namedArgs, typeArgs]) => (instance as {{enum_name}}).toString();
       default:
         throw HTErrorUndefined(varName);
     }
@@ -64,26 +64,26 @@ class {{enum_name}}HTBinding extends HTExternalClass {
 
 {{#all_classes}}
 {{#have_class_member}}
-class {{dart_class_name}}HTBinding extends HTExternalClass {
-  {{dart_class_name}}HTBinding() : super('{{dart_class_name}}');
+class {{dart_class_name}}AutoBinding extends HTExternalClass {
+  {{dart_class_name}}AutoBinding() : super('{{dart_class_name}}');
 
   {{#have_class_fetch}}
   @override
-  dynamic fetch(String varName, {String from = HTLexicon.global}) {
+  dynamic memberGet(String varName, {String from = HTLexicon.global}) {
     switch (varName) {
       {{#binding_constructors}}
       case '{{dart_class_name}}{{constructor_name}}':
         {{#constructor_private_defines}}
         {{private_impl}}
         {{/constructor_private_defines}}
-        return (posArgs, namedArgs) => {{dart_class_name}}{{generic_types}}{{constructor_name}}{{constructor_invoke_params}};
+        return ([posArgs, namedArgs, typeArgs]) => {{dart_class_name}}{{generic_types}}{{constructor_name}}{{constructor_invoke_params}};
       {{/binding_constructors}}
       {{#binding_static_methods}}
       case '{{dart_class_name}}.{{static_method_name}}':
         {{#static_method_private_defines}}
         {{private_impl}}
         {{/static_method_private_defines}}
-        return (posArgs, namedArgs) => {{dart_class_name}}.{{static_method_name}}{{static_method_invoke_params}};
+        return ([posArgs, namedArgs, typeArgs]) => {{dart_class_name}}.{{static_method_name}}{{static_method_invoke_params}};
       {{/binding_static_methods}}
       {{#binding_static_variables_getter}}
       case '{{dart_class_name}}.{{static_variable_name}}':
@@ -96,7 +96,7 @@ class {{dart_class_name}}HTBinding extends HTExternalClass {
   {{/have_class_fetch}}
   {{#have_class_assign}}
   @override
-  void assign(String varName, dynamic value, {String from = HTLexicon.global}) {
+  void memberSet(String varName, dynamic value, {String from = HTLexicon.global}) {
     switch (varName) {
       {{#binding_static_variables_setter}}
       case '{{dart_class_name}}.{{static_variable_name}}':
@@ -110,14 +110,14 @@ class {{dart_class_name}}HTBinding extends HTExternalClass {
 
   {{#have_instance_getter}}
   @override
-  dynamic instanceFetch(dynamic instance, String id) {
+  dynamic instanceMemberGet(dynamic instance, String id) {
     return (instance as {{dart_class_name}}).htFetch(id);
   }
   {{/have_instance_getter}}
 
   {{#have_instance_setter}}
   @override
-  void instanceAssign(dynamic instance, String id, dynamic value) {
+  void instanceMemberSet(dynamic instance, String id, dynamic value) {
     (instance as {{dart_class_name}}).htAssign(id, value);
   }
   {{/have_instance_setter}}
@@ -154,7 +154,7 @@ extension {{dart_class_name}}Binding on {{dart_class_name}} {
         {{#instance_method_private_defines}}
         {{private_impl}}
         {{/instance_method_private_defines}}
-        return (posArgs, namedArgs) => this.{{method_identifier}}{{instance_method_invoke_params}};
+        return ([posArgs, namedArgs, typeArgs]) => this.{{method_identifier}}{{instance_method_invoke_params}};
     {{/method_case}}
       default:
         throw HTErrorUndefined(varName);
@@ -191,25 +191,25 @@ class HetuScriptBinding extends HetuLibraryScriptBinding {
   void loadAutoBindingFunction() {
     super.loadAutoBindingFunction();
     {{#function_defs}}
-    functionWrappers.addAll({{dart_class_name}}HTBinding.functionWrapper());
+    functionWrappers.addAll({{dart_class_name}}AutoBinding.functionWrapper());
     {{/function_defs}}
   }
 
   @override
-  void loadAutoBinding(HTAstInterpreter interpreter) {
+  void loadAutoBinding(Hetu interpreter) {
     super.loadAutoBinding(interpreter);
-    var bindings = {
-      {{#user_bindings}}
-      '{{dart_class_name}}' : {{prefix}}{{dart_class_name}}HTBinding(),
-      {{/user_bindings}}
-    };
-    bindings.forEach((key, value) {
-      interpreter.bindExternalClass(key, value);
+var bindings = [
+      {{#bindings}}
+      {{prefix}}{{dart_class_name}}AutoBinding(),
+      {{/bindings}}
+    ];
+    bindings.forEach((value) {
+      interpreter.bindExternalClass(value);
     });
   }
 
   @override
-  Future loadAutoBindingScripts(HTAstInterpreter interpreter, String path) {
+  Future loadAutoBindingScripts(Hetu interpreter, String path) {
     var future = super.loadAutoBindingScripts(interpreter, path);
     var futures = <Future>[];
     futures.add(future);
@@ -239,27 +239,27 @@ class HetuLibraryScriptBinding {
   @mustCallSuper
   void loadAutoBindingFunction() {
     {{#function_defs}}
-    functionWrappers.addAll({{dart_class_name}}HTBinding.functionWrapper());
+    functionWrappers.addAll({{dart_class_name}}AutoBinding.functionWrapper());
     {{/function_defs}}
   }
 
   @mustCallSuper
-  void loadAutoBinding(HTAstInterpreter interpreter) {
+  void loadAutoBinding(Hetu interpreter) {
     loadAutoBindingFunction();
     interpreter.eval('external fun funcwrap(type : String, func)');
     interpreter.bindExternalFunction('funcwrap', funcWrap);
-    var bindings = {
+    var bindings = [
       {{#bindings}}
-      '{{dart_class_name}}' : {{prefix}}{{dart_class_name}}HTBinding(),
+      {{prefix}}{{dart_class_name}}AutoBinding(),
       {{/bindings}}
-    };
-    bindings.forEach((key, value) {
-      interpreter.bindExternalClass(key, value);
+    ];
+    bindings.forEach((value) {
+      interpreter.bindExternalClass(value);
     });
   }
 
   @mustCallSuper
-  Future loadAutoBindingScripts(HTAstInterpreter interpreter, String path) {
+  Future loadAutoBindingScripts(Hetu interpreter, String path) {
     var futures = <Future>[];
     {{#ht_bindings}}
     futures.add(interpreter.import(path + '/{{ht_file_relative_path}}'));

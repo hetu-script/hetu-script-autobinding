@@ -17,27 +17,27 @@ class HetuLibraryScriptBinding {
   @mustCallSuper
   void loadAutoBindingFunction() {
     {{#function_defs}}
-    functionWrappers.addAll({{dart_class_name}}HTBinding.functionWrapper());
+    functionWrappers.addAll({{dart_class_name}}AutoBinding.functionWrapper());
     {{/function_defs}}
   }
 
   @mustCallSuper
-  void loadAutoBinding(HTAstInterpreter interpreter) {
+  void loadAutoBinding(Hetu interpreter) {
     loadAutoBindingFunction();
     interpreter.eval('external fun funcwrap(type : String, func)');
     interpreter.bindExternalFunction('funcwrap', funcWrap);
-    var bindings = {
+    var bindings = [
       {{#bindings}}
-      '{{dart_class_name}}' : {{prefix}}{{dart_class_name}}HTBinding(),
+      {{prefix}}{{dart_class_name}}AutoBinding(),
       {{/bindings}}
-    };
-    bindings.forEach((key, value) {
-      interpreter.bindExternalClass(key, value);
+    ];
+    bindings.forEach((value) {
+      interpreter.bindExternalClass(value);
     });
   }
 
   @mustCallSuper
-  Future loadAutoBindingScripts(HTAstInterpreter interpreter, String path) {
+  Future loadAutoBindingScripts(Hetu interpreter, String path) {
     var futures = <Future>[];
     {{#ht_bindings}}
     futures.add(interpreter.import(path + '/{{ht_file_relative_path}}'));
