@@ -123,8 +123,8 @@ class {{dart_class_name}}AutoBinding extends HTExternalClass {
   {{/have_instance_setter}}
 
   {{#have_function_params}}
-  static Map<String, HTExternalFunctionType> functionWrapper() {
-    return <String, HTExternalFunctionType>{
+  static Map<String, HTExternalFunctionTypedef> functionWrapper() {
+    return <String, HTExternalFunctionTypedef>{
       {{#function_bindings}}
       '{{function_type_name}}': (HTFunction function) => {{function_args}} => function.call{{function_invoke_args}}{{function_return_type}},
       {{/function_bindings}}
@@ -190,7 +190,7 @@ class HetuScriptBinding extends HetuLibraryScriptBinding {
   @override
   void loadAutoBindingFunction(Hetu interpreter) {
     super.loadAutoBindingFunction(interpreter);
-    var functionWrappers = <String, HTExternalFunctionType>{};
+    var functionWrappers = <String, HTExternalFunctionTypedef>{};
     {{#function_defs}}
     functionWrappers.addAll({{dart_class_name}}AutoBinding.functionWrapper());
     {{/function_defs}}
@@ -203,9 +203,9 @@ class HetuScriptBinding extends HetuLibraryScriptBinding {
   void loadAutoBinding(Hetu interpreter) {
     super.loadAutoBinding(interpreter);
 var bindings = [
-      {{#bindings}}
+      {{#user_bindings}}
       {{prefix}}{{dart_class_name}}AutoBinding(),
-      {{/bindings}}
+      {{/user_bindings}}
     ];
     bindings.forEach((value) {
       interpreter.bindExternalClass(value);
@@ -234,7 +234,7 @@ class HetuLibraryScriptBinding {
 
   @mustCallSuper
   void loadAutoBindingFunction(Hetu interpreter) {
-    var functionWrappers = <String, HTExternalFunctionType>{};
+    var functionWrappers = <String, HTExternalFunctionTypedef>{};
     {{#function_defs}}
     functionWrappers.addAll({{dart_class_name}}AutoBinding.functionWrapper());
     {{/function_defs}}

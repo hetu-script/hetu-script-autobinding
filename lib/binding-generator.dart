@@ -736,8 +736,6 @@ Future<List<BindingDefine>> generateWrappers(
     }
     if (have_instance_member != null) {
       classMap['have_instance_member'] = have_instance_member;
-    } else {
-      classMap['have_instance_member'] = false;
     }
 
     if (classMap.isNotEmpty) {

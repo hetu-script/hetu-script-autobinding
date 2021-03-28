@@ -8,7 +8,7 @@ class HetuLibraryScriptBinding {
 
   @mustCallSuper
   void loadAutoBindingFunction(Hetu interpreter) {
-    var functionWrappers = <String, HTExternalFunctionType>{};
+    var functionWrappers = <String, HTExternalFunctionTypedef>{};
     {{#function_defs}}
     functionWrappers.addAll({{dart_class_name}}AutoBinding.functionWrapper());
     {{/function_defs}}
