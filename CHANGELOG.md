@@ -1,3 +1,7 @@
+## 1.0.7
+- Add: Function type binding using Hetu.
+- Breaking Changes: Adapt to the Hetu script changes. (VM)
+
 ## 1.0.6
 - Add: Extension binding.
 

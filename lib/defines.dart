@@ -765,9 +765,16 @@ class FunctionTypeDefine {
         namedParams.add("'$name': $name");
       }
     }
-    ;
+    var posArgs = 'const []';
+    if (posParams.isNotEmpty) {
+      posArgs = '[${posParams.join(', ')}]';
+    }
+    var namedArgs = 'const {}';
+    if (namedParams.isNotEmpty) {
+      namedArgs = '{${namedParams.join(', ')}}';
+    }
 
-    return '(positionalArgs: [${posParams.join(', ')}], namedArgs: {${namedParams.join(', ')}})';
+    return '($posArgs, $namedArgs)';
   }
 }
 

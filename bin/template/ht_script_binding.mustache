@@ -6,11 +6,15 @@ import {{import_file}};
 
 class HetuScriptBinding extends HetuLibraryScriptBinding {
   @override
-  void loadAutoBindingFunction() {
-    super.loadAutoBindingFunction();
+  void loadAutoBindingFunction(Hetu interpreter) {
+    super.loadAutoBindingFunction(interpreter);
+    var functionWrappers = <String, HTExternalFunctionType>{};
     {{#function_defs}}
     functionWrappers.addAll({{dart_class_name}}AutoBinding.functionWrapper());
     {{/function_defs}}
+    functionWrappers.forEach((key, value) {
+      interpreter.bindExternalFunctionType(key, value);
+    });
   }
 
   @override
