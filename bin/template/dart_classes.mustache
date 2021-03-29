@@ -46,7 +46,7 @@ class {{enum_name}}AutoBinding extends HTExternalClass {
       case 'index':
         return (instance as {{enum_name}}).index;
       case 'toString':
-        return ({posArgs, namedArgs, typeArgs}) => (instance as {{enum_name}}).toString();
+        return ({positionalArgs, namedArgs, typeArgs}) => (instance as {{enum_name}}).toString();
       default:
         throw HTErrorUndefined(varName);
     }
@@ -68,14 +68,14 @@ class {{dart_class_name}}AutoBinding extends HTExternalClass {
         {{#constructor_private_defines}}
         {{private_impl}}
         {{/constructor_private_defines}}
-        return ({posArgs, namedArgs, typeArgs}) => {{dart_class_name}}{{generic_types}}{{constructor_name}}{{constructor_invoke_params}};
+        return ({positionalArgs, namedArgs, typeArgs}) => {{dart_class_name}}{{generic_types}}{{constructor_name}}{{constructor_invoke_params}};
       {{/binding_constructors}}
       {{#binding_static_methods}}
       case '{{dart_class_name}}.{{static_method_name}}':
         {{#static_method_private_defines}}
         {{private_impl}}
         {{/static_method_private_defines}}
-        return ({posArgs, namedArgs, typeArgs}) => {{dart_class_name}}.{{static_method_name}}{{static_method_invoke_params}};
+        return ({positionalArgs, namedArgs, typeArgs}) => {{dart_class_name}}.{{static_method_name}}{{static_method_invoke_params}};
       {{/binding_static_methods}}
       {{#binding_static_variables_getter}}
       case '{{dart_class_name}}.{{static_variable_name}}':
@@ -146,7 +146,7 @@ extension {{dart_class_name}}Binding on {{dart_class_name}} {
         {{#instance_method_private_defines}}
         {{private_impl}}
         {{/instance_method_private_defines}}
-        return ({posArgs, namedArgs, typeArgs}) => this.{{method_identifier}}{{instance_method_invoke_params}};
+        return ({positionalArgs, namedArgs, typeArgs}) => this.{{method_identifier}}{{instance_method_invoke_params}};
     {{/method_case}}
       default:
         throw HTErrorUndefined(varName);

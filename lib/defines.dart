@@ -465,12 +465,12 @@ class ConstructorDefine {
     params.forEach((p) {
       if (p.isPositional) {
         //顺序参数
-        var value = checkWrapValue('posArgs[$index]', p.type);
+        var value = checkWrapValue('positionalArgs[$index]', p.type);
         if (!p.isOptional) {
           allParams.add(value);
         } else {
           //顺序可选参数
-          allParams.add('posArgs.length > $index ? $value : ${p.defaultValue}');
+          allParams.add('positionalArgs.length > $index ? $value : ${p.defaultValue}');
         }
         index++;
       } else {
@@ -609,12 +609,12 @@ class MethodDefine {
     params.forEach((p) {
       if (p.isPositional) {
         //顺序参数
-        var value = checkWrapValue('posArgs[$index]', p.type);
+        var value = checkWrapValue('positionalArgs[$index]', p.type);
         if (!p.isOptional) {
           allParams.add(value);
         } else {
           //顺序可选参数
-          allParams.add('posArgs.length > $index ? $value : ${p.defaultValue}');
+          allParams.add('positionalArgs.length > $index ? $value : ${p.defaultValue}');
         }
         index++;
       } else {
