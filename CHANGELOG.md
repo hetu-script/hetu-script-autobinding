@@ -1,7 +1,18 @@
+## 1.0.7
+- Add: Function type binding using Hetu.
+- Breaking Changes: Adapt to the Hetu script changes. (VM)
+
+## 1.0.6
+- Add: Extension binding.
+
+## 1.0.5
+- Add: Function typedef binding.
+
 ## 1.0.4
 
 - Fix: Private super class can now be exported to child classes.
-- Breaking Changes: Adapt to the Hetu script changes. 
+- Add: Ignore protected and deprecated nodes. 
+- Breaking Changes: Adapt to the Hetu script changes.    
 
 ## 1.0.3
 

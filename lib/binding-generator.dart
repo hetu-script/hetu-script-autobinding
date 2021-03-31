@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:analyzer/dart/analysis/features.dart';
 import 'package:analyzer/dart/analysis/utilities.dart';
+import 'package:hetu_binding_generator/main.dart';
 import 'package:mustache_template/mustache.dart';
 import 'package:path/path.dart' as path;
 
@@ -11,6 +12,7 @@ import 'default_templates.dart';
 import 'defines.dart';
 
 var defaultTemplates = {
+  'import_entry.mustache': import_entry,
   'dart_classes.mustache': dart_classes,
   'ht_classes.mustache': ht_classes,
   'ht_library_script_binding.mustache': ht_library_script_binding,
@@ -46,7 +48,7 @@ void writeJson(
     String? jsonPath, String filePath, Map<String, dynamic>? astData) async {
   if (jsonPath != null) {
     var dirName = path.basename(path.dirname(filePath));
-    var outputPath = '$jsonPath/json/$dirName/';
+    var outputPath = '$jsonPath/$dirName/';
     await Directory(outputPath).create(recursive: true);
     var output = '$outputPath/${path.basenameWithoutExtension(filePath)}.json';
     var encoder = JsonEncoder.withIndent('  ');
@@ -71,9 +73,44 @@ void fetchSuperClass(ClassDefine cls) {
   if (cls.superFetched) {
     return;
   }
+  if (cls.mixinNames.isNotEmpty) {
+    cls.mixinNames.forEach((element) {
+      var mixin = mixinMap[element];
+      if (mixin != null && !mixin.ignored) {
+        cls.withMixins.add(mixin);
+
+        //添加mixin的接口
+
+        for (var v in mixin.instanceMethods) {
+          if (v.name.startsWith('_')) {
+            continue;
+          }
+          var exist = cls.instanceMethods
+                      .indexWhere((element) => element.name == v.name) !=
+                  -1 ||
+              cls.instanceVars
+                      .indexWhere((element) => element.name == v.name) !=
+                  -1;
+          if (!exist) {
+            //子类没有，复制
+            cls.instanceMethods.add(v);
+            // print('Class [${cls.name}] add method ${v.name}');
+
+            // //基础了父类的方法，也需要集成因extension而新import的文件
+            // mixin.file.extImports.forEach((ex) {
+            //   if (!cls.file.extImports.contains(ex)) {
+            //     cls.file.extImports.add(ex);
+            //   }
+            // });
+          }
+        }
+      }
+    });
+  }
+
   if (cls.superClass != null) {
     var sp = cls.superClass!;
-    if (!sp.superFetched) {
+    if (!sp.superFetched && !sp.ignored) {
       //父类还没有获取过接口，递归调用
       fetchSuperClass(sp);
     }
@@ -83,9 +120,12 @@ void fetchSuperClass(ClassDefine cls) {
       if (v.name.startsWith('_')) {
         continue;
       }
-      var idx =
-          cls.instanceVars.indexWhere((element) => element.name == v.name);
-      if (idx == -1) {
+      var exist = cls.instanceMethods
+                  .indexWhere((element) => element.name == v.name) !=
+              -1 ||
+          cls.instanceVars.indexWhere((element) => element.name == v.name) !=
+              -1;
+      if (!exist) {
         //子类没有，复制
         cls.instanceVars.add(v);
         // print('Class [${cls.name}] add var ${v.name}');
@@ -96,16 +136,58 @@ void fetchSuperClass(ClassDefine cls) {
       if (v.name.startsWith('_')) {
         continue;
       }
-      var idx =
-          cls.instanceMethods.indexWhere((element) => element.name == v.name);
-      if (idx == -1) {
+      var exist = cls.instanceMethods
+                  .indexWhere((element) => element.name == v.name) !=
+              -1 ||
+          cls.instanceVars.indexWhere((element) => element.name == v.name) !=
+              -1;
+      if (!exist) {
         //子类没有，复制
         cls.instanceMethods.add(v);
         // print('Class [${cls.name}] add method ${v.name}');
 
+        //基础了父类的方法，也需要集成因extension而新import的文件
+        sp.file.extImports.forEach((ex) {
+          if (!cls.file.extImports.contains(ex)) {
+            cls.file.extImports.add(ex);
+          }
+        });
       }
     }
   }
+  //添加extensions
+  if (extensionMap.containsKey(cls.name)) {
+    var exts = extensionMap[cls.name];
+    var added = false;
+    exts?.forEach((e) {
+      e.instanceMethods.forEach((m) {
+        var idx =
+            cls.instanceMethods.indexWhere((element) => element.name == m.name);
+        if (idx != -1) {
+          cls.instanceMethods.removeAt(idx);
+        }
+        cls.instanceMethods.add(m);
+        added = true;
+        var importUri = e.fileDefine.filePath;
+        var url;
+        if (customImportMap.containsKey(importUri)) {
+          url = customImportMap[importUri] as String;
+          if (url == '') {
+            //用户文件
+            url = path.relative(cls.file.filePath, from: importUri);
+          } else {
+            //库文件
+          }
+          url = '\'$url\'';
+        }
+        if (cls.file.extImports.indexWhere((element) => element.uri == url) ==
+            -1) {
+          cls.file.extImports.add(ImportDefine({'id': url, 'prefix': null}));
+        }
+      });
+    });
+  }
+
   cls.superFetched = true;
 }
 
@@ -115,6 +197,7 @@ Future<List<BindingDefine>> generateWrappers(
   var filePath = fd.filePath;
   var file_imports = [];
   var bindingExternals = <String>[];
+  var bindingFunctionTypes = <Map<String, dynamic>>[];
   var bindings = <BindingDefine>[];
 
   fd.classes.forEach((element) {
@@ -124,26 +207,69 @@ Future<List<BindingDefine>> generateWrappers(
     fetchSuperClass(element);
   });
 
+  if (fd.partOf != null) {
+    //查找对应的library文件，引入对应的import
+    if (libraryFileMap.containsKey(fd.partOf)) {
+      var fileDefine = libraryFileMap[fd.partOf];
+      if (fileDefine != null) {
+        fd.imports.addAll(fileDefine.imports);
+      }
+    }
+  }
+
   fd.imports.forEach((element) {
     var uri = element.uri;
     if (uri != null) {
-      if (uri.startsWith('\'dart:') || uri.startsWith('\'package:flutter/')) {
+      var importName = uri.substring(1); //去掉第一个字符' 或者 "
+      if (importName.contains(':_')) {
+        //引入私有文件pass
+        return;
+      }
+      if (importName.startsWith('dart:') || importName.startsWith('package:')) {
         file_imports.add({
           'import_uri': uri,
           'import_prefix': element.prefix == null ? '' : 'as ${element.prefix}',
         });
       }
+      //packages需要添加文件自己作为引用
+      if (library == ExportType.Package) {
+        if (fd.partOf == null) {
+          var idx = filePath.indexOf('/lib/');
+          var p = filePath.substring(idx + 5);
+          var u = '\'package:$libName/$p\'';
+          print(p);
+          if (file_imports.isEmpty ||
+              file_imports
+                      .indexWhere((element) => element['import_uri'] == u) ==
+                  -1) {
+            file_imports.add({
+              'import_uri': u,
+              'import_prefix': '',
+            });
+          }
+        }
+      }
     }
   });
+  fd.extImports.forEach((element) {
+    var uri = element.uri;
+    if (uri != null) {
+      file_imports.add({
+        'import_uri': uri,
+        'import_prefix': element.prefix == null ? '' : 'as ${element.prefix}',
+      });
+    }
+  });
+
   var have_enums = <Map<String, dynamic>>[];
-  var private_enums = [];
+  // var private_enums = [];
   var privateClasses = <Map<String, dynamic>>[];
   var privateTopVars = <Map<String, dynamic>>[];
   var ht_enums = [];
   var ht_classes = [];
 
   for (var e in fd.enums) {
-    if (!e.annotations.contains('HTBinding') &&
+    if (!e.annotations.contains('HTAutoBinding') &&
         library == ExportType.UserDefine) {
       continue;
     }
@@ -161,40 +287,52 @@ Future<List<BindingDefine>> generateWrappers(
 
   var all_classes = [];
   var added_classes = <String>{};
-  for (var kclass in fd.classes) {
-    if (!kclass.annotations.contains('HTBinding') &&
+  var classes = [];
+  classes.addAll(fd.classes);
+
+  for (var kclass in classes) {
+    var dart_class_name = kclass.name;
+    if (kclass.isTest) {
+      print('class pass: [${kclass.name}] test only');
+      continue;
+    }
+    if (!kclass.annotations.contains('HTAutoBinding') &&
         library == ExportType.UserDefine) {
+      print('class pass: [${kclass.name}] user defined but not annotated');
       continue;
     }
     if (kclass.ignored) {
       //被用户忽略的类
+      print('class pass: [${kclass.name}] user ignored');
       continue;
     }
-    if (kclass.name.startsWith('_') || kclass.isAbstract) {
+    if (kclass.isPrivate) {
       //私有类不能绑定
+      print('class pass: [${kclass.name}] private class');
       continue;
     }
-    // if (kclass.generics != null) {
-    //   //有泛型的类不支持导出
-    //   continue;
-    // }
-    var generic_types = '';
     if (kclass.generics != null) {
-      var types = <String>[];
-      kclass.generics!.forEach((element) {
-        var genericType = element['type'];
-        if (genericType != null) {
-          types.add(genericType);
-        }
-      });
-      if (types.isNotEmpty) {
-        generic_types = '<${types.join(', ')}>';
-      }
+      //有泛型的类不支持导出，需要用户自己实现不带泛型的类然后标记导出
+      print('class pass: [${kclass.name}] generic unsupported');
+      continue;
     }
+
+    // var generic_types = '';
+    // if (kclass.generics != null) {
+    //   var types = <String>[];
+    //   kclass.generics!.forEach((element) {
+    //     var genericType = element['type'];
+    //     if (genericType != null) {
+    //       types.add(genericType);
+    //     }
+    //   });
+    //   if (types.isNotEmpty) {
+    //     generic_types = '<${types.join(', ')}>';
+    //   }
+    // }
     if (kclass.superClassName != null &&
         !kclass.superClassName!.startsWith('_') &&
         kclass.superClass == null) {}
-    var dart_class_name = kclass.name;
 
     var binding_constructors = [];
     var have_static_declarations = [];
@@ -203,8 +341,12 @@ Future<List<BindingDefine>> generateWrappers(
     var have_instance_getter = true;
     var have_instance_setter = true;
     var failed = false;
+
     void checkIdentifier(String id, Set<String> added,
         List<Map<String, dynamic>> privateDefines) {
+      if (id == '_TextSelectionToolbarContainer') {
+        print('111');
+      }
       var isPrefixedId = id.contains('.');
 
       if (isPrefixedId) {
@@ -298,24 +440,79 @@ Future<List<BindingDefine>> generateWrappers(
       }
     }
 
-    var staticClassOnly = false;
-    for (var ctor in kclass.constructors) {
-      
+    var function_bindings = [];
+
+    void checkFunctionParamType(ParamDefine param) {
+      var type = param.type ?? '';
+      if (type.endsWith('?')) {
+        type = type.substring(0, type.length - 1);
+      }
+      if (functionTypedefMap.containsKey(type)) {
+        //是函数类型变量，生成
+
+        var element = functionTypedefMap[type]!;
+        if (element.generic) {
+          //泛型不支持
+          return;
+        }
+        // if (element.returnType.contains('<')) {
+        //
+        //   return;
+        // }
+        if (bindingFunctionTypes
+                .indexWhere((e) => e['dart_class_name'] == dart_class_name) ==
+            -1) {
+          bindingFunctionTypes.add({
+            'dart_class_name': dart_class_name,
+          });
+        }
+        if (function_bindings
+                .indexWhere((e) => e['function_type_name'] == element.name) ==
+            -1) {
+          function_bindings.add({
+            'function_type_name': element.name,
+            'function_args': element.getParams(),
+            'function_return_type':
+                element.returnType == 'void' ? '' : ' as ${element.returnType}',
+            'function_invoke_args': element.getInvokeParams(),
+          });
+        }
+      }
+    }
+
+    var staticClassOnly = true;
+    if (kclass.constructors.isEmpty && !kclass.isAbstract) {
+      //一个构造函数都没定义，会添加一个默认的，所以不是静态专用类
+      staticClassOnly = false;
+    } else {
+      for (var ctor in kclass.constructors) {
+        if (!ctor.isPrivate) {
+          //有非私有构造函数，可以生成instance
+          staticClassOnly = false;
+        }
+      }
     }
     for (var ctor in kclass.constructors) {
       //确实有构造函数
       have_constructors = true;
-      if (ctor.isPrivate) {
-        //私有构造函数只导出静态变量/方法
-        staticClassOnly = true;
+      if (ctor.isPrivate || ctor.isDeprecated) {
+        //私有构造函数跳过
+        continue;
       }
-
+      if (kclass.isAbstract && !ctor.isFactory) {
+        //抽象类只有factory构造函数导出
+        continue;
+      }
+      // print('add ctor: ${dart_class_name} ${ctor.name} const: ${ctor.isConst}');
       if (!staticClassOnly) {
         var constructor_name = '${ctor.name ?? ""}';
         if (constructor_name != '') {
           constructor_name = '.$constructor_name';
         }
-        var constructor_params = ctor.getParams();
+        ctor.params.forEach((p) {
+          checkFunctionParamType(p);
+        });
+
         var constructor_invoke_params = ctor.getInvokeParam();
 
         var default_identifiers = ctor.getDefaultIdentifiers();
@@ -335,8 +532,7 @@ Future<List<BindingDefine>> generateWrappers(
         binding_constructors.add({
           'dart_class_name': dart_class_name,
           'constructor_name': constructor_name,
-          'constructor_params': constructor_params,
-          'generic_types': generic_types,
+          'generic_types': '',
           'constructor_invoke_params': constructor_invoke_params,
           'constructor_private_defines': constructor_private_defines
         });
@@ -346,19 +542,20 @@ Future<List<BindingDefine>> generateWrappers(
     }
     if (failed) {
       //TODO:有无法使用的默认参数，暂时不导出
+      print('class pass: [$dart_class_name] contains undefined default values');
       continue;
     }
 
     if (have_constructors && binding_constructors.isEmpty && !staticClassOnly) {
       //有构造函数，但是没有可以导出的，并且不是静态专用类，不导出此类。
+      print('class pass: [$dart_class_name] no constructors & not static only');
       continue;
     }
-    if (!have_constructors) {
+    if (!have_constructors && !kclass.isAbstract) {
       //一个构造函数都没有，绑定一个默认的
       binding_constructors.add({
         'dart_class_name': dart_class_name,
         'constructor_name': '',
-        'constructor_params': '()',
         'generic_types': '',
         'constructor_invoke_params': '()',
         'constructor_private_defines': []
@@ -370,7 +567,7 @@ Future<List<BindingDefine>> generateWrappers(
     var instanceMethodList = [];
     if (!staticClassOnly) {
       kclass.instanceVars.forEach((iv) {
-        if (iv.isPrivate) {
+        if (iv.isPrivate || iv.isProtected || iv.isDeprecated) {
           return;
         }
         var setter = false;
@@ -388,9 +585,12 @@ Future<List<BindingDefine>> generateWrappers(
         }
       });
       kclass.instanceMethods.forEach((m) {
-        if (m.isPrivate || m.isOperator) {
+        if (m.isPrivate || m.isOperator || m.isProtected || m.isDeprecated) {
           return;
         }
+        m.params.forEach((p) {
+          checkFunctionParamType(p);
+        });
         if (m.isSetter) {
           instanceVarSetterList.add({'instance_identifier': m.name});
           ht_fields.add({'field': 'set ${m.name}(value)'});
@@ -398,7 +598,21 @@ Future<List<BindingDefine>> generateWrappers(
           instanceVarGetterList.add({'instance_identifier': m.name});
           ht_fields.add({'field': 'get ${m.name}'});
         } else {
-          instanceMethodList.add({'method_identifier': m.name});
+          var instance_method_private_defines = <Map<String, dynamic>>[];
+          var default_identifiers = m.getDefaultIdentifiers();
+          var added_identifiers = <String>{};
+          default_identifiers.forEach((id) {
+            if (id.startsWith('_')) {
+              checkIdentifier(
+                  id, added_identifiers, instance_method_private_defines);
+            }
+          });
+          instanceMethodList.add({
+            'method_identifier': m.name,
+            'instance_method_invoke_params': m.getInvokeParam(),
+            'instance_method_private_defines': instance_method_private_defines
+          });
+
           ht_fields.add({'field': 'fun ${m.name}'});
         }
       });
@@ -411,9 +625,16 @@ Future<List<BindingDefine>> generateWrappers(
     var binding_static_variables_getter = [];
     var binding_static_variables_setter = [];
     kclass.staticMethods.forEach((m) {
-      if (m.isPrivate || m.isTest || m.extendsTypes.isNotEmpty) {
+      if (m.isPrivate ||
+          m.isTest ||
+          m.isProtected ||
+          m.isDeprecated ||
+          m.extendsTypes.isNotEmpty) {
         return;
       }
+      m.params.forEach((p) {
+        checkFunctionParamType(p);
+      });
       var static_method_private_defines = <Map<String, dynamic>>[];
       var default_identifiers = m.getDefaultIdentifiers();
       var added_identifiers = <String>{};
@@ -422,17 +643,31 @@ Future<List<BindingDefine>> generateWrappers(
           checkIdentifier(id, added_identifiers, static_method_private_defines);
         }
       });
-      binding_static_methods.add({
-        'dart_class_name': dart_class_name,
-        'static_method_name': m.name,
-        'static_method_params': m.getParams(),
-        'static_method_invoke_params': m.getInvokeParam(),
-        'static_method_private_defines': static_method_private_defines,
-      });
-      ht_fields.add({'field': 'static fun ${m.name}${m.getHetuParams()}'});
+      if (m.isGetter) {
+        binding_static_variables_getter.add({
+          'dart_class_name': dart_class_name,
+          'static_variable_name': m.name
+        });
+        ht_fields.add({'field': 'static get ${m.name}${m.getHetuParams()}'});
+      } else if (m.isSetter) {
+        binding_static_variables_setter.add({
+          'dart_class_name': dart_class_name,
+          'static_variable_name': m.name
+        });
+        ht_fields.add({'field': 'static set ${m.name}${m.getHetuParams()}'});
+      } else {
+        binding_static_methods.add({
+          'dart_class_name': dart_class_name,
+          'static_method_name': m.name,
+          'static_method_params': m.getParams(),
+          'static_method_invoke_params': m.getInvokeParam(),
+          'static_method_private_defines': static_method_private_defines,
+        });
+        ht_fields.add({'field': 'static fun ${m.name}${m.getHetuParams()}'});
+      }
     });
     kclass.staticVars.forEach((v) {
-      if (v.isPrivate) {
+      if (v.isPrivate || v.isProtected || v.isDeprecated) {
         return;
       }
       var setter = false;
@@ -449,7 +684,7 @@ Future<List<BindingDefine>> generateWrappers(
       if (setter) {
         ht_fields.add({'field': 'static var ${v.name}'});
       } else {
-        ht_fields.add({'field': 'static get ${v.name}'});
+        ht_fields.add({'field': 'static const ${v.name}'});
       }
     });
 
@@ -458,6 +693,10 @@ Future<List<BindingDefine>> generateWrappers(
         binding_static_variables_getter.isNotEmpty;
 
     var have_class_assign = binding_static_variables_setter.isNotEmpty;
+    var have_function_params;
+    if (function_bindings.isNotEmpty) {
+      have_function_params = {'function_bindings': function_bindings};
+    }
 
     var empty_class_binding = !have_class_fetch && !have_class_assign;
     var have_class_member;
@@ -474,6 +713,7 @@ Future<List<BindingDefine>> generateWrappers(
         'have_static_declarations': have_static_declarations,
         'have_instance_getter': have_instance_getter,
         'have_instance_setter': have_instance_setter,
+        'have_function_params': have_function_params,
       };
     }
     var empty_instance_binding = !have_instance_setter &&
@@ -496,8 +736,6 @@ Future<List<BindingDefine>> generateWrappers(
     }
     if (have_instance_member != null) {
       classMap['have_instance_member'] = have_instance_member;
-    } else {
-      classMap['have_instance_member'] = false;
     }
 
     if (classMap.isNotEmpty) {
@@ -533,47 +771,55 @@ Future<List<BindingDefine>> generateWrappers(
     'have_enums': have_enums,
   };
 
+  var ht_template_vars = <String, dynamic>{
+    'ht_classes': ht_classes,
+    'ht_enums': ht_enums,
+  };
+
   var fileName = path.basenameWithoutExtension(filePath);
   late String dartPath;
   late String htPath;
-  var dirName = path.basename(path.dirname(filePath));
-  if (library == ExportType.UserDefine || library == ExportType.Package) {
-    dirName = 'user-defined';
+  late String dirName;
+  // String getPackageName(String name) {
+  //   var dn = path.basename(path.dirname(name));
+  //   if (dn == libName) {
+  //     return path.basenameWithoutExtension(name);
+  //   } else {
+  //     return getPackageName(path.dirname(name));
+  //   }
+  // }
+  if (library == ExportType.FlutterLibrary) {
+    // dirName = getPackageName(filePath);
+    dirName = 'flutter/$libName';
+    template_vars['library_class_import'] = {
+      'flutter_lib_name': "import 'package:flutter/${libName!}.dart';",
+    };
+  } else if (library == ExportType.DartLibrary) {
+    // dirName = getPackageName(filePath);
+    dirName = 'dart/$libName';
+
+    template_vars['library_class_import'] = {
+      'flutter_lib_name': "import 'dart:${libName!}';",
+    };
+  } else if (library == ExportType.UserDefine) {
+    dirName = 'user';
+    var relPath = path.relative(filePath, from: '$outputPath/$dirName');
+    template_vars['library_class_import'] = {
+      'flutter_lib_name': "import '$relPath';",
+    };
+  } else if (library == ExportType.Package) {
+    dirName = 'packages/$libName';
+    template_vars['library_class_import'] = {
+      'flutter_lib_name': "import 'package:$libName/$libName.dart';",
+    };
   }
   dartPath = '$outputPath/$dirName/';
   htPath = '$scriptOutputPath/$dirName/';
   await Directory(dartPath).create(recursive: true);
   await Directory(htPath).create(recursive: true);
+  bindings.add(BindingDefine(
+      '$dirName/$fileName', bindingExternals, bindingFunctionTypes));
 
-  bindings.add(BindingDefine('$dirName/$fileName', bindingExternals));
-
-  var ht_template_vars = <String, dynamic>{
-    'ht_classes': ht_classes,
-    'ht_enums': ht_enums,
-  };
-  if (library == ExportType.FlutterLibrary) {
-    template_vars['library_class_import'] = {
-      'flutter_lib_name': "import 'package:flutter/${libName!}.dart';",
-    };
-  } else if (library == ExportType.DartLibrary) {
-    template_vars['library_class_import'] = {
-      'flutter_lib_name': "import 'dart:${libName!}';",
-    };
-  } else if (library == ExportType.UserDefine) {
-    var from = dartPath;
-    var to = filePath;
-    // print('from: $from\nto: $to\nrel:${path.relative(to, from: from)}');
-    var relPath = path.relative(to, from: from);
-    template_vars['library_class_import'] = {
-      'flutter_lib_name': "import '$relPath';",
-    };
-  } else if (library == ExportType.Package) {
-    template_vars['library_class_import'] = {
-      'flutter_lib_name': "import 'package:$libName/$libName.dart';",
-    };
-  }
-  // print('output: $dartPath$fileName.g.dart');
-  // print('ht output: $htPath/$fileName.ht');
   renderTemplate('template/dart_classes.mustache', template_vars,
       '$dartPath$fileName.g.dart');
   renderTemplate(

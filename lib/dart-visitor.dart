@@ -4,6 +4,17 @@ import 'package:analyzer/dart/ast/visitor.dart';
 String nodeType(AstNode node) => '${node.runtimeType}'.replaceAll('Impl', '');
 
 class RootAstVisitor extends UnifyingAstVisitor<dynamic> {
+  ///检查Annotation
+  bool _checkAnnotation(NodeList<Annotation> metadata, String check) {
+    var annotations = _safelyVisitNodeList(metadata);
+    for (var a in annotations) {
+      if (a['annotation'].contains(check)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   /// 遍历节点
   dynamic _safelyVisitNode(AstNode? node) {
     if (node != null) {
@@ -52,13 +63,61 @@ class RootAstVisitor extends UnifyingAstVisitor<dynamic> {
   }
 
   @override
+  dynamic visitLibraryDirective(LibraryDirective node) {
+    return {
+      '_': nodeType(node),
+      'lib': node.name.toString(),
+    };
+  }
+
+  @override
+  dynamic visitPartOfDirective(PartOfDirective node) {
+    return {
+      '_': nodeType(node),
+      'lib': node.libraryName.toString(),
+    };
+  }
+
+  @override
   dynamic visitAnnotation(Annotation node) {
     return {'_': nodeType(node), 'annotation': node.name.name};
   }
 
   @override
+  dynamic visitFunctionTypeAlias(FunctionTypeAlias node) {
+    return {
+      '_': nodeType(node),
+      'name': node.name.name,
+      'params': _safelyVisitNode(node.parameters),
+      'returnType': node.returnType.toString(),
+      'generic?': _safelyVisitNode(node.typeParameters),
+    };
+  }
+
+  @override
+  dynamic visitGenericTypeAlias(GenericTypeAlias node) {
+    return {
+      '_': nodeType(node),
+      'name': node.name.name,
+      'params': _safelyVisitNode(node.functionType?.parameters),
+      'returnType': node.functionType?.returnType.toString(),
+      'generic?': _safelyVisitNode(node.functionType?.typeParameters),
+    };
+  }
+
+  @override
   dynamic visitClassTypeAlias(ClassTypeAlias node) {
     return {'_': nodeType(node), 'raw': node.toString()};
+  }
+
+  @override
+  dynamic visitExtensionDeclaration(ExtensionDeclaration node) {
+    return {
+      '_': nodeType(node),
+      'name': node.name?.name,
+      'super': node.extendedType.toString(),
+      'members': _safelyVisitNodeList(node.members),
+    };
   }
 
   @override
@@ -75,21 +134,51 @@ class RootAstVisitor extends UnifyingAstVisitor<dynamic> {
       'name': node.name.name,
       'generic': _safelyVisitNode(node.typeParameters),
       'super': _safelyVisitNode(node.extendsClause),
+      'with': _safelyVisitNode(node.withClause),
+      // 'implements': _safelyVisitNode(node.implementsClause),
       'meta': _safelyVisitNodeList(node.metadata),
       'members': _safelyVisitNodeList(node.members),
       'identifiers': node.accept(IdentifierASTVisitor()),
-      'abstract?': node.abstractKeyword != null
+      'abstract?': node.abstractKeyword != null,
+      'test?': _checkAnnotation(node.metadata, 'visibleForTesting')
+    };
+  }
+
+  @override
+  dynamic visitMixinDeclaration(MixinDeclaration node) {
+    return {
+      '_': nodeType(node),
+      'name': node.name.name,
+      'members': _safelyVisitNodeList(node.members),
     };
   }
 
   @override
   dynamic visitExtendsClause(ExtendsClause node) {
-    var name =node.superclass.name.name;
+    var name = node.superclass.name.name;
     if (name.contains('.')) {
       var idx = name.lastIndexOf('.');
-      name = name.substring(idx+1);
+      name = name.substring(idx + 1);
     }
     return name;
+  }
+
+  // @override
+  // dynamic visitImplementsClause(ImplementsClause node) {
+  //   return {
+  //     '_': nodeType(node),
+  //     'supers': _safelyVisitNodeList(node.interfaces)
+  //   };
+  // }
+
+  @override
+  dynamic visitWithClause(WithClause node) {
+    var arr = <String>[];
+    node.mixinTypes.forEach((element) {
+      String s = _safelyVisitNode(element);
+      arr.add(s);
+    });
+    return arr;
   }
 
   @override
@@ -107,8 +196,10 @@ class RootAstVisitor extends UnifyingAstVisitor<dynamic> {
       'init': _safelyVisitNodeList(node.initializers),
       'body': node.body.toString(),
       'params_raw': node.parameters.toString(),
+      'const?': node.constKeyword != null,
       'factory?':
           node.factoryKeyword != null || node.redirectedConstructor != null,
+      'deprecated?': _checkAnnotation(node.metadata, 'Deprecated'),
     };
   }
 
@@ -123,17 +214,7 @@ class RootAstVisitor extends UnifyingAstVisitor<dynamic> {
   }
 
   @override
-  dynamic visitGenericTypeAlias(GenericTypeAlias node) {
-    return {'_': nodeType(node), 'raw': node.toString()};
-  }
-
-  @override
   dynamic visitExpressionFunctionBody(ExpressionFunctionBody node) {
-    return {'_': nodeType(node), 'raw': node.toString()};
-  }
-
-  @override
-  dynamic visitMixinDeclaration(MixinDeclaration node) {
     return {'_': nodeType(node), 'raw': node.toString()};
   }
 
@@ -143,10 +224,12 @@ class RootAstVisitor extends UnifyingAstVisitor<dynamic> {
     node.constants.forEach((element) {
       enums.add(element.name.name);
     });
-    return {'_': nodeType(node),
+    return {
+      '_': nodeType(node),
       'name': node.name.name,
       'meta': _safelyVisitNodeList(node.metadata),
-      'enums': enums};
+      'enums': enums
+    };
   }
 
   @override
@@ -237,6 +320,8 @@ class RootAstVisitor extends UnifyingAstVisitor<dynamic> {
       '_': nodeType(node),
       'static': node.staticKeyword != null,
       'fields': _safelyVisitNode(node.fields),
+      'protected?': _checkAnnotation(node.metadata, 'protected'),
+      'deprecated?': _checkAnnotation(node.metadata, 'Deprecated'),
     };
   }
 
@@ -248,19 +333,10 @@ class RootAstVisitor extends UnifyingAstVisitor<dynamic> {
 
   @override
   dynamic visitMethodDeclaration(MethodDeclaration node) {
-    var annotations = _safelyVisitNodeList(node.metadata);
-    var test = false;
-    for (var value in annotations) {
-      if (value['annotation'] == 'visibleForTesting') {
-        test = true;
-        break;
-      }
-    }
-
     return {
       '_': nodeType(node),
       'static': node.isStatic,
-      'ret': node.returnType.toString(),
+      'ret': node.returnType?.toString(),
       'name': node.name.toString(),
       'operator?': node.operatorKeyword != null,
       'type': _safelyVisitNode(node.typeParameters),
@@ -270,7 +346,9 @@ class RootAstVisitor extends UnifyingAstVisitor<dynamic> {
       'raw': node.toString(),
       'getter?': node.isGetter,
       'setter?': node.isSetter,
-      'test?': test,
+      'test?': _checkAnnotation(node.metadata, 'visibleForTesting'),
+      'protected?': _checkAnnotation(node.metadata, 'protected'),
+      'deprecated?': _checkAnnotation(node.metadata, 'Deprecated'),
     };
   }
 
@@ -350,11 +428,20 @@ class RootAstVisitor extends UnifyingAstVisitor<dynamic> {
   dynamic visitSimpleFormalParameter(SimpleFormalParameter node) {
     return {
       '_': nodeType(node),
-      'type': node.type.toString(),
-      'name': node.identifier!.name,
+      'type': node.type?.toString(),
+      'name': node.identifier?.name,
       'pos?': node.isPositional,
       'named?': node.isNamed,
       'optional?': node.isOptional,
+      'required?': node.isRequired,
+    };
+  }
+
+  @override
+  dynamic visitGenericFunctionType(GenericFunctionType node) {
+    return {
+      '_': nodeType(node),
+      'ret': node.returnType?.toString(),
     };
   }
 
@@ -368,6 +455,7 @@ class RootAstVisitor extends UnifyingAstVisitor<dynamic> {
       'pos?': node.isPositional,
       'named?': node.isNamed,
       'optional?': node.isOptional,
+      'required?': node.isRequired,
     };
   }
 
@@ -375,11 +463,12 @@ class RootAstVisitor extends UnifyingAstVisitor<dynamic> {
   dynamic visitFunctionTypedFormalParameter(FunctionTypedFormalParameter node) {
     return {
       '_': nodeType(node),
-      'ret': node.returnType.toString(),
+      'ret': node.returnType?.toString(),
       'name': node.identifier.name,
       'pos?': node.isPositional,
       'named?': node.isNamed,
       'optional?': node.isOptional,
+      'required?': node.isRequired,
     };
   }
 
@@ -390,7 +479,7 @@ class RootAstVisitor extends UnifyingAstVisitor<dynamic> {
       '_': nodeType(node),
       'param': _safelyVisitNode(node.parameter),
       'default': node.defaultValue?.toString(),
-      'default_identifiers': identifiers
+      'default_identifiers': identifiers,
     };
   }
 

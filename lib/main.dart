@@ -7,7 +7,7 @@ import 'package:path/path.dart' as path;
 import 'binding-generator.dart';
 import 'defines.dart';
 
-var version = '1.0.4';
+var version = '1.0.7';
 
 var files = <FileSystemEntity>[];
 
@@ -34,22 +34,22 @@ Future<List<FileSystemEntity>> dirContents(
           return;
         }
       }
-      if (ignores.isNotEmpty) {
-        var idx = ignores.indexWhere((element) {
-          var ignoreClass = element.contains(':');
-          if (!ignoreClass) {
-            if (file.path.contains(element)) {
-              print('ignored: ${file.path} matched: $element');
-              return true;
-            }
-          }
-
-          return false;
-        });
-        if (idx != -1) {
-          return;
-        }
-      }
+      // if (ignores.isNotEmpty) {
+      //   var idx = ignores.indexWhere((element) {
+      //     var ignoreClass = element.contains(':');
+      //     if (!ignoreClass) {
+      //       if (file.path.contains(element)) {
+      //         print('ignored: ${file.path} matched: $element');
+      //         return true;
+      //       }
+      //     }
+      //
+      //     return false;
+      //   });
+      //   if (idx != -1) {
+      //     return;
+      //   }
+      // }
       files.add(file);
     }
   },
@@ -60,6 +60,10 @@ Future<List<FileSystemEntity>> dirContents(
 
 var classDefineMap = <String, ClassDefine>{};
 var super_childMap = <String, List<ClassDefine>>{};
+var functionTypedefMap = <String, FunctionTypeDefine>{};
+var extensionMap = <String, List<ExtensionDefine>>{};
+var libraryFileMap = <String, FileDefine>{};
+var mixinMap = <String, MixinDefine>{};
 
 Future<List<FileDefine>> parseDartFiles(
     String? jsonPath, List<String> ignores) async {
@@ -69,21 +73,52 @@ Future<List<FileDefine>> parseDartFiles(
     var ignoredClasses = <String>{};
     ignores.forEach((element) {
       if (element.contains(':')) {
-        var ignoredClassName = element.substring(element.indexOf(':') + 1);
-        ignoredClasses.add(ignoredClassName);
+        var index = element.indexOf(':');
+        var ignoredClassName = element.substring(index + 1);
+        var ignoredFileName = element.substring(0, index);
+        if (p.path.contains(ignoredFileName)) {
+          ignoredClasses.add(ignoredClassName);
+        }
+      } else {
+        if (p.path.contains(element)) {
+          ignoredClasses.add('-all-');
+        }
       }
     });
 
     var define = await generateDefines(p.path, jsonPath);
     if (define != null) {
       fileDefines.add(define);
+      if (define.library != null) {
+        libraryFileMap[define.library!] = define;
+      }
+      define.functionTypedefs.forEach((element) {
+        functionTypedefMap[element.name] = element;
+      });
+
+      define.extensions.forEach((element) {
+        extensionMap[element.superName] ??= [];
+        extensionMap[element.superName]!.add(element);
+      });
+
+      define.mixins.forEach((element) {
+        if (ignoredClasses.contains(element.name) ||
+            ignoredClasses.contains('-all-')) {
+          element.ignored = true;
+          print('ignored: ${p.path} matched mixin: ${element.name}');
+          return;
+        }
+        mixinMap[element.name] = element;
+      });
 
       var allClasses = <ClassDefine>[];
       allClasses.addAll(define.classes);
       allClasses.addAll(define.privateClasses);
       allClasses.forEach((element) {
-        if (ignoredClasses.contains(element.name)) {
+        if (ignoredClasses.contains(element.name) ||
+            ignoredClasses.contains('-all-')) {
           element.ignored = true;
+          print('ignored: ${p.path} matched class: ${element.name}');
           return;
         }
         if (classDefineMap.containsKey(element.name)) {
@@ -113,6 +148,8 @@ Future<List<FileDefine>> parseDartFiles(
   return fileDefines;
 }
 
+var customImportMap = <String, String>{};
+
 void parseBegin(
     List<String> userPaths,
     String? flutterPath,
@@ -137,6 +174,7 @@ void parseBegin(
       var b = await generateWrappers(p, exportPath, scriptExportPath,
           library: ExportType.UserDefine);
       allBindings.addAll(b);
+      customImportMap[p.filePath] = '';
     }
   }
 
@@ -146,6 +184,7 @@ void parseBegin(
     await dirContents(Directory(a), ignores, whitelist);
 
     if (files.isNotEmpty) {
+      var fileEntries = [];
       var packageName = path.basenameWithoutExtension(a);
       if (packageName == 'lib') {
         //上一级
@@ -155,18 +194,32 @@ void parseBegin(
         packageName = packageName.substring(0, packageName.indexOf('-'));
       }
       print('parsing package: [$packageName]');
+
       var fileDefines = await parseDartFiles(jsonPath, ignores);
       for (var p in fileDefines) {
         var b = await generateWrappers(p, exportPath, scriptExportPath,
             library: ExportType.Package, libName: packageName);
-        allBindings.addAll(b);
+        customImportMap[p.filePath] = 'package:$packageName/$packageName.dart';
+        if (b.isNotEmpty) {
+          allBindings.addAll(b);
+          fileEntries.add({
+            'import_file_name':
+                'package://$packageName/${path.basenameWithoutExtension(p.filePath)}.ht'
+          });
+        }
       }
+
+      var templateVars = {'import_files': fileEntries};
+
+      renderTemplate('template/import_entry.mustache', templateVars,
+          '$scriptExportPath/packages/$packageName.ht');
     }
   }
 
   var user_api_import = [];
   var user_bindings = [];
   var ht_user_bindings = [];
+  var function_defs = [];
   allBindings.forEach((element) {
     var importPath = element.filePath;
     var prefix = '';
@@ -186,11 +239,13 @@ void parseBegin(
     ht_user_bindings.add({
       'ht_file_relative_path': ht_file_relative_path,
     });
+    function_defs.addAll(element.funcTypeDefs);
   });
   var userTemplateVars = {
     'user_api_import': user_api_import,
     'user_bindings': user_bindings,
-    'ht_user_bindings': ht_user_bindings
+    'ht_user_bindings': ht_user_bindings,
+    'function_defs': function_defs,
   };
   renderTemplate('template/ht_script_binding.mustache', userTemplateVars,
       '$exportPath/ht_script_binding.dart');
@@ -239,25 +294,62 @@ void parseBegin(
     }
 
     allBindings.clear();
+    var packages = <String, List>{};
     for (var p in dartDefines) {
       var libName =
           path.split(path.relative(p.filePath, from: dartSourceRoot)).first;
+      packages[libName] ??= [];
+      var fileEntries = packages[libName];
+
       var b = await generateWrappers(p, exportPath, scriptExportPath,
           library: ExportType.DartLibrary, libName: libName);
-      allBindings.addAll(b);
+
+      if (b.isNotEmpty) {
+        allBindings.addAll(b);
+        fileEntries?.add({
+          'import_file_name':
+              'dart://$libName/${path.basenameWithoutExtension(p.filePath)}.ht'
+        });
+      }
     }
+    packages.forEach((key, value) {
+      if (value.isNotEmpty) {
+        var templateVars = {'import_files': value};
+        renderTemplate('template/import_entry.mustache', templateVars,
+            '$scriptExportPath/dart/$key.ht');
+      }
+    });
+    packages.clear();
     for (var p in flutterDefines) {
       var libName =
           path.split(path.relative(p.filePath, from: flutterSourceRoot)).first;
+      packages[libName] ??= [];
+      var fileEntries = packages[libName];
+
       var b = await generateWrappers(p, exportPath, scriptExportPath,
           library: ExportType.FlutterLibrary, libName: libName);
-      allBindings.addAll(b);
+
+      if (b.isNotEmpty) {
+        allBindings.addAll(b);
+        fileEntries?.add({
+          'import_file_name':
+              'flutter://$libName/${path.basenameWithoutExtension(p.filePath)}.ht'
+        });
+      }
     }
+    packages.forEach((key, value) {
+      if (value.isNotEmpty) {
+        var templateVars = {'import_files': value};
+        renderTemplate('template/import_entry.mustache', templateVars,
+            '$scriptExportPath/flutter/$key.ht');
+      }
+    });
 
     //生成库自动绑定的接口文件
     var api_import = [];
     var lib_bindings = [];
     var ht_lib_bindings = [];
+    var function_defs = [];
     allBindings.forEach((element) {
       var importPath = element.filePath;
       var prefix = '';
@@ -277,11 +369,14 @@ void parseBegin(
       ht_lib_bindings.add({
         'ht_file_relative_path': ht_file_relative_path,
       });
+
+      function_defs.addAll(element.funcTypeDefs);
     });
     var libTemplateVars = {
       'api_import': api_import,
       'bindings': lib_bindings,
-      'ht_bindings': ht_lib_bindings
+      'ht_bindings': ht_lib_bindings,
+      'function_defs': function_defs,
     };
     renderTemplate('template/ht_library_script_binding.mustache',
         libTemplateVars, '$exportPath/ht_library_script_binding.dart');
@@ -341,9 +436,9 @@ void main(args) {
       abbr: 's',
       defaultsTo: Directory.current.path.toString() + '/gen/ht',
       help: 'The output path for .ht code generation.');
-  parser.addFlag('json-export',
+  parser.addOption('json-export',
       abbr: 'j',
-      defaultsTo: false,
+      defaultsTo: null,
       help: 'Whether to export the intermediate JSON files for diagnostics.');
   parser.addFlag('help', abbr: 'h', negatable: false, callback: (f) {
     if (f) {
@@ -352,18 +447,10 @@ void main(args) {
   }, help: 'Show this help.');
   parser.addMultiOption('ignores',
       abbr: 'i',
-      defaultsTo: [
-        'ui/painting.dart:Codec',
-        'ui/painting.dart:Image',
-        'ui/painting.dart:Gradient',
-        'convert/codec.dart',
-        'ui/text.dart:TextStyle',
-        'ui/text.dart:StrutStyle',
-        'ui/platform_dispatcher.dart:ViewConfiguration',
-      ],
+      defaultsTo: [],
       valueHelp: 'ignored-file-name, ignored-file-name:ignored-class-name, ...',
       help:
-          'The files/classes from this list will be ignored during the code generation.');
+          "The files/classes from this list will be ignored during the code generation. If only file name is provided, all classes from the file won't be exported. All function typedefs will be exported even the file is ignored.");
   parser.addMultiOption('whitelist',
       abbr: 'w',
       valueHelp: 'whitelist-file-name, whitelist-file-name2, ...',
@@ -382,9 +469,13 @@ void main(args) {
   }
   var flutterPath = results['flutter-lib-path'];
   var packagePaths = results['package-lib-paths'];
-  var jsonPath = results['json-export']
-      ? Directory.current.path.toString() + '/gen'
-      : null;
+  var jsonPath = results['json-export'];
+  if (jsonPath != null) {
+    if (path.isRelative(jsonPath)) {
+      jsonPath = path.absolute(jsonPath);
+    }
+  }
+  // print('json: $jsonPath');
   var ignores = results['ignores'];
   ignores.addAll([
     'core/annotations.dart',
@@ -393,10 +484,23 @@ void main(args) {
     'core/exceptions.dart',
     'core/expando.dart',
     'core/string.dart',
-    'core/string.dart',
+    'core/bool.dart',
+    'core/num.dart',
+    'convert/codec.dart',
     'foundation/annotations.dart',
     'foundation/assertions.dart',
     'foundation/basic_types.dart',
+    'material/date_picker_deprecated.dart',
+    'rendering/object.dart',
+    'widgets/framework.dart',
+    'ui/painting.dart:Codec',
+    'ui/painting.dart:Image',
+    'ui/painting.dart:Gradient',
+    'painting/image_provider.dart:AssetBundleImageProvider',
+    'ui/text.dart:TextStyle',
+    'ui/text.dart:StrutStyle',
+    'ui/platform_dispatcher.dart:ViewConfiguration',
+    'foundation/diagnostics.dart',
   ]);
   var whitelist = results['whitelist'];
   if (results['help'] == true || results['version'] == true) {
