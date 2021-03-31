@@ -1,3 +1,6 @@
+## 1.0.8
+- Fix: Windows ignored path. 
+
 ## 1.0.7
 - Add: Function type binding using Hetu.
 - Breaking Changes: Adapt to the Hetu script changes. (VM)

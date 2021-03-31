@@ -7,7 +7,7 @@ import 'package:path/path.dart' as path;
 import 'binding-generator.dart';
 import 'defines.dart';
 
-var version = '1.0.7';
+var version = '1.0.8';
 
 var files = <FileSystemEntity>[];
 
@@ -476,8 +476,7 @@ void main(args) {
     }
   }
   // print('json: $jsonPath');
-  var ignores = results['ignores'];
-  ignores.addAll([
+  var defaultIgnores = [
     'core/annotations.dart',
     'core/object.dart',
     'core/errors.dart',
@@ -501,7 +500,18 @@ void main(args) {
     'ui/text.dart:StrutStyle',
     'ui/platform_dispatcher.dart:ViewConfiguration',
     'foundation/diagnostics.dart',
-  ]);
+  ];
+  if (Platform.isWindows) {
+    //Windows改为反斜杠
+    var tmp = <String>[];
+    defaultIgnores.forEach((element) {
+      tmp.add(element.replaceAll('/', '\\'));
+    });
+    defaultIgnores = tmp;
+  }
+  var ignores = results['ignores'];
+  ignores.addAll(defaultIgnores);
+
   var whitelist = results['whitelist'];
   if (results['help'] == true || results['version'] == true) {
     return;
