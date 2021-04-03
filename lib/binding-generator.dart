@@ -158,7 +158,6 @@ void fetchSuperClass(ClassDefine cls) {
   //添加extensions
   if (extensionMap.containsKey(cls.name)) {
     var exts = extensionMap[cls.name];
-    var added = false;
     exts?.forEach((e) {
       e.instanceMethods.forEach((m) {
         var idx =
@@ -167,7 +166,6 @@ void fetchSuperClass(ClassDefine cls) {
           cls.instanceMethods.removeAt(idx);
         }
         cls.instanceMethods.add(m);
-        added = true;
         var importUri = e.fileDefine.filePath;
         var url;
         if (customImportMap.containsKey(importUri)) {
@@ -567,6 +565,7 @@ Future<List<BindingDefine>> generateWrappers(
     var instanceMethodList = [];
     if (!staticClassOnly) {
       kclass.instanceVars.forEach((iv) {
+        iv = iv as FieldVarDefine;
         if (iv.isPrivate || iv.isProtected || iv.isDeprecated) {
           return;
         }
@@ -575,7 +574,10 @@ Future<List<BindingDefine>> generateWrappers(
 
         if (!iv.isFinal) {
           setter = true;
-          instanceVarSetterList.add({'instance_identifier': iv.name});
+          instanceVarSetterList.add({
+            'instance_identifier': iv.name,
+            'instance_value': iv.getValue()
+          });
         }
 
         if (setter) {
@@ -592,7 +594,8 @@ Future<List<BindingDefine>> generateWrappers(
           checkFunctionParamType(p);
         });
         if (m.isSetter) {
-          instanceVarSetterList.add({'instance_identifier': m.name});
+          instanceVarSetterList
+              .add({'instance_identifier': m.name, 'instance_value': 'value'});
           ht_fields.add({'field': 'set ${m.name}(value)'});
         } else if (m.isGetter) {
           instanceVarGetterList.add({'instance_identifier': m.name});

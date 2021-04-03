@@ -1,3 +1,6 @@
+## 1.0.9
+- Add: Instance member variable setter for `List` and `Map`  will get a `.from` type conversion. 
+
 ## 1.0.8
 - Fix: Windows ignored path. 
 

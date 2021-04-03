@@ -7,7 +7,7 @@ import 'package:path/path.dart' as path;
 import 'binding-generator.dart';
 import 'defines.dart';
 
-var version = '1.0.8';
+var version = '1.0.9';
 
 var files = <FileSystemEntity>[];
 

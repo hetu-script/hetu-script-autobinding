@@ -349,9 +349,20 @@ class FieldVarDefine {
       if (rawType == 'MethodInvocation') {
         identifiers.addAll(init['identifiers']);
       }
-      type = init['type'];
-      value = init['value'];
+      if (init.containsKey('type')) {
+        type = init['type'];
+      }
+      if (init.containsKey('value')) {
+        value = init['value'];
+      }
+
     }
+  }
+
+  String getValue() {
+    var ret = 'value';
+    ret = checkWrapValue(ret, type);
+    return ret;
   }
 }
 
@@ -416,15 +427,20 @@ class ParamDefine {
 }
 
 String checkWrapValue(String v, String? type) {
-  String? wrapListType;
+  String? wrapContainerType;
   if (type?.startsWith('List<') ?? false) {
-    wrapListType = type!;
-    if (wrapListType.endsWith('?')) {
-      wrapListType = wrapListType.substring(0, wrapListType.length - 1);
+    wrapContainerType = type!;
+    if (wrapContainerType.endsWith('?')) {
+      wrapContainerType = wrapContainerType.substring(0, wrapContainerType.length - 1);
+    }
+  } else if (type?.startsWith('Map<') ?? false) {
+    wrapContainerType = type!;
+    if (wrapContainerType.endsWith('?')) {
+      wrapContainerType = wrapContainerType.substring(0, wrapContainerType.length - 1);
     }
   }
-  if (wrapListType != null) {
-    return '$wrapListType.from($v)';
+  if (wrapContainerType != null) {
+    return '$wrapContainerType.from($v)';
   }
   return v;
 }
