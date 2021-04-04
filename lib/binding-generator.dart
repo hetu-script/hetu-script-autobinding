@@ -191,7 +191,7 @@ void fetchSuperClass(ClassDefine cls) {
 
 Future<List<BindingDefine>> generateWrappers(
     FileDefine fd, String outputPath, String scriptOutputPath,
-    {ExportType library = ExportType.UserDefine, String? libName}) async {
+    {ExportType library = ExportType.UserDefine, String? libName, List<String> generics = []}) async {
   var filePath = fd.filePath;
   var file_imports = [];
   var bindingExternals = <String>[];
@@ -285,7 +285,7 @@ Future<List<BindingDefine>> generateWrappers(
 
   var all_classes = [];
   var added_classes = <String>{};
-  var classes = [];
+  var classes = <ClassDefine>[];
   classes.addAll(fd.classes);
 
   for (var kclass in classes) {
@@ -309,10 +309,28 @@ Future<List<BindingDefine>> generateWrappers(
       print('class pass: [${kclass.name}] private class');
       continue;
     }
+    var genericTypes = {};
     if (kclass.generics != null) {
-      //有泛型的类不支持导出，需要用户自己实现不带泛型的类然后标记导出
-      print('class pass: [${kclass.name}] generic unsupported');
-      continue;
+      var exp = false;
+      if (generics.isNotEmpty) {
+        //检查是否有同样的类
+        generics.forEach((element) {
+          var eles = element.split(':');
+          var clsName = eles[0];
+          var genericType = eles[1];
+          genericTypes[clsName] ??= [];
+          genericTypes[clsName].add(genericType);
+          if (kclass.name == clsName) {
+            exp = true;
+            return;
+          }
+        });
+      }
+      if (!exp) {
+        //有泛型的类不支持导出，需要用户自己实现不带泛型的类然后标记导出
+        print('class pass: [${kclass.name}] generic unsupported');
+        continue;
+      }
     }
 
     // var generic_types = '';
