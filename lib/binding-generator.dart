@@ -191,7 +191,7 @@ void fetchSuperClass(ClassDefine cls) {
 
 Future<List<BindingDefine>> generateWrappers(
     FileDefine fd, String outputPath, String scriptOutputPath,
-    {ExportType library = ExportType.UserDefine, String? libName, List<String> generics = []}) async {
+    {ExportType library = ExportType.UserDefine, String? libName, List<String> generics = const <String>[]}) async {
   var filePath = fd.filePath;
   var file_imports = [];
   var bindingExternals = <String>[];

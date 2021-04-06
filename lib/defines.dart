@@ -438,6 +438,12 @@ String checkWrapValue(String v, String? type) {
     if (wrapContainerType.endsWith('?')) {
       wrapContainerType = wrapContainerType.substring(0, wrapContainerType.length - 1);
     }
+  } else if (type?.startsWith('Iterable<') ?? false) {
+    wrapContainerType = type!.replaceAll('Iterable', '');
+    if (wrapContainerType.endsWith('?')) {
+      wrapContainerType = wrapContainerType.substring(0, wrapContainerType.length - 1);
+    }
+    return '$v.cast$wrapContainerType()';
   }
   if (wrapContainerType != null) {
     return '$wrapContainerType.from($v)';

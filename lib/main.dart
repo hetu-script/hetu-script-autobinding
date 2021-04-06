@@ -175,7 +175,7 @@ void parseBegin(List<String> userPaths,
     var fileDefines = await parseDartFiles(jsonPath, ignores);
     for (var p in fileDefines) {
       var b = await generateWrappers(p, exportPath, scriptExportPath,
-          library: ExportType.UserDefine);
+          library: ExportType.UserDefine, generics: generics);
       allBindings.addAll(b);
       customImportMap[p.filePath] = '';
     }
@@ -201,7 +201,7 @@ void parseBegin(List<String> userPaths,
       var fileDefines = await parseDartFiles(jsonPath, ignores);
       for (var p in fileDefines) {
         var b = await generateWrappers(p, exportPath, scriptExportPath,
-            library: ExportType.Package, libName: packageName);
+            library: ExportType.Package, libName: packageName, generics: generics);
         customImportMap[p.filePath] = 'package:$packageName/$packageName.dart';
         if (b.isNotEmpty) {
           allBindings.addAll(b);
@@ -308,7 +308,7 @@ void parseBegin(List<String> userPaths,
       var fileEntries = packages[libName];
 
       var b = await generateWrappers(p, exportPath, scriptExportPath,
-          library: ExportType.DartLibrary, libName: libName);
+          library: ExportType.DartLibrary, libName: libName, generics: generics);
 
       if (b.isNotEmpty) {
         allBindings.addAll(b);
@@ -335,7 +335,7 @@ void parseBegin(List<String> userPaths,
       var fileEntries = packages[libName];
 
       var b = await generateWrappers(p, exportPath, scriptExportPath,
-          library: ExportType.FlutterLibrary, libName: libName);
+          library: ExportType.FlutterLibrary, libName: libName, generics: generics);
 
       if (b.isNotEmpty) {
         allBindings.addAll(b);
@@ -448,9 +448,9 @@ void main(args) {
       abbr: 'j',
       defaultsTo: null,
       help: 'Whether to export the intermediate JSON files for diagnostics.');
-  parser.addOption('generics',
+  parser.addMultiOption('generics',
       abbr: 'g',
-      defaultsTo: null,
+      defaultsTo: [],
       help: 'Specify generic types for classes. Only specified generic types are generated. Use "Class:GenericType" pattern with comma separated.'
   );
   parser.addFlag('help', abbr: 'h', negatable: false, callback: (f) {
@@ -509,6 +509,7 @@ void main(args) {
     'ui/painting.dart:Image',
     'ui/painting.dart:Gradient',
     'painting/image_provider.dart:AssetBundleImageProvider',
+    'widgets/icon_data.dart:IconData',
     'ui/text.dart:TextStyle',
     'ui/text.dart:StrutStyle',
     'ui/platform_dispatcher.dart:ViewConfiguration',
