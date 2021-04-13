@@ -176,8 +176,11 @@ void fetchSuperClass(ClassDefine cls) {
   cls.superFetched = true;
 }
 
-Future<List<BindingDefine>> generateWrappers(FileDefine fd, String outputPath, String scriptOutputPath,
-    {ExportType library = ExportType.UserDefine, String? libName}) async {
+Future<List<BindingDefine>> generateWrappers(
+    FileDefine fd, String outputPath, String scriptOutputPath,
+    {ExportType library = ExportType.UserDefine,
+    String? libName,
+    List<String> generics = const <String>[]}) async {
   var filePath = fd.filePath;
   var file_imports = [];
   var bindingExternals = <String>[];
@@ -267,7 +270,7 @@ Future<List<BindingDefine>> generateWrappers(FileDefine fd, String outputPath, S
 
   var all_classes = [];
   var added_classes = <String>{};
-  var classes = [];
+  var classes = <ClassDefine>[];
   classes.addAll(fd.classes);
 
   for (var kclass in classes) {
@@ -290,10 +293,28 @@ Future<List<BindingDefine>> generateWrappers(FileDefine fd, String outputPath, S
       print('class pass: [${kclass.name}] private class');
       continue;
     }
+    var genericTypes = {};
     if (kclass.generics != null) {
-      //有泛型的类不支持导出，需要用户自己实现不带泛型的类然后标记导出
-      print('class pass: [${kclass.name}] generic unsupported');
-      continue;
+      var exp = false;
+      if (generics.isNotEmpty) {
+        //检查是否有同样的类
+        generics.forEach((element) {
+          var eles = element.split(':');
+          var clsName = eles[0];
+          var genericType = eles[1];
+          genericTypes[clsName] ??= [];
+          genericTypes[clsName].add(genericType);
+          if (kclass.name == clsName) {
+            exp = true;
+            return;
+          }
+        });
+      }
+      if (!exp) {
+        //有泛型的类不支持导出，需要用户自己实现不带泛型的类然后标记导出
+        print('class pass: [${kclass.name}] generic unsupported');
+        continue;
+      }
     }
 
     // var generic_types = '';
@@ -736,27 +757,29 @@ Future<List<BindingDefine>> generateWrappers(FileDefine fd, String outputPath, S
   //     return getPackageName(path.dirname(name));
   //   }
   // }
+  var midFolder = '$libName/';
+  var midPrefix = '$libName-';
   if (library == ExportType.FlutterLibrary) {
-    // dirName = getPackageName(filePath);
-    dirName = 'flutter/$libName';
+    dirName = 'flutter';
     template_vars['library_class_import'] = {
       'flutter_lib_name': "import 'package:flutter/${libName!}.dart';",
     };
   } else if (library == ExportType.DartLibrary) {
-    // dirName = getPackageName(filePath);
-    dirName = 'dart/$libName';
+    dirName = 'dart';
 
     template_vars['library_class_import'] = {
       'flutter_lib_name': "import 'dart:${libName!}';",
     };
   } else if (library == ExportType.UserDefine) {
     dirName = 'user';
-    var relPath = path.relative(filePath, from: '$outputPath/$dirName');
+    midFolder = '';
+    midPrefix = '';
+    var relPath = path.relative(filePath, from: '$outputPath/user');
     template_vars['library_class_import'] = {
       'flutter_lib_name': "import '$relPath';",
     };
   } else if (library == ExportType.Package) {
-    dirName = 'packages/$libName';
+    dirName = 'packages';
     template_vars['library_class_import'] = {
       'flutter_lib_name': "import 'package:$libName/$libName.dart';",
     };
@@ -765,10 +788,13 @@ Future<List<BindingDefine>> generateWrappers(FileDefine fd, String outputPath, S
   htPath = '$scriptOutputPath/$dirName/';
   await Directory(dartPath).create(recursive: true);
   await Directory(htPath).create(recursive: true);
-  bindings.add(BindingDefine('$dirName/$fileName', bindingExternals, bindingFunctionTypes));
+  bindings.add(BindingDefine('$dirName/$midFolder$fileName',
+      '$dirName/$midPrefix$fileName', bindingExternals, bindingFunctionTypes));
 
-  renderTemplate('template/dart_classes.mustache', template_vars, '$dartPath$fileName.g.dart');
-  renderTemplate('template/ht_classes.mustache', ht_template_vars, '$htPath$fileName.ht');
+  renderTemplate('template/dart_classes.mustache', template_vars,
+      '$dartPath$midFolder$fileName.g.dart');
+  renderTemplate('template/ht_classes.mustache', ht_template_vars,
+      '$htPath$midPrefix$fileName.ht');
 
   return bindings;
 }
