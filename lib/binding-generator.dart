@@ -191,7 +191,9 @@ void fetchSuperClass(ClassDefine cls) {
 
 Future<List<BindingDefine>> generateWrappers(
     FileDefine fd, String outputPath, String scriptOutputPath,
-    {ExportType library = ExportType.UserDefine, String? libName, List<String> generics = const <String>[]}) async {
+    {ExportType library = ExportType.UserDefine,
+    String? libName,
+    List<String> generics = const <String>[]}) async {
   var filePath = fd.filePath;
   var file_imports = [];
   var bindingExternals = <String>[];
@@ -809,27 +811,29 @@ Future<List<BindingDefine>> generateWrappers(
   //     return getPackageName(path.dirname(name));
   //   }
   // }
+  var midFolder = '$libName/';
+  var midPrefix = '$libName-';
   if (library == ExportType.FlutterLibrary) {
-    // dirName = getPackageName(filePath);
-    dirName = 'flutter/$libName';
+    dirName = 'flutter';
     template_vars['library_class_import'] = {
       'flutter_lib_name': "import 'package:flutter/${libName!}.dart';",
     };
   } else if (library == ExportType.DartLibrary) {
-    // dirName = getPackageName(filePath);
-    dirName = 'dart/$libName';
+    dirName = 'dart';
 
     template_vars['library_class_import'] = {
       'flutter_lib_name': "import 'dart:${libName!}';",
     };
   } else if (library == ExportType.UserDefine) {
     dirName = 'user';
-    var relPath = path.relative(filePath, from: '$outputPath/$dirName');
+    midFolder = '';
+    midPrefix = '';
+    var relPath = path.relative(filePath, from: '$outputPath/user');
     template_vars['library_class_import'] = {
       'flutter_lib_name': "import '$relPath';",
     };
   } else if (library == ExportType.Package) {
-    dirName = 'packages/$libName';
+    dirName = 'packages';
     template_vars['library_class_import'] = {
       'flutter_lib_name': "import 'package:$libName/$libName.dart';",
     };
@@ -838,13 +842,13 @@ Future<List<BindingDefine>> generateWrappers(
   htPath = '$scriptOutputPath/$dirName/';
   await Directory(dartPath).create(recursive: true);
   await Directory(htPath).create(recursive: true);
-  bindings.add(BindingDefine(
-      '$dirName/$fileName', bindingExternals, bindingFunctionTypes));
+  bindings.add(BindingDefine('$dirName/$midFolder$fileName',
+      '$dirName/$midPrefix$fileName', bindingExternals, bindingFunctionTypes));
 
   renderTemplate('template/dart_classes.mustache', template_vars,
-      '$dartPath$fileName.g.dart');
-  renderTemplate(
-      'template/ht_classes.mustache', ht_template_vars, '$htPath$fileName.ht');
+      '$dartPath$midFolder$fileName.g.dart');
+  renderTemplate('template/ht_classes.mustache', ht_template_vars,
+      '$htPath$midPrefix$fileName.ht');
 
   return bindings;
 }

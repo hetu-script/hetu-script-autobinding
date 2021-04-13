@@ -355,7 +355,6 @@ class FieldVarDefine {
       if (init.containsKey('value')) {
         value = init['value'];
       }
-
     }
   }
 
@@ -431,17 +430,20 @@ String checkWrapValue(String v, String? type) {
   if (type?.startsWith('List<') ?? false) {
     wrapContainerType = type!;
     if (wrapContainerType.endsWith('?')) {
-      wrapContainerType = wrapContainerType.substring(0, wrapContainerType.length - 1);
+      wrapContainerType =
+          wrapContainerType.substring(0, wrapContainerType.length - 1);
     }
   } else if (type?.startsWith('Map<') ?? false) {
     wrapContainerType = type!;
     if (wrapContainerType.endsWith('?')) {
-      wrapContainerType = wrapContainerType.substring(0, wrapContainerType.length - 1);
+      wrapContainerType =
+          wrapContainerType.substring(0, wrapContainerType.length - 1);
     }
   } else if (type?.startsWith('Iterable<') ?? false) {
     wrapContainerType = type!.replaceAll('Iterable', '');
     if (wrapContainerType.endsWith('?')) {
-      wrapContainerType = wrapContainerType.substring(0, wrapContainerType.length - 1);
+      wrapContainerType =
+          wrapContainerType.substring(0, wrapContainerType.length - 1);
     }
     return '$v.cast$wrapContainerType()';
   }
@@ -492,7 +494,8 @@ class ConstructorDefine {
           allParams.add(value);
         } else {
           //顺序可选参数
-          allParams.add('positionalArgs.length > $index ? $value : ${p.defaultValue}');
+          allParams.add(
+              'positionalArgs.length > $index ? $value : ${p.defaultValue}');
         }
         index++;
       } else {
@@ -636,7 +639,8 @@ class MethodDefine {
           allParams.add(value);
         } else {
           //顺序可选参数
-          allParams.add('positionalArgs.length > $index ? $value : ${p.defaultValue}');
+          allParams.add(
+              'positionalArgs.length > $index ? $value : ${p.defaultValue}');
         }
         index++;
       } else {
@@ -715,10 +719,11 @@ class EnumDefine {
 
 class BindingDefine {
   final String filePath;
+  final String htFilePath;
   final List<String> externalVars;
   final List<Map<String, dynamic>> funcTypeDefs;
 
-  BindingDefine(this.filePath, this.externalVars, this.funcTypeDefs);
+  BindingDefine(this.filePath, this.htFilePath, this.externalVars, this.funcTypeDefs);
 }
 
 class FunctionTypeDefine {

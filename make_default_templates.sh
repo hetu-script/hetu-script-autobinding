@@ -1,2 +1,1 @@
-mkdir -p bin
-dart compile exe lib/main.dart -o bin/ht-binding-generator
+dart run ./utils/make_default_templates.dart
