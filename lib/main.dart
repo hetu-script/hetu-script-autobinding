@@ -7,7 +7,7 @@ import 'package:path/path.dart' as path;
 import 'binding-generator.dart';
 import 'defines.dart';
 
-var version = '1.0.9';
+var version = '1.0.10';
 
 var files = <FileSystemEntity>[];
 
@@ -239,7 +239,7 @@ void parseBegin(List<String> userPaths,
         'dart_class_name': e,
       });
     });
-    var ht_file_relative_path = '${element.filePath}.ht';
+    var ht_file_relative_path = '${element.htFilePath}.ht';
     ht_user_bindings.add({
       'ht_file_relative_path': ht_file_relative_path,
     });
@@ -373,7 +373,7 @@ void parseBegin(List<String> userPaths,
           'dart_class_name': e,
         });
       });
-      var ht_file_relative_path = '${element.filePath}.ht';
+      var ht_file_relative_path = '${element.htFilePath}.ht';
       ht_lib_bindings.add({
         'ht_file_relative_path': ht_file_relative_path,
       });

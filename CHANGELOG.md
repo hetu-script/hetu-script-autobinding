@@ -1,3 +1,6 @@
+## 1.0.10
+- Breaking Changes: Changed the generated script file names, so you won't need to change pubspec.yaml after binding a new package.
+
 ## 1.0.9
 - Add: Instance member variable setter for `List` and `Map`  will get a `.from` type conversion. 
 
