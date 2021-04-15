@@ -1,3 +1,6 @@
+## 1.0.11
+- Breaking Changes: Exported the .g.dart files with path in their names when generating from packages, due to repeated file names in different folders.
+
 ## 1.0.10
 - Breaking Changes: Changed the generated script file names, so you won't need to change pubspec.yaml after binding a new package.
 

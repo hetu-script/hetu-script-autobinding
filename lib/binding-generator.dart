@@ -26,7 +26,8 @@ enum ExportType {
   DartLibrary,
 }
 
-void renderTemplate(String templateFile, Map<String, dynamic> templateVars, String opath) async {
+void renderTemplate(String templateFile, Map<String, dynamic> templateVars,
+    String opath) async {
   var f = File(templateFile);
   var content;
   if (!f.existsSync()) {
@@ -44,7 +45,8 @@ void renderTemplate(String templateFile, Map<String, dynamic> templateVars, Stri
   await file.writeAsString(output);
 }
 
-void writeJson(String? jsonPath, String filePath, Map<String, dynamic>? astData) async {
+void writeJson(
+    String? jsonPath, String filePath, Map<String, dynamic>? astData) async {
   if (jsonPath != null) {
     var dirName = path.basename(path.dirname(filePath));
     var outputPath = '$jsonPath/$dirName/';
@@ -84,8 +86,12 @@ void fetchSuperClass(ClassDefine cls) {
           if (v.name.startsWith('_')) {
             continue;
           }
-          var exist = cls.instanceMethods.indexWhere((element) => element.name == v.name) != -1 ||
-              cls.instanceVars.indexWhere((element) => element.name == v.name) != -1;
+          var exist = cls.instanceMethods
+                      .indexWhere((element) => element.name == v.name) !=
+                  -1 ||
+              cls.instanceVars
+                      .indexWhere((element) => element.name == v.name) !=
+                  -1;
           if (!exist) {
             //子类没有，复制
             cls.instanceMethods.add(v);
@@ -115,8 +121,11 @@ void fetchSuperClass(ClassDefine cls) {
       if (v.name.startsWith('_')) {
         continue;
       }
-      var exist = cls.instanceMethods.indexWhere((element) => element.name == v.name) != -1 ||
-          cls.instanceVars.indexWhere((element) => element.name == v.name) != -1;
+      var exist = cls.instanceMethods
+                  .indexWhere((element) => element.name == v.name) !=
+              -1 ||
+          cls.instanceVars.indexWhere((element) => element.name == v.name) !=
+              -1;
       if (!exist) {
         //子类没有，复制
         cls.instanceVars.add(v);
@@ -128,8 +137,11 @@ void fetchSuperClass(ClassDefine cls) {
       if (v.name.startsWith('_')) {
         continue;
       }
-      var exist = cls.instanceMethods.indexWhere((element) => element.name == v.name) != -1 ||
-          cls.instanceVars.indexWhere((element) => element.name == v.name) != -1;
+      var exist = cls.instanceMethods
+                  .indexWhere((element) => element.name == v.name) !=
+              -1 ||
+          cls.instanceVars.indexWhere((element) => element.name == v.name) !=
+              -1;
       if (!exist) {
         //子类没有，复制
         cls.instanceMethods.add(v);
@@ -149,7 +161,8 @@ void fetchSuperClass(ClassDefine cls) {
     var exts = extensionMap[cls.name];
     exts?.forEach((e) {
       e.instanceMethods.forEach((m) {
-        var idx = cls.instanceMethods.indexWhere((element) => element.name == m.name);
+        var idx =
+            cls.instanceMethods.indexWhere((element) => element.name == m.name);
         if (idx != -1) {
           cls.instanceMethods.removeAt(idx);
         }
@@ -166,7 +179,8 @@ void fetchSuperClass(ClassDefine cls) {
           }
           url = '\'$url\'';
         }
-        if (cls.file.extImports.indexWhere((element) => element.uri == url) == -1) {
+        if (cls.file.extImports.indexWhere((element) => element.uri == url) ==
+            -1) {
           cls.file.extImports.add(ImportDefine({'id': url, 'prefix': null}));
         }
       });
@@ -180,6 +194,7 @@ Future<List<BindingDefine>> generateWrappers(
     FileDefine fd, String outputPath, String scriptOutputPath,
     {ExportType library = ExportType.UserDefine,
     String? libName,
+    String? relPath,
     List<String> generics = const <String>[]}) async {
   var filePath = fd.filePath;
   var file_imports = [];
@@ -225,7 +240,10 @@ Future<List<BindingDefine>> generateWrappers(
           var p = filePath.substring(idx + 5);
           var u = '\'package:$libName/$p\'';
           print(p);
-          if (file_imports.isEmpty || file_imports.indexWhere((element) => element['import_uri'] == u) == -1) {
+          if (file_imports.isEmpty ||
+              file_imports
+                      .indexWhere((element) => element['import_uri'] == u) ==
+                  -1) {
             file_imports.add({
               'import_uri': u,
               'import_prefix': '',
@@ -253,7 +271,8 @@ Future<List<BindingDefine>> generateWrappers(
   var ht_classes = [];
 
   for (var e in fd.enums) {
-    if (!e.annotations.contains('HTAutoBinding') && library == ExportType.UserDefine) {
+    if (!e.annotations.contains('HTAutoBinding') &&
+        library == ExportType.UserDefine) {
       continue;
     }
     if (e.isPrivate) {
@@ -279,7 +298,8 @@ Future<List<BindingDefine>> generateWrappers(
       print('class pass: [${kclass.name}] test only');
       continue;
     }
-    if (!kclass.annotations.contains('HTAutoBinding') && library == ExportType.UserDefine) {
+    if (!kclass.annotations.contains('HTAutoBinding') &&
+        library == ExportType.UserDefine) {
       print('class pass: [${kclass.name}] user defined but not annotated');
       continue;
     }
@@ -330,7 +350,9 @@ Future<List<BindingDefine>> generateWrappers(
     //     generic_types = '<${types.join(', ')}>';
     //   }
     // }
-    if (kclass.superClassName != null && !kclass.superClassName!.startsWith('_') && kclass.superClass == null) {}
+    if (kclass.superClassName != null &&
+        !kclass.superClassName!.startsWith('_') &&
+        kclass.superClass == null) {}
 
     var binding_constructors = [];
     var have_static_declarations = [];
@@ -340,7 +362,8 @@ Future<List<BindingDefine>> generateWrappers(
     var have_instance_setter = true;
     var failed = false;
 
-    void checkIdentifier(String id, Set<String> added, List<Map<String, dynamic>> privateDefines) {
+    void checkIdentifier(String id, Set<String> added,
+        List<Map<String, dynamic>> privateDefines) {
       if (id == '_TextSelectionToolbarContainer') {
         print('111');
       }
@@ -382,7 +405,8 @@ Future<List<BindingDefine>> generateWrappers(
               var varType = v.isConst ? 'const' : 'var';
               if (v.isTopLevel) {
                 var value = '$varType ${v.raw};';
-                if (!privateTopVars.any((element) => element['private_top_vars'] == value)) {
+                if (!privateTopVars
+                    .any((element) => element['private_top_vars'] == value)) {
                   privateTopVars.add({'private_top_vars': value});
                 }
               } else if (v.isStatic) {
@@ -397,7 +421,10 @@ Future<List<BindingDefine>> generateWrappers(
             } else if (v is MethodDefine) {
               if (!v.isPrivate) {
                 if (v.isStatic) {
-                  privateDefines.add({'private_impl': 'const ${v.name} = $dart_class_name.${v.name};'});
+                  privateDefines.add({
+                    'private_impl':
+                        'const ${v.name} = $dart_class_name.${v.name};'
+                  });
                 }
               } else {
                 if (v.isStatic) {
@@ -420,7 +447,8 @@ Future<List<BindingDefine>> generateWrappers(
                 checkIdentifier(element, added, privateDefines);
               });
               var value = v.raw;
-              if (!privateTopVars.any((element) => element['private_top_vars'] == value)) {
+              if (!privateTopVars
+                  .any((element) => element['private_top_vars'] == value)) {
                 privateTopVars.add({'private_top_vars': value});
               }
             }
@@ -451,16 +479,21 @@ Future<List<BindingDefine>> generateWrappers(
         //
         //   return;
         // }
-        if (bindingFunctionTypes.indexWhere((e) => e['dart_class_name'] == dart_class_name) == -1) {
+        if (bindingFunctionTypes
+                .indexWhere((e) => e['dart_class_name'] == dart_class_name) ==
+            -1) {
           bindingFunctionTypes.add({
             'dart_class_name': dart_class_name,
           });
         }
-        if (function_bindings.indexWhere((e) => e['function_type_name'] == element.name) == -1) {
+        if (function_bindings
+                .indexWhere((e) => e['function_type_name'] == element.name) ==
+            -1) {
           function_bindings.add({
             'function_type_name': element.name,
             'function_args': element.getParams(),
-            'function_return_type': element.returnType == 'void' ? '' : ' as ${element.returnType}',
+            'function_return_type':
+                element.returnType == 'void' ? '' : ' as ${element.returnType}',
             'function_invoke_args': element.getInvokeParams(),
           });
         }
@@ -563,7 +596,10 @@ Future<List<BindingDefine>> generateWrappers(
 
         if (!iv.isFinal) {
           setter = true;
-          instanceVarSetterList.add({'instance_identifier': iv.name, 'instance_value': iv.getValue()});
+          instanceVarSetterList.add({
+            'instance_identifier': iv.name,
+            'instance_value': iv.getValue()
+          });
         }
 
         if (setter) {
@@ -580,7 +616,8 @@ Future<List<BindingDefine>> generateWrappers(
           checkFunctionParamType(p);
         });
         if (m.isSetter) {
-          instanceVarSetterList.add({'instance_identifier': m.name, 'instance_value': 'value'});
+          instanceVarSetterList
+              .add({'instance_identifier': m.name, 'instance_value': 'value'});
           ht_fields.add({'field': 'set ${m.name}(value)'});
         } else if (m.isGetter) {
           instanceVarGetterList.add({'instance_identifier': m.name});
@@ -591,7 +628,8 @@ Future<List<BindingDefine>> generateWrappers(
           var added_identifiers = <String>{};
           default_identifiers.forEach((id) {
             if (id.startsWith('_')) {
-              checkIdentifier(id, added_identifiers, instance_method_private_defines);
+              checkIdentifier(
+                  id, added_identifiers, instance_method_private_defines);
             }
           });
           instanceMethodList.add({
@@ -605,13 +643,18 @@ Future<List<BindingDefine>> generateWrappers(
       });
     }
 
-    have_instance_getter = instanceVarGetterList.isNotEmpty || instanceMethodList.isNotEmpty;
+    have_instance_getter =
+        instanceVarGetterList.isNotEmpty || instanceMethodList.isNotEmpty;
     have_instance_setter = instanceVarSetterList.isNotEmpty;
     var binding_static_methods = [];
     var binding_static_variables_getter = [];
     var binding_static_variables_setter = [];
     kclass.staticMethods.forEach((m) {
-      if (m.isPrivate || m.isTest || m.isProtected || m.isDeprecated || m.extendsTypes.isNotEmpty) {
+      if (m.isPrivate ||
+          m.isTest ||
+          m.isProtected ||
+          m.isDeprecated ||
+          m.extendsTypes.isNotEmpty) {
         return;
       }
       m.params.forEach((p) {
@@ -626,10 +669,16 @@ Future<List<BindingDefine>> generateWrappers(
         }
       });
       if (m.isGetter) {
-        binding_static_variables_getter.add({'dart_class_name': dart_class_name, 'static_variable_name': m.name});
+        binding_static_variables_getter.add({
+          'dart_class_name': dart_class_name,
+          'static_variable_name': m.name
+        });
         ht_fields.add({'field': 'static get ${m.name}${m.getHetuParams()}'});
       } else if (m.isSetter) {
-        binding_static_variables_setter.add({'dart_class_name': dart_class_name, 'static_variable_name': m.name});
+        binding_static_variables_setter.add({
+          'dart_class_name': dart_class_name,
+          'static_variable_name': m.name
+        });
         ht_fields.add({'field': 'static set ${m.name}${m.getHetuParams()}'});
       } else {
         binding_static_methods.add({
@@ -647,10 +696,14 @@ Future<List<BindingDefine>> generateWrappers(
         return;
       }
       var setter = false;
-      binding_static_variables_getter.add({'dart_class_name': dart_class_name, 'static_variable_name': v.name});
+      binding_static_variables_getter.add(
+          {'dart_class_name': dart_class_name, 'static_variable_name': v.name});
       if (!v.isConst && !v.isFinal) {
         setter = true;
-        binding_static_variables_setter.add({'dart_class_name': dart_class_name, 'static_variable_name': v.name});
+        binding_static_variables_setter.add({
+          'dart_class_name': dart_class_name,
+          'static_variable_name': v.name
+        });
       }
 
       if (setter) {
@@ -688,7 +741,9 @@ Future<List<BindingDefine>> generateWrappers(
         'have_function_params': have_function_params,
       };
     }
-    var empty_instance_binding = !have_instance_setter && !have_instance_getter && binding_constructors.isEmpty;
+    var empty_instance_binding = !have_instance_setter &&
+        !have_instance_getter &&
+        binding_constructors.isEmpty;
     if (!empty_instance_binding) {
       have_instance_member = {
         'dart_class_name': dart_class_name,
@@ -714,7 +769,8 @@ Future<List<BindingDefine>> generateWrappers(
 
     var empty_ht_class = ht_fields.isEmpty;
     if (!empty_ht_class) {
-      ht_classes.add({'dart_class_name': dart_class_name, 'field_declaration': ht_fields});
+      ht_classes.add(
+          {'dart_class_name': dart_class_name, 'field_declaration': ht_fields});
     }
   }
 
@@ -746,6 +802,16 @@ Future<List<BindingDefine>> generateWrappers(
   };
 
   var fileName = path.basenameWithoutExtension(filePath);
+  if (library == ExportType.Package) {
+    var rel = path.relative(filePath, from: relPath);
+    print('rel $rel');
+    var seperator = Platform.isWindows ? '\\' : '/';
+    fileName = path.dirname(rel).replaceAll(seperator, '-') +
+        '-' +
+        path.basenameWithoutExtension(rel);
+    print('fil $fileName');
+  }
+
   late String dartPath;
   late String htPath;
   late String dirName;
@@ -810,7 +876,8 @@ Future<Map<String, dynamic>?> generate(String path) async {
         final sdkVersionString = Platform.version.split(' ').first;
         var parseResult = parseFile(
             path: path,
-            featureSet: FeatureSet.fromEnableFlags2(sdkLanguageVersion: Version.parse(sdkVersionString), flags: []),
+            featureSet: FeatureSet.fromEnableFlags2(
+                sdkLanguageVersion: Version.parse(sdkVersionString), flags: []),
             throwIfDiagnostics: false);
         var compilationUnit = parseResult.unit;
         //遍历AST

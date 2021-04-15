@@ -1,6 +1,6 @@
 name: hetu_binding_generator
 description: A binding-code generator for Hetu script language. You can generate glue codes from Flutter/Dart library, your own codes, or any packages. Then you can use them in the Hetu script.
-version: 1.0.10
+version: 1.0.11
 homepage: https://github.com/hetu-script/hetu-script-autobinding
 
 environment:
