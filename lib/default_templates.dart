@@ -41,7 +41,7 @@ class {{enum_name}}AutoBinding extends HTExternalClass {
         return {{enum_name}}.{{enum_constant_name}};
       {{/binding_enums}}
       default:
-        throw HTErrorUndefined(varName);
+        throw HTError.undefined(varName);
     }
   }
 
@@ -49,14 +49,14 @@ class {{enum_name}}AutoBinding extends HTExternalClass {
   @override
   dynamic instanceMemberGet(dynamic instance, String varName) {
     switch (varName) {
-      case 'typeid':
-        return HTTypeId('{{enum_name}}');
+      case 'runtimeType':
+        return HTType('{{enum_name}}');
       case 'index':
         return (instance as {{enum_name}}).index;
       case 'toString':
         return ({positionalArgs, namedArgs, typeArgs}) => (instance as {{enum_name}}).toString();
       default:
-        throw HTErrorUndefined(varName);
+        throw HTError.undefined(varName);
     }
   }
 }
@@ -90,7 +90,7 @@ class {{dart_class_name}}AutoBinding extends HTExternalClass {
         return {{dart_class_name}}.{{static_variable_name}};
       {{/binding_static_variables_getter}}
       default:
-        throw HTErrorUndefined(varName);
+        throw HTError.undefined(varName);
     }
   }
   {{/have_class_fetch}}
@@ -103,7 +103,7 @@ class {{dart_class_name}}AutoBinding extends HTExternalClass {
         return {{dart_class_name}}.{{static_variable_name}} = value;
       {{/binding_static_variables_setter}}
       default:
-        throw HTErrorUndefined(varName);
+        throw HTError.undefined(varName);
     }
   }
   {{/have_class_assign}}
@@ -143,8 +143,8 @@ extension {{dart_class_name}}Binding on {{dart_class_name}} {
   {{#have_instance_getter}}
   dynamic htFetch(String varName) {
     switch (varName) {
-      case 'typeid':
-        return HTTypeId('{{dart_class_name}}');
+      case 'runtimeType':
+        return HTType('{{dart_class_name}}');
     {{#getter_case}}
       case '{{instance_identifier}}':
         return {{instance_identifier}};
@@ -157,7 +157,7 @@ extension {{dart_class_name}}Binding on {{dart_class_name}} {
         return ({positionalArgs, namedArgs, typeArgs}) => this.{{method_identifier}}{{instance_method_invoke_params}};
     {{/method_case}}
       default:
-        throw HTErrorUndefined(varName);
+        throw HTError.undefined(varName);
     }
   }
   {{/have_instance_getter}}
@@ -171,7 +171,7 @@ extension {{dart_class_name}}Binding on {{dart_class_name}} {
         break;
       {{/setter_case}}
       default:
-        throw HTErrorUndefined(varName);
+        throw HTError.undefined(varName);
     }
   }
   {{/have_instance_setter}}
