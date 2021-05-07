@@ -1,3 +1,6 @@
+## 1.0.12
+- Add: Export static methods and variables even the class is abstract.
+
 ## 1.0.11
 - Breaking Changes: Exported the .g.dart files with path in their names when generating from packages, due to repeated file names in different folders.
 

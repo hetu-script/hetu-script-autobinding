@@ -565,11 +565,12 @@ Future<List<BindingDefine>> generateWrappers(
       print('class pass: [$dart_class_name] contains undefined default values');
       continue;
     }
-
+    var onlyExportStatic = false;
     if (have_constructors && binding_constructors.isEmpty && !staticClassOnly) {
-      //有构造函数，但是没有可以导出的，并且不是静态专用类，不导出此类。
-      print('class pass: [$dart_class_name] no constructors & not static only');
-      continue;
+      //有构造函数，但是没有可以导出的(无法创建对象，比如抽象类)，并且包含对象成员变量或方法，只导出静态方法和变量。
+      print(
+          'class static only: [$dart_class_name] no constructors export & not static only');
+      onlyExportStatic = true;
     }
     if (!have_constructors && !kclass.isAbstract) {
       //一个构造函数都没有，绑定一个默认的
@@ -585,7 +586,7 @@ Future<List<BindingDefine>> generateWrappers(
     var instanceVarGetterList = [];
     var instanceVarSetterList = [];
     var instanceMethodList = [];
-    if (!staticClassOnly) {
+    if (!staticClassOnly && !onlyExportStatic) {
       kclass.instanceVars.forEach((iv) {
         iv = iv as FieldVarDefine;
         if (iv.isPrivate || iv.isProtected || iv.isDeprecated) {
