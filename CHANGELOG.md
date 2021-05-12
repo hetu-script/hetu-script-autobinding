@@ -1,3 +1,6 @@
+## 1.0.13
+- Fix: Function type without return type will export as dynamic.
+
 ## 1.0.12
 - Add: Export static methods and variables even the class is abstract.
 

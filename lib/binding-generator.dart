@@ -493,7 +493,9 @@ Future<List<BindingDefine>> generateWrappers(
             'function_type_name': element.name,
             'function_args': element.getParams(),
             'function_return_type':
-                element.returnType == 'void' ? '' : ' as ${element.returnType}',
+                (element.returnType == 'void' || element.returnType == 'null')
+                    ? ''
+                    : ' as ${element.returnType}',
             'function_invoke_args': element.getInvokeParams(),
           });
         }
