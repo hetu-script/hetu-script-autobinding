@@ -332,7 +332,7 @@ Future<List<BindingDefine>> generateWrappers(
       }
       if (!exp) {
         //有泛型的类不支持导出，需要用户自己实现不带泛型的类然后标记导出
-        print('class pass: [${kclass.name}] generic unsupported');
+        print('class pass: [${kclass.name}] no generic specified, pass');
         continue;
       }
     }

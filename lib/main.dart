@@ -7,7 +7,7 @@ import 'package:path/path.dart' as path;
 import 'binding-generator.dart';
 import 'defines.dart';
 
-var version = '1.0.12';
+var version = '1.0.14';
 
 var files = <FileSystemEntity>[];
 
@@ -485,7 +485,13 @@ void main(args) {
     scriptOutput = path.absolute(scriptOutput);
   }
   var flutterPath = results['flutter-lib-path'];
-  var packagePaths = results['package-lib-paths'];
+  var packagePaths = results['package-lib-paths'] as List<String>;
+  var usedPackages = <String>[];
+  for (var p in packagePaths) {
+    if (p.trim() != '') {
+      usedPackages.add(p);
+    }
+  }
   var jsonPath = results['json-export'];
   if (jsonPath != null) {
     if (path.isRelative(jsonPath)) {
@@ -539,7 +545,7 @@ void main(args) {
 
   print('Begin parsing...');
   Directory(output).create(recursive: true);
-  parseBegin(userPaths, flutterPath, packagePaths, output, scriptOutput,
+  parseBegin(userPaths, flutterPath, usedPackages, output, scriptOutput,
       ignores, whitelist, generics,
       jsonPath: jsonPath);
 }
