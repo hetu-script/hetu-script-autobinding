@@ -70,10 +70,11 @@ Future<FileDefine?> generateDefines(String filePath, String? jsonPath) async {
   return FileDefine(js, filePath);
 }
 
-void fetchSuperClass(ClassDefine cls) {
+void fetchSuperClass(ClassDefine cls, {String? libName, String? relPath}) {
   if (cls.superFetched) {
     return;
   }
+  print('Fetch Super Class: ${cls.name}');
   if (cls.mixinNames.isNotEmpty) {
     cls.mixinNames.forEach((element) {
       var mixin = mixinMap[element];
@@ -113,7 +114,7 @@ void fetchSuperClass(ClassDefine cls) {
     var sp = cls.superClass!;
     if (!sp.superFetched && !sp.ignored) {
       //父类还没有获取过接口，递归调用
-      fetchSuperClass(sp);
+      fetchSuperClass(sp, libName: libName, relPath: relPath);
     }
 
     //将父类成员变量、成员方法、Getter、Setter都拷贝到子类里
@@ -145,11 +146,12 @@ void fetchSuperClass(ClassDefine cls) {
       if (!exist) {
         //子类没有，复制
         cls.instanceMethods.add(v);
-        // print('Class [${cls.name}] add method ${v.name}');
+        print('Class [${cls.name}] add method ${v.name}');
 
         //基础了父类的方法，也需要集成因extension而新import的文件
         sp.file.extImports.forEach((ex) {
           if (!cls.file.extImports.contains(ex)) {
+            print('Class [${cls.name} add import ${ex.uri}');
             cls.file.extImports.add(ex);
           }
         });
@@ -159,31 +161,40 @@ void fetchSuperClass(ClassDefine cls) {
   //添加extensions
   if (extensionMap.containsKey(cls.name)) {
     var exts = extensionMap[cls.name];
+    print(
+        'Class ${cls.name} needs extension: ${exts?.map((e) => e.name).join(",")}');
     exts?.forEach((e) {
       e.instanceMethods.forEach((m) {
         var idx =
-            cls.instanceMethods.indexWhere((element) => element.name == m.name);
+            cls.instanceMethods.indexWhere((method) => method.name == m.name);
         if (idx != -1) {
           cls.instanceMethods.removeAt(idx);
         }
         cls.instanceMethods.add(m);
-        var importUri = e.fileDefine.filePath;
-        var url;
-        if (customImportMap.containsKey(importUri)) {
-          url = customImportMap[importUri] as String;
-          if (url == '') {
-            //用户文件
-            url = path.relative(cls.file.filePath, from: importUri);
-          } else {
-            //库文件
-          }
-          url = '\'$url\'';
-        }
-        if (cls.file.extImports.indexWhere((element) => element.uri == url) ==
-            -1) {
-          cls.file.extImports.add(ImportDefine({'id': url, 'prefix': null}));
-        }
       });
+
+      var importUri = e.fileDefine.filePath;
+      print('\textension file: $importUri');
+      var url;
+      if (customImportMap.containsKey(importUri)) {
+        url = customImportMap[importUri] as String;
+        if (url == '') {
+          //用户文件
+          url = path.relative(cls.file.filePath, from: importUri);
+        } else {
+          //库文件
+        }
+        url = '\'$url\'';
+      } else {
+        if (relPath != null && libName != null) {
+          url = path.relative(importUri, from: relPath);
+          url = '\'package:$libName/$url\'';
+        }
+      }
+      if (cls.file.extImports.indexWhere((import) => import.uri == url) == -1) {
+        print('Class ${cls.name} adds extension import: $url');
+        cls.file.extImports.add(ImportDefine({'id': url, 'prefix': null}));
+      }
     });
   }
 
@@ -201,12 +212,15 @@ Future<List<BindingDefine>> generateWrappers(
   var bindingExternals = <String>[];
   var bindingFunctionTypes = <Map<String, dynamic>>[];
   var bindings = <BindingDefine>[];
+  if (library == ExportType.Package) {
+    print('package libName: $libName relPath: $relPath');
+  }
 
   fd.classes.forEach((element) {
-    fetchSuperClass(element);
+    fetchSuperClass(element, libName: libName, relPath: relPath);
   });
   fd.privateClasses.forEach((element) {
-    fetchSuperClass(element);
+    fetchSuperClass(element, libName: libName, relPath: relPath);
   });
 
   if (fd.partOf != null) {
@@ -239,11 +253,11 @@ Future<List<BindingDefine>> generateWrappers(
           var idx = filePath.indexOf('/lib/');
           var p = filePath.substring(idx + 5);
           var u = '\'package:$libName/$p\'';
-          print(p);
           if (file_imports.isEmpty ||
               file_imports
                       .indexWhere((element) => element['import_uri'] == u) ==
                   -1) {
+            print('package add import: $u');
             file_imports.add({
               'import_uri': u,
               'import_prefix': '',
@@ -256,6 +270,11 @@ Future<List<BindingDefine>> generateWrappers(
   fd.extImports.forEach((element) {
     var uri = element.uri;
     if (uri != null) {
+      // if (path.isRelative(uri)) {
+      //   if (library == ExportType.Package) {
+
+      //   }
+      // }
       file_imports.add({
         'import_uri': uri,
         'import_prefix': element.prefix == null ? '' : 'as ${element.prefix}',

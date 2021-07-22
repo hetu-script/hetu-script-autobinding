@@ -1,3 +1,6 @@
+## 1.0.15
+- Fix: Missing Extension import files from packages.
+
 ## 1.0.14
 - Fix: Empty package name bug.
 

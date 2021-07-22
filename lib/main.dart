@@ -7,7 +7,7 @@ import 'package:path/path.dart' as path;
 import 'binding-generator.dart';
 import 'defines.dart';
 
-var version = '1.0.14';
+var version = '1.0.15';
 
 var files = <FileSystemEntity>[];
 
@@ -143,6 +143,7 @@ Future<List<FileDefine>> parseDartFiles(
           children.clear();
         }
       });
+ 
     }
   }
   return fileDefines;
@@ -172,6 +173,7 @@ void parseBegin(
   } else {
     var fileDefines = await parseDartFiles(jsonPath, ignores);
     for (var p in fileDefines) {
+      print('generating wrappers [user]: ${p.filePath}');
       var b = await generateWrappers(p, exportPath, scriptExportPath,
           library: ExportType.UserDefine, generics: generics);
       allBindings.addAll(b);
@@ -198,6 +200,7 @@ void parseBegin(
 
       var fileDefines = await parseDartFiles(jsonPath, ignores);
       for (var p in fileDefines) {
+        print('generating wrappers [package]: ${p.filePath}');
         var b = await generateWrappers(p, exportPath, scriptExportPath,
             library: ExportType.Package,
             libName: packageName,
