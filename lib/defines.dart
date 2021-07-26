@@ -131,6 +131,8 @@ class ExtensionDefine {
   late final String superName;
   late final List<MethodDefine> instanceMethods;
   late final FileDefine fileDefine;
+  late final String import;
+  bool ignored = false;
 
   ExtensionDefine(Map<String, dynamic> json, this.fileDefine) {
     parse(json);
@@ -723,7 +725,8 @@ class BindingDefine {
   final List<String> externalVars;
   final List<Map<String, dynamic>> funcTypeDefs;
 
-  BindingDefine(this.filePath, this.htFilePath, this.externalVars, this.funcTypeDefs);
+  BindingDefine(
+      this.filePath, this.htFilePath, this.externalVars, this.funcTypeDefs);
 }
 
 class FunctionTypeDefine {

@@ -1,3 +1,9 @@
+## 1.0.17
+- Add: Export private class instance interface too for library generated class instances.
+
+## 1.0.16
+- Add: Ignoring argument affects Extensions as well.
+
 ## 1.0.15
 - Fix: Missing Extension import files from packages.
 

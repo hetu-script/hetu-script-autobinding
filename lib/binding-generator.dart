@@ -175,22 +175,20 @@ void fetchSuperClass(ClassDefine cls, {String? libName, String? relPath}) {
 
       var importUri = e.fileDefine.filePath;
       print('\textension file: $importUri');
-      var url;
-      if (customImportMap.containsKey(importUri)) {
-        url = customImportMap[importUri] as String;
-        if (url == '') {
-          //用户文件
-          url = path.relative(cls.file.filePath, from: importUri);
-        } else {
-          //库文件
-        }
-        url = '\'$url\'';
-      } else {
-        if (relPath != null && libName != null) {
-          url = path.relative(importUri, from: relPath);
-          url = '\'package:$libName/$url\'';
-        }
-      }
+      var url = e.import;
+      // if (customImportMap.containsKey(importUri)) {
+      //   url = customImportMap[importUri] as String;
+      //   if (url == '') {
+      //     //用户文件
+      //     url = path.relative(cls.file.filePath, from: importUri);
+      //   } else {
+      //     //库文件
+      //   }
+      //   url = '\'$url\'';
+      // } else {
+      //   url = e.import;
+      // }
+      print('import: $url');
       if (cls.file.extImports.indexWhere((import) => import.uri == url) == -1) {
         print('Class ${cls.name} adds extension import: $url');
         cls.file.extImports.add(ImportDefine({'id': url, 'prefix': null}));
@@ -207,6 +205,7 @@ Future<List<BindingDefine>> generateWrappers(
     String? libName,
     String? relPath,
     List<String> generics = const <String>[]}) async {
+  print('begin to generate ${fd.filePath}');
   var filePath = fd.filePath;
   var file_imports = [];
   var bindingExternals = <String>[];
@@ -217,9 +216,11 @@ Future<List<BindingDefine>> generateWrappers(
   }
 
   fd.classes.forEach((element) {
+    print('\tpreparing class ${element.name}');
     fetchSuperClass(element, libName: libName, relPath: relPath);
   });
   fd.privateClasses.forEach((element) {
+    print('\tpreparing private class ${element.name}');
     fetchSuperClass(element, libName: libName, relPath: relPath);
   });
 
@@ -383,9 +384,6 @@ Future<List<BindingDefine>> generateWrappers(
 
     void checkIdentifier(String id, Set<String> added,
         List<Map<String, dynamic>> privateDefines) {
-      if (id == '_TextSelectionToolbarContainer') {
-        print('111');
-      }
       var isPrefixedId = id.contains('.');
 
       if (isPrefixedId) {
@@ -526,12 +524,13 @@ Future<List<BindingDefine>> generateWrappers(
       //一个构造函数都没定义，会添加一个默认的，所以不是静态专用类
       staticClassOnly = false;
     } else {
-      for (var ctor in kclass.constructors) {
-        if (!ctor.isPrivate) {
-          //有非私有构造函数，可以生成instance
-          staticClassOnly = false;
-        }
-      }
+      // for (var ctor in kclass.constructors) {
+      //   if (!ctor.isPrivate) {
+      //     //有非私有构造函数，可以生成instance
+      //     staticClassOnly = false;
+      //   }
+      // }    
+      staticClassOnly = false;
     }
     for (var ctor in kclass.constructors) {
       //确实有构造函数
@@ -587,12 +586,12 @@ Future<List<BindingDefine>> generateWrappers(
       continue;
     }
     var onlyExportStatic = false;
-    if (have_constructors && binding_constructors.isEmpty && !staticClassOnly) {
-      //有构造函数，但是没有可以导出的(无法创建对象，比如抽象类)，并且包含对象成员变量或方法，只导出静态方法和变量。
-      print(
-          'class static only: [$dart_class_name] no constructors export & not static only');
-      onlyExportStatic = true;
-    }
+    // if (have_constructors && binding_constructors.isEmpty && !staticClassOnly) {
+    //   //有构造函数，但是没有可以导出的(无法创建对象，比如抽象类)，并且包含对象成员变量或方法，只导出静态方法和变量。
+    //   print(
+    //       'class static only: [$dart_class_name] no constructors export & not static only');
+    //   onlyExportStatic = true;
+    // }
     if (!have_constructors && !kclass.isAbstract) {
       //一个构造函数都没有，绑定一个默认的
       binding_constructors.add({
@@ -607,10 +606,15 @@ Future<List<BindingDefine>> generateWrappers(
     var instanceVarGetterList = [];
     var instanceVarSetterList = [];
     var instanceMethodList = [];
+    if (dart_class_name == 'ScaffoldFeatureController') {
+      print('111');
+    }
     if (!staticClassOnly && !onlyExportStatic) {
       kclass.instanceVars.forEach((iv) {
         iv = iv as FieldVarDefine;
         if (iv.isPrivate || iv.isProtected || iv.isDeprecated) {
+          print(
+              'instance var passed: ${iv.name} private: ${iv.isPrivate} protected: ${iv.isProtected} deprecated: ${iv.isDeprecated}');
           return;
         }
         var setter = false;
@@ -632,6 +636,8 @@ Future<List<BindingDefine>> generateWrappers(
       });
       kclass.instanceMethods.forEach((m) {
         if (m.isPrivate || m.isOperator || m.isProtected || m.isDeprecated) {
+          print(
+              'instance method passed: ${m.name} private: ${m.isPrivate} protected: ${m.isProtected} deprecated: ${m.isDeprecated} operator: ${m.isOperator}');
           return;
         }
         m.params.forEach((p) {
@@ -663,6 +669,9 @@ Future<List<BindingDefine>> generateWrappers(
           ht_fields.add({'field': 'fun ${m.name}'});
         }
       });
+    } else {
+      print(
+          '!staticClassOnly && !onlyExportStatic check: $staticClassOnly $onlyExportStatic');
     }
 
     have_instance_getter =
@@ -745,7 +754,10 @@ Future<List<BindingDefine>> generateWrappers(
       have_function_params = {'function_bindings': function_bindings};
     }
 
-    var empty_class_binding = !have_class_fetch && !have_class_assign;
+    var empty_instance_binding = !have_instance_setter &&
+        !have_instance_getter &&
+        binding_constructors.isEmpty;
+    var empty_class_binding = !have_class_fetch && !have_class_assign && have_function_params == null && empty_instance_binding;
     var have_class_member;
     var have_instance_member;
     if (!empty_class_binding) {
@@ -762,10 +774,9 @@ Future<List<BindingDefine>> generateWrappers(
         'have_instance_setter': have_instance_setter,
         'have_function_params': have_function_params,
       };
+    } else {
+      print('empty class binding for class: $dart_class_name');
     }
-    var empty_instance_binding = !have_instance_setter &&
-        !have_instance_getter &&
-        binding_constructors.isEmpty;
     if (!empty_instance_binding) {
       have_instance_member = {
         'dart_class_name': dart_class_name,
@@ -775,6 +786,8 @@ Future<List<BindingDefine>> generateWrappers(
         'method_case': instanceMethodList,
         'setter_case': instanceVarSetterList,
       };
+    } else {
+      print('empty instance binding for class instance: $dart_class_name');
     }
 
     var classMap = {};
@@ -787,16 +800,21 @@ Future<List<BindingDefine>> generateWrappers(
 
     if (classMap.isNotEmpty) {
       all_classes.add(classMap);
+      print('class: $dart_class_name added to bounding export');
+    } else {
+      print(
+          'class: $dart_class_name not added to bounding export, due to empty class content');
     }
 
     var empty_ht_class = ht_fields.isEmpty;
     if (!empty_ht_class) {
       ht_classes.add(
           {'dart_class_name': dart_class_name, 'field_declaration': ht_fields});
-    }
+    } else {}
   }
 
   if (all_classes.isEmpty && have_enums.isEmpty) {
+    print('file ${fd.filePath} is not exported due to empty classes and enums');
     return [];
   }
 

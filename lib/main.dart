@@ -7,7 +7,7 @@ import 'package:path/path.dart' as path;
 import 'binding-generator.dart';
 import 'defines.dart';
 
-var version = '1.0.15';
+var version = '1.0.17';
 
 var files = <FileSystemEntity>[];
 
@@ -65,8 +65,8 @@ var extensionMap = <String, List<ExtensionDefine>>{};
 var libraryFileMap = <String, FileDefine>{};
 var mixinMap = <String, MixinDefine>{};
 
-Future<List<FileDefine>> parseDartFiles(
-    String? jsonPath, List<String> ignores) async {
+Future<List<FileDefine>> parseDartFiles(String? jsonPath, List<String> ignores,
+    {String? libName, String? relPath}) async {
   //文件读取完后将父类赋值给子类
   var fileDefines = <FileDefine>[];
   for (var p in files) {
@@ -97,8 +97,20 @@ Future<List<FileDefine>> parseDartFiles(
       });
 
       define.extensions.forEach((element) {
+        if (ignoredClasses.contains(element.name) ||
+            ignoredClasses.contains('-all-')) {
+          element.ignored = true;
+          print('ignored: ${p.path} matched extension: ${element.name}');
+          return;
+        }
         extensionMap[element.superName] ??= [];
         extensionMap[element.superName]!.add(element);
+
+        //为extension添加import路径
+        if (libName != null && relPath != null) {
+          var url = path.relative(element.fileDefine.filePath, from: relPath);
+          element.import = '\'package:$libName/$url\'';
+        }
       });
 
       define.mixins.forEach((element) {
@@ -143,13 +155,12 @@ Future<List<FileDefine>> parseDartFiles(
           children.clear();
         }
       });
- 
     }
   }
   return fileDefines;
 }
 
-var customImportMap = <String, String>{};
+// var customImportMap = <String, String>{};
 
 void parseBegin(
     List<String> userPaths,
@@ -177,7 +188,7 @@ void parseBegin(
       var b = await generateWrappers(p, exportPath, scriptExportPath,
           library: ExportType.UserDefine, generics: generics);
       allBindings.addAll(b);
-      customImportMap[p.filePath] = '';
+      // customImportMap[p.filePath] = '';
     }
   }
 
@@ -198,7 +209,8 @@ void parseBegin(
       }
       print('parsing package: [$packageName]');
 
-      var fileDefines = await parseDartFiles(jsonPath, ignores);
+      var fileDefines = await parseDartFiles(jsonPath, ignores,
+          libName: packageName, relPath: a);
       for (var p in fileDefines) {
         print('generating wrappers [package]: ${p.filePath}');
         var b = await generateWrappers(p, exportPath, scriptExportPath,
@@ -210,7 +222,7 @@ void parseBegin(
         var seperator = Platform.isWindows ? '\\' : '/';
         var dirToFileName = path.dirname(relPath).replaceAll(seperator, '-');
 
-        customImportMap[p.filePath] = 'package:$packageName/$packageName.dart';
+        // customImportMap[p.filePath] = 'package:$packageName/$packageName.dart';
         if (b.isNotEmpty) {
           allBindings.addAll(b);
           fileEntries.add({

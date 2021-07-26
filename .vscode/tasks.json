@@ -1,17 +1,25 @@
 {
-	"version": "2.0.0",
-	"tasks": [
+    "version": "2.0.0",
+    "tasks": [
         {
             "label": "pre-build",
             "command": "./make_default_templates.sh",
             "type": "shell"
         },
-		{
+        {
+            "label": "run",
+            "command": "./run.sh",
+            "type": "shell",
+            "group": "build",
+            "problemMatcher": [],
+        },
+        {
             "label": "build",
             "command": "./build.sh",
             "type": "shell",
-			"dependsOn": "pre-build",
+            "group": "build",
+            "dependsOn": "pre-build",
             "problemMatcher": [],
         },
-	]
+    ]
 }
