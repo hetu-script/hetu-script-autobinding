@@ -611,7 +611,7 @@ Future<List<BindingDefine>> generateWrappers(
     }
     if (!staticClassOnly && !onlyExportStatic) {
       kclass.instanceVars.forEach((iv) {
-        iv = iv as FieldVarDefine;
+        iv = iv;
         if (iv.isPrivate || iv.isProtected || iv.isDeprecated) {
           print(
               'instance var passed: ${iv.name} private: ${iv.isPrivate} protected: ${iv.isProtected} deprecated: ${iv.isDeprecated}');
