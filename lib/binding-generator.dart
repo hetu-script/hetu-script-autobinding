@@ -113,8 +113,11 @@ void fetchSuperClass(ClassDefine cls, {String? libName, String? relPath}) {
   if (cls.superClass != null) {
     var sp = cls.superClass!;
     if (!sp.superFetched && !sp.ignored) {
-      //父类还没有获取过接口，递归调用
-      fetchSuperClass(sp, libName: libName, relPath: relPath);
+      //父类可能和子类具有相同的类名，这种情况暂时不支持
+      if (sp.name != cls.name) {
+        //父类还没有获取过接口，递归调用
+        fetchSuperClass(sp, libName: libName, relPath: relPath);
+      }
     }
 
     //将父类成员变量、成员方法、Getter、Setter都拷贝到子类里
@@ -529,7 +532,7 @@ Future<List<BindingDefine>> generateWrappers(
       //     //有非私有构造函数，可以生成instance
       //     staticClassOnly = false;
       //   }
-      // }    
+      // }
       staticClassOnly = false;
     }
     for (var ctor in kclass.constructors) {
@@ -757,7 +760,10 @@ Future<List<BindingDefine>> generateWrappers(
     var empty_instance_binding = !have_instance_setter &&
         !have_instance_getter &&
         binding_constructors.isEmpty;
-    var empty_class_binding = !have_class_fetch && !have_class_assign && have_function_params == null && empty_instance_binding;
+    var empty_class_binding = !have_class_fetch &&
+        !have_class_assign &&
+        have_function_params == null &&
+        empty_instance_binding;
     var have_class_member;
     var have_instance_member;
     if (!empty_class_binding) {
