@@ -1,43 +1,35 @@
 import 'package:hetu_script/hetu_script.dart';
 import 'ht_library_script_binding.dart';
+import 'package:hetu_script/binding.dart';
+
 {{#user_api_import}}
 import {{import_file}};
 {{/user_api_import}}
 
 class HetuScriptBinding extends HetuLibraryScriptBinding {
   @override
-  void loadAutoBindingFunction(Hetu interpreter) {
-    super.loadAutoBindingFunction(interpreter);
+  void loadAutoBindingFunction(Hetu hetu) {
+    super.loadAutoBindingFunction(hetu);
     var functionWrappers = <String, HTExternalFunctionTypedef>{};
     {{#function_defs}}
     functionWrappers.addAll({{dart_class_name}}AutoBinding.functionWrapper());
     {{/function_defs}}
     functionWrappers.forEach((key, value) {
-      interpreter.bindExternalFunctionType(key, value);
+        hetu.interpreter.bindExternalFunctionType(key, value);
     });
   }
 
   @override
-  void loadAutoBinding(Hetu interpreter) {
-    super.loadAutoBinding(interpreter);
-var bindings = [
+  void loadAutoBinding(Hetu hetu) {
+    super.loadAutoBinding(hetu);
+    var bindings = [
       {{#user_bindings}}
       {{prefix}}{{dart_class_name}}AutoBinding(),
       {{/user_bindings}}
     ];
-    bindings.forEach((value) {
-      interpreter.bindExternalClass(value);
-    });
+    for (var value in bindings) {
+        hetu.interpreter.bindExternalClass(value);
+    }
   }
 
-  @override
-  Future loadAutoBindingScripts(Hetu interpreter, String path) {
-    var future = super.loadAutoBindingScripts(interpreter, path);
-    var futures = <Future>[];
-    futures.add(future);
-    {{#ht_user_bindings}}
-    futures.add(interpreter.import(path + '/{{ht_file_relative_path}}'));
-    {{/ht_user_bindings}}
-    return Future.wait(futures);
-  }
 }

@@ -1,3 +1,57 @@
+const _hetuKeywords = [
+  'null',
+  'true',
+  'false',
+  'void',
+  'type',
+  'import',
+  'export',
+  'from',
+  'any',
+  'unknown',
+  'never',
+  'var',
+  'final',
+  'const',
+  'def',
+  'delete',
+  'typeof',
+  'namespace',
+  'class',
+  'enum',
+  'fun',
+  'struct',
+  'this',
+  'super',
+  'abstract',
+  'override',
+  'external',
+  'static',
+  'extends',
+  'implements',
+  'with',
+  'new',
+  'construct',
+  'factory',
+  'get',
+  'set',
+  'async',
+  'await',
+  'break',
+  'continue',
+  'return',
+  'for',
+  'in',
+  'of',
+  'if',
+  'else',
+  'while',
+  'do',
+  'when',
+  'is',
+  'as'
+];
+
 class FileDefine {
   late final String filePath;
   late final List<FieldVarDefine> globalVars;
@@ -89,7 +143,7 @@ class FileDefine {
             if (fieldType != null && fieldType.endsWith('?')) {
               fieldType = fieldType.substring(0, fieldType.length - 1);
             }
-            //variable list
+//variable list
             if (vars != null) {
               for (Map<String, dynamic> value in vars) {
                 var v = FieldVarDefine(value,
@@ -208,7 +262,7 @@ class ClassDefine {
       mixinNames.addAll(mixins);
     }
 
-    // var missingTypeVars = [];
+// var missingTypeVars = [];
     var meta = json['meta'] as List;
     meta.forEach((m) {
       annotations.add(m['annotation']);
@@ -227,9 +281,9 @@ class ClassDefine {
             if (fieldType != null && fieldType.endsWith('?')) {
               fieldType = fieldType.substring(0, fieldType.length - 1);
             }
-            // print('fieldType: $fieldType');
+// print('fieldType: $fieldType');
             var vars = fieldList['vars'] as List;
-            //variable list
+//variable list
             for (Map<String, dynamic> value in vars) {
               var v = FieldVarDefine(value,
                   isStatic: isStatic,
@@ -263,7 +317,7 @@ class ClassDefine {
       }
     }
 
-    //对this参数进行type赋值
+//对this参数进行type赋值
     FieldVarDefine findVar(String name) {
       return instanceVars.singleWhere((element) => element.name == name);
     }
@@ -271,7 +325,7 @@ class ClassDefine {
     void checkThisType(List<ParamDefine> params) {
       params.forEach((element) {
         if (element.thisPeriod) {
-          //在定义中寻找
+//在定义中寻找
           var v = findVar(element.name!);
           element.type = v.type;
         }
@@ -287,8 +341,8 @@ class ClassDefine {
 class FieldDefine {
   late final String name;
 
-  // late final init;
-  // late final String type;
+// late final init;
+// late final String type;
 
   FieldDefine(Map<String, dynamic> json) {
     parse(json);
@@ -296,28 +350,29 @@ class FieldDefine {
 
   void parse(Map<String, dynamic> json) {
     name = json['name'];
-    //暂时用不上type 和 init
-    // init = json['init'];
-    // if (init != null) {
-    //   var t = init['type'];
-    //   if (t != null){
-    //     type = t;
-    //   }
-    //   t = init['_'];
-    //   if (t != null) {
-    //     switch (t) {
-    //       case 'ListLiteral':
-    //
-    //       default:
-    //         assert(false, '$t Not Handled!');
-    //     }
-    //   }
-    // }
+//暂时用不上type 和 init
+// init = json['init'];
+// if (init != null) {
+//   var t = init['type'];
+//   if (t != null){
+//     type = t;
+//   }
+//   t = init['_'];
+//   if (t != null) {
+//     switch (t) {
+//       case 'ListLiteral':
+//
+//       default:
+//         assert(false, '$t Not Handled!');
+//     }
+//   }
+// }
   }
 }
 
 class FieldVarDefine {
   late final String name;
+  late final String realName;
   String? type;
   String? value;
   late final bool isFinal;
@@ -341,7 +396,13 @@ class FieldVarDefine {
   }
 
   void parse(Map<String, dynamic> json) {
-    name = json['name'];
+    final _name = json['name'];
+    realName = _name;
+    if (_hetuKeywords.contains(_name)) {
+      name = '${_name}_alias';
+    } else {
+      name = _name;
+    }
     var init = json['init'];
     isFinal = json['final?'];
     isConst = json['const?'];
@@ -428,24 +489,22 @@ class ParamDefine {
 }
 
 String checkWrapValue(String v, String? type) {
+  // return v;
   String? wrapContainerType;
   if (type?.startsWith('List<') ?? false) {
     wrapContainerType = type!;
     if (wrapContainerType.endsWith('?')) {
-      wrapContainerType =
-          wrapContainerType.substring(0, wrapContainerType.length - 1);
+      wrapContainerType = 'List';
     }
   } else if (type?.startsWith('Map<') ?? false) {
     wrapContainerType = type!;
     if (wrapContainerType.endsWith('?')) {
-      wrapContainerType =
-          wrapContainerType.substring(0, wrapContainerType.length - 1);
+      wrapContainerType = 'Map';
     }
   } else if (type?.startsWith('Iterable<') ?? false) {
     wrapContainerType = type!.replaceAll('Iterable', '');
     if (wrapContainerType.endsWith('?')) {
-      wrapContainerType =
-          wrapContainerType.substring(0, wrapContainerType.length - 1);
+      wrapContainerType = 'Iterable';
     }
     return '$v.cast$wrapContainerType()';
   }
@@ -457,6 +516,7 @@ String checkWrapValue(String v, String? type) {
 
 class ConstructorDefine {
   late final String? name;
+  late final String? realName;
   late final List<ParamDefine> params;
   String? paramRaw;
   late final bool isFactory;
@@ -472,7 +532,14 @@ class ConstructorDefine {
   }
 
   void parse(Map<String, dynamic> json) {
-    name = json['name'];
+    final _name = json['name'];
+    realName = _name;
+    if (_hetuKeywords.contains(_name)) {
+      name = '${_name}_alias';
+    } else {
+      name = _name;
+    }
+
     paramRaw = json['params_raw'];
     params = [];
     isFactory = json['factory?'];
@@ -483,6 +550,22 @@ class ConstructorDefine {
       var v = ParamDefine(param);
       params.add(v);
     });
+  }
+
+  String getConstructorParams() {
+    final allParams = <String>[];
+    var namedParams = [];
+    params.forEach((p) {
+      if (p.isPositional) {
+        allParams.add(p.name!);
+      } else {
+        namedParams.add(p.name!);
+      }
+    });
+    if (namedParams.isNotEmpty) {
+      allParams.add('[${namedParams.join(', ')}]');
+    }
+    return '(${allParams.join(', ')})';
   }
 
   String getInvokeParam() {
@@ -542,6 +625,7 @@ class FunctionDefine {
 
 class MethodDefine {
   late final String name;
+  late final String realName;
   late final String? returnType;
   late final bool generic;
   late final List<ParamDefine> params;
@@ -565,7 +649,13 @@ class MethodDefine {
   }
 
   void parse(Map<String, dynamic> json) {
-    name = json['name'];
+    final _name = json['name'];
+    realName = _name;
+    if (_hetuKeywords.contains(_name)) {
+      name = '${_name}_alias';
+    } else {
+      name = _name;
+    }
     returnType = json['ret'];
     var genericTypes = json['generic?'] ?? [];
     generic = genericTypes.isNotEmpty;
@@ -635,21 +725,25 @@ class MethodDefine {
     var index = 0;
     params.forEach((p) {
       if (p.isPositional) {
-        //顺序参数
+//顺序参数
         var value = checkWrapValue('positionalArgs[$index]', p.type);
         if (!p.isOptional) {
           allParams.add(value);
         } else {
-          //顺序可选参数
+//顺序可选参数
           allParams.add(
               'positionalArgs.length > $index ? $value : ${p.defaultValue}');
         }
         index++;
       } else {
-        //命名参数
+//命名参数
         var value = checkWrapValue('namedArgs[\'${p.name}\']', p.type);
-        allParams.add(
-            '${p.name} : namedArgs.containsKey(\'${p.name}\') ? $value : ${p.defaultValue}');
+        if (p.defaultValue == null || p.defaultValue == 'null') {
+          allParams.add('${p.name} : ${value}');
+        } else {
+          allParams.add(
+              '${p.name} : namedArgs.containsKey(\'${p.name}\') ? $value : ${p.defaultValue}');
+        }
       }
     });
     return '(${allParams.join(', ')})';
@@ -809,7 +903,7 @@ class FunctionTypeDefine {
 }
 
 class MixinDefine {
-  // late final List<FieldVarDefine> instanceVars;
+// late final List<FieldVarDefine> instanceVars;
   bool ignored = false;
   late final String name;
   late final List<MethodDefine> instanceMethods;

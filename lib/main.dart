@@ -9,7 +9,7 @@ import 'defines.dart';
 
 var version = '1.0.17';
 
-var files = <FileSystemEntity>[];
+final files = <FileSystemEntity>[];
 
 Future<List<FileSystemEntity>> dirContents(
     Directory dir, List<String> ignores, List<String> whitelist) {
@@ -110,6 +110,8 @@ Future<List<FileDefine>> parseDartFiles(String? jsonPath, List<String> ignores,
         if (libName != null && relPath != null) {
           var url = path.relative(element.fileDefine.filePath, from: relPath);
           element.import = '\'package:$libName/$url\'';
+        }else{
+          element.import = '';
         }
       });
 
@@ -180,8 +182,7 @@ void parseBegin(
     await dirContents(Directory(a), ignores, whitelist);
   }
 
-  if (files.isEmpty) {
-  } else {
+  if (!files.isEmpty) {
     var fileDefines = await parseDartFiles(jsonPath, ignores);
     for (var p in fileDefines) {
       print('generating wrappers [user]: ${p.filePath}');
@@ -219,15 +220,14 @@ void parseBegin(
             relPath: a,
             generics: generics);
         var relPath = path.relative(p.filePath, from: a);
-        var seperator = Platform.isWindows ? '\\' : '/';
-        var dirToFileName = path.dirname(relPath).replaceAll(seperator, '-');
-
+        final seperator = Platform.isWindows ? '\\' : '/';
+        var dirToFileName = path.dirname(relPath);
         // customImportMap[p.filePath] = 'package:$packageName/$packageName.dart';
         if (b.isNotEmpty) {
           allBindings.addAll(b);
           fileEntries.add({
             'import_file_name':
-                'package://$packageName-$dirToFileName-${path.basenameWithoutExtension(relPath)}.ht'
+                '$packageName$seperator$dirToFileName$seperator${path.basenameWithoutExtension(relPath)}.ht'
           });
         }
       }
@@ -300,7 +300,7 @@ void parseBegin(
 
     var dartDefines = <FileDefine>[];
     if (files.isEmpty) {
-      stdout.writeln('No file found');
+      print('No file found');
     } else {
       dartDefines = await parseDartFiles(jsonPath, ignores);
     }
@@ -311,7 +311,7 @@ void parseBegin(
 
     var flutterDefines = <FileDefine>[];
     if (files.isEmpty) {
-      stdout.writeln('No file found');
+      print('No file found');
     } else {
       flutterDefines = await parseDartFiles(jsonPath, ignores);
     }
@@ -333,7 +333,7 @@ void parseBegin(
         allBindings.addAll(b);
         fileEntries?.add({
           'import_file_name':
-              'dart://$libName/${path.basenameWithoutExtension(p.filePath)}.ht'
+              '$libName/${path.basenameWithoutExtension(p.filePath)}.ht'
         });
       }
     }
@@ -341,7 +341,7 @@ void parseBegin(
       if (value.isNotEmpty) {
         var templateVars = {'import_files': value};
         renderTemplate('template/import_entry.mustache', templateVars,
-            '$scriptExportPath/dart/$key.ht');
+            '$scriptExportPath/dart/${key.replaceAll('-', r'\')}.ht');
       }
     });
     packages.clear();
@@ -360,7 +360,7 @@ void parseBegin(
         allBindings.addAll(b);
         fileEntries?.add({
           'import_file_name':
-              'flutter://$libName/${path.basenameWithoutExtension(p.filePath)}.ht'
+              '$libName/${path.basenameWithoutExtension(p.filePath)}.ht'
         });
       }
     }
