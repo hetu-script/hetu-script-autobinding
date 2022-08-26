@@ -59,6 +59,7 @@ class RootAstVisitor extends UnifyingAstVisitor<dynamic> {
       '_': nodeType(node),
       'prefix': node.prefix?.name,
       'id': node.uri.toString(),
+      'keyword': node.keyword.toString()
     };
   }
 
@@ -123,7 +124,9 @@ class RootAstVisitor extends UnifyingAstVisitor<dynamic> {
   @override
   dynamic visitClassDeclaration(ClassDeclaration node) {
     //不关心abstract关键字
-
+    // if(node.abstractKeyword != null){
+    //   return null;
+    // }
     //私有类
     // if (Identifier.isPrivateName(node.name.name)) {
     //   return {};

@@ -24,3 +24,4 @@ gen/*
 bin/
 generate-glue-code.sh
 utils/gen/
+log.log

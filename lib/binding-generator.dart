@@ -12,6 +12,8 @@ import 'dart-visitor.dart';
 import 'default_templates.dart';
 import 'defines.dart';
 
+final seperator = Platform.isWindows ? '\\' : '/';
+
 var defaultTemplates = {
   'import_entry.mustache': import_entry,
   'dart_classes.mustache': dart_classes,
@@ -19,6 +21,7 @@ var defaultTemplates = {
   'ht_library_script_binding.mustache': ht_library_script_binding,
   'ht_script_binding.mustache': ht_script_binding,
 };
+
 enum ExportType {
   UserDefine,
   Package,
@@ -188,8 +191,8 @@ void fetchSuperClass(ClassDefine cls, {String? libName, String? relPath}) {
       // } else {
       //   url = e.import;
       // }
-      print('import: $url');
-      if (cls.file.extImports.indexWhere((import) => import.uri == url) == -1) {
+      if (cls.file.extImports.indexWhere((import) => import.uri == url) == -1 &&
+          url.isNotEmpty) {
         print('Class ${cls.name} adds extension import: $url');
         cls.file.extImports.add(ImportDefine({'id': url, 'prefix': null}));
       }
@@ -291,7 +294,7 @@ Future<List<BindingDefine>> generateWrappers(
   var ht_classes = [];
 
   for (var e in fd.enums) {
-    if (!e.annotations.contains('HTAutoBinding') &&
+    if (!e.annotations.contains('HTBinding') &&
         library == ExportType.UserDefine) {
       continue;
     }
@@ -318,7 +321,7 @@ Future<List<BindingDefine>> generateWrappers(
       print('class pass: [${kclass.name}] test only');
       continue;
     }
-    if (!kclass.annotations.contains('HTAutoBinding') &&
+    if (!kclass.annotations.contains('HTBinding') &&
         library == ExportType.UserDefine) {
       print('class pass: [${kclass.name}] user defined but not annotated');
       continue;
@@ -546,8 +549,12 @@ Future<List<BindingDefine>> generateWrappers(
       // print('add ctor: ${dart_class_name} ${ctor.name} const: ${ctor.isConst}');
       if (!staticClassOnly) {
         var constructor_name = '${ctor.name ?? ""}';
+        var real_constructor_name = '${ctor.realName ?? ""}';
         if (constructor_name != '') {
           constructor_name = '.$constructor_name';
+        }
+        if (real_constructor_name != '') {
+          real_constructor_name = '.$real_constructor_name';
         }
         ctor.params.forEach((p) {
           checkFunctionParamType(p);
@@ -572,11 +579,13 @@ Future<List<BindingDefine>> generateWrappers(
         binding_constructors.add({
           'dart_class_name': dart_class_name,
           'constructor_name': constructor_name,
+          'real_constructor_name': real_constructor_name,
           'generic_types': '',
           'constructor_invoke_params': constructor_invoke_params,
           'constructor_private_defines': constructor_private_defines
         });
 
+        // ht_fields.add({'field': 'construct ${ctor.name ?? ""}'});
         ht_fields.add({'field': 'construct ${ctor.name ?? ""}'});
       }
     }
@@ -606,9 +615,6 @@ Future<List<BindingDefine>> generateWrappers(
     var instanceVarGetterList = [];
     var instanceVarSetterList = [];
     var instanceMethodList = [];
-    if (dart_class_name == 'ScaffoldFeatureController') {
-      print('111');
-    }
     if (!staticClassOnly && !onlyExportStatic) {
       kclass.instanceVars.forEach((iv) {
         iv = iv;
@@ -618,12 +624,16 @@ Future<List<BindingDefine>> generateWrappers(
           return;
         }
         var setter = false;
-        instanceVarGetterList.add({'instance_identifier': iv.name});
+        instanceVarGetterList.add({
+          'instance_identifier': iv.name,
+          'real_instance_identifier': iv.realName
+        });
 
         if (!iv.isFinal) {
           setter = true;
           instanceVarSetterList.add({
             'instance_identifier': iv.name,
+            'real_instance_identifier': iv.realName,
             'instance_value': iv.getValue()
           });
         }
@@ -644,11 +654,17 @@ Future<List<BindingDefine>> generateWrappers(
           checkFunctionParamType(p);
         });
         if (m.isSetter) {
-          instanceVarSetterList
-              .add({'instance_identifier': m.name, 'instance_value': 'value'});
+          instanceVarSetterList.add({
+            'instance_identifier': m.name,
+            'real_instance_identifier': m.realName,
+            'instance_value': 'value'
+          });
           ht_fields.add({'field': 'set ${m.name}(value)'});
         } else if (m.isGetter) {
-          instanceVarGetterList.add({'instance_identifier': m.name});
+          instanceVarGetterList.add({
+            'instance_identifier': m.name,
+            'real_instance_identifier': m.realName,
+          });
           ht_fields.add({'field': 'get ${m.name}'});
         } else {
           var instance_method_private_defines = <Map<String, dynamic>>[];
@@ -662,6 +678,7 @@ Future<List<BindingDefine>> generateWrappers(
           });
           instanceMethodList.add({
             'method_identifier': m.name,
+            'real_method_identifier': m.realName,
             'instance_method_invoke_params': m.getInvokeParam(),
             'instance_method_private_defines': instance_method_private_defines
           });
@@ -702,19 +719,22 @@ Future<List<BindingDefine>> generateWrappers(
       if (m.isGetter) {
         binding_static_variables_getter.add({
           'dart_class_name': dart_class_name,
-          'static_variable_name': m.name
+          'static_variable_name': m.name,
+          'real_static_variable_name': m.realName,
         });
         ht_fields.add({'field': 'static get ${m.name}${m.getHetuParams()}'});
       } else if (m.isSetter) {
         binding_static_variables_setter.add({
           'dart_class_name': dart_class_name,
-          'static_variable_name': m.name
+          'static_variable_name': m.name,
+          'real_static_variable_name': m.realName,
         });
         ht_fields.add({'field': 'static set ${m.name}${m.getHetuParams()}'});
       } else {
         binding_static_methods.add({
           'dart_class_name': dart_class_name,
           'static_method_name': m.name,
+          'real_static_method_name': m.realName,
           'static_method_params': m.getParams(),
           'static_method_invoke_params': m.getInvokeParam(),
           'static_method_private_defines': static_method_private_defines,
@@ -727,20 +747,24 @@ Future<List<BindingDefine>> generateWrappers(
         return;
       }
       var setter = false;
-      binding_static_variables_getter.add(
-          {'dart_class_name': dart_class_name, 'static_variable_name': v.name});
+      binding_static_variables_getter.add({
+        'dart_class_name': dart_class_name,
+        'static_variable_name': v.name,
+        'real_static_variable_name': v.realName
+      });
       if (!v.isConst && !v.isFinal) {
         setter = true;
         binding_static_variables_setter.add({
           'dart_class_name': dart_class_name,
-          'static_variable_name': v.name
+          'static_variable_name': v.name,
+          'real_static_variable_name': v.realName
         });
       }
 
       if (setter) {
         ht_fields.add({'field': 'static var ${v.name}'});
       } else {
-        ht_fields.add({'field': 'static const ${v.name}'});
+        ht_fields.add({'field': 'static get ${v.name}'});
       }
     });
 
@@ -845,10 +869,8 @@ Future<List<BindingDefine>> generateWrappers(
   if (library == ExportType.Package) {
     var rel = path.relative(filePath, from: relPath);
     print('rel $rel');
-    var seperator = Platform.isWindows ? '\\' : '/';
-    fileName = path.dirname(rel).replaceAll(seperator, '-') +
-        '-' +
-        path.basenameWithoutExtension(rel);
+    fileName =
+        path.dirname(rel) + seperator + path.basenameWithoutExtension(rel);
     print('fil $fileName');
   }
 
@@ -864,7 +886,7 @@ Future<List<BindingDefine>> generateWrappers(
   //   }
   // }
   var midFolder = '$libName/';
-  var midPrefix = '$libName-';
+  var midPrefix = '$libName/';
   if (library == ExportType.FlutterLibrary) {
     dirName = 'flutter';
     template_vars['library_class_import'] = {
