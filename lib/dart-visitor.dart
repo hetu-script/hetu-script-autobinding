@@ -158,7 +158,7 @@ class RootAstVisitor extends UnifyingAstVisitor<dynamic> {
 
   @override
   dynamic visitExtendsClause(ExtendsClause node) {
-    var name = node.superclass2.name.name;
+    var name = node.superclass.name.name;
     if (name.contains('.')) {
       var idx = name.lastIndexOf('.');
       name = name.substring(idx + 1);
@@ -177,7 +177,7 @@ class RootAstVisitor extends UnifyingAstVisitor<dynamic> {
   @override
   dynamic visitWithClause(WithClause node) {
     var arr = <String>[];
-    node.mixinTypes2.forEach((element) {
+    node.mixinTypes.forEach((element) {
       String s = _safelyVisitNode(element);
       arr.add(s);
     });
@@ -804,7 +804,7 @@ class IdentifierASTVisitor extends UnifyingAstVisitor<List<String>> {
   List<String>? visitInstanceCreationExpression(
       InstanceCreationExpression node) {
     var ret = <String>[];
-    ret.add(node.constructorName.type2.name.name);
+    ret.add(node.constructorName.type.name.name);
     ret.addAll(_safelyVisitNode(node.argumentList));
     return ret;
   }
@@ -1199,7 +1199,7 @@ class IdentifierASTVisitor extends UnifyingAstVisitor<List<String>> {
 
   @override
   List<String>? visitExtendsClause(ExtendsClause node) {
-    return [node.superclass2.name.name];
+    return [node.superclass.name.name];
   }
 
   @override
@@ -1279,5 +1279,6 @@ class IdentifierASTVisitor extends UnifyingAstVisitor<List<String>> {
       return [];
     }
     assert(false, 'Unhandled ${nodeType(node)}');
+    return null;
   }
 }

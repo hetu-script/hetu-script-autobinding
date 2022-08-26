@@ -7,7 +7,7 @@ import 'package:path/path.dart' as path;
 import 'binding-generator.dart';
 import 'defines.dart';
 
-var version = '1.0.17';
+var version = '2.0.0';
 
 final files = <FileSystemEntity>[];
 
@@ -110,7 +110,7 @@ Future<List<FileDefine>> parseDartFiles(String? jsonPath, List<String> ignores,
         if (libName != null && relPath != null) {
           var url = path.relative(element.fileDefine.filePath, from: relPath);
           element.import = '\'package:$libName/$url\'';
-        }else{
+        } else {
           element.import = '';
         }
       });

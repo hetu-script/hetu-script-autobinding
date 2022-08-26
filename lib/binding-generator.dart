@@ -532,7 +532,7 @@ Future<List<BindingDefine>> generateWrappers(
       //     //有非私有构造函数，可以生成instance
       //     staticClassOnly = false;
       //   }
-      // }    
+      // }
       staticClassOnly = false;
     }
     for (var ctor in kclass.constructors) {
@@ -781,7 +781,10 @@ Future<List<BindingDefine>> generateWrappers(
     var empty_instance_binding = !have_instance_setter &&
         !have_instance_getter &&
         binding_constructors.isEmpty;
-    var empty_class_binding = !have_class_fetch && !have_class_assign && have_function_params == null && empty_instance_binding;
+    var empty_class_binding = !have_class_fetch &&
+        !have_class_assign &&
+        have_function_params == null &&
+        empty_instance_binding;
     var have_class_member;
     var have_instance_member;
     if (!empty_class_binding) {
