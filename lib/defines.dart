@@ -1,3 +1,5 @@
+import 'package:hetu_binding_generator/binding-generator.dart';
+
 const _hetuKeywords = [
   'null',
   'true',
@@ -95,6 +97,12 @@ class FileDefine {
       index = kclass.staticVars.indexWhere((element) => element.name == id);
       if (index != -1) {
         return kclass.staticVars[index];
+      }
+    }
+    for(final mix in mixins){
+      mix.instanceMethods.indexWhere((element) => element.name == id);
+      if(index!=-1){
+        return mix;
       }
     }
     return null;
@@ -308,7 +316,7 @@ class ClassDefine {
             }
             break;
           case 'ConstructorDeclaration':
-            var c = ConstructorDefine(e);
+            var c = ConstructorDefine(e, this);
             constructors.add(c);
             break;
           default:
@@ -388,10 +396,10 @@ class FieldVarDefine {
 
   FieldVarDefine(Map<String, dynamic> json,
       {required this.isStatic,
-      required this.isTopLevel,
-      required this.isProtected,
-      required this.isDeprecated,
-      required this.type}) {
+        required this.isTopLevel,
+        required this.isProtected,
+        required this.isDeprecated,
+        required this.type}) {
     parse(json);
   }
 
@@ -439,8 +447,10 @@ class ParamDefine {
   late final bool isNamed;
   late final bool isFinal;
   late final bool isRequired;
+  late  bool isSuper;
+  String? Function(String paramName)? searchDefaultValue;
 
-  ParamDefine(Map<String, dynamic> json) {
+  ParamDefine(Map<String, dynamic> json, {this.searchDefaultValue}) {
     parse(json);
   }
 
@@ -454,6 +464,7 @@ class ParamDefine {
           isOptional = js['optional?'];
           isNamed = js['named?'] ?? false;
           isRequired = js['required?'] ?? false;
+          isSuper = false;
           break;
         case 'DefaultFormalParameter':
           var param = js['param'];
@@ -470,6 +481,7 @@ class ParamDefine {
           isOptional = js['optional?'];
           isNamed = js['named?'] ?? false;
           isRequired = js['required?'] ?? false;
+          isSuper = false;
           break;
         case 'FunctionTypedFormalParameter':
           name = js['name'];
@@ -477,6 +489,16 @@ class ParamDefine {
           isOptional = js['optional?'];
           isNamed = js['named?'] ?? false;
           isRequired = js['required?'] ?? false;
+          isSuper = false;
+          break;
+        case 'SuperFormalParameter' :
+          type = js['type'];
+          name = js['name'];
+          isPositional = js['pos?'];
+          isOptional = js['optional?'];
+          isNamed = js['named?'] ?? false;
+          isRequired = js['required?'] ?? false;
+          isSuper = true;
           break;
         default:
           assert(false, 'Unknown Parameter [$js]!');
@@ -494,17 +516,20 @@ String checkWrapValue(String v, String? type) {
   if (type?.startsWith('List<') ?? false) {
     wrapContainerType = type!;
     if (wrapContainerType.endsWith('?')) {
-      wrapContainerType = 'List';
+      wrapContainerType =
+          wrapContainerType.substring(0, wrapContainerType.length - 1);
     }
   } else if (type?.startsWith('Map<') ?? false) {
     wrapContainerType = type!;
     if (wrapContainerType.endsWith('?')) {
-      wrapContainerType = 'Map';
+      wrapContainerType =
+          wrapContainerType.substring(0, wrapContainerType.length - 1);
     }
   } else if (type?.startsWith('Iterable<') ?? false) {
     wrapContainerType = type!.replaceAll('Iterable', '');
     if (wrapContainerType.endsWith('?')) {
-      wrapContainerType = 'Iterable';
+      wrapContainerType =
+          wrapContainerType.substring(0, wrapContainerType.length - 1);
     }
     return '$v.cast$wrapContainerType()';
   }
@@ -518,6 +543,7 @@ class ConstructorDefine {
   late final String? name;
   late final String? realName;
   late final List<ParamDefine> params;
+  final ClassDefine clazz;
   String? paramRaw;
   late final bool isFactory;
   late final bool isDeprecated;
@@ -527,7 +553,7 @@ class ConstructorDefine {
 
   bool get isDefault => name == null;
 
-  ConstructorDefine(Map<String, dynamic> json) {
+  ConstructorDefine(Map<String, dynamic> json, this.clazz) {
     parse(json);
   }
 
@@ -552,14 +578,94 @@ class ConstructorDefine {
     });
   }
 
+  String? getSuperConstructorParam(String paramName) {
+    if (clazz.superClass != null) {
+      for (final constructor in clazz.superClass!.constructors) {
+        if (constructor.realName == this.realName) {
+          for (final param in constructor.params) {
+            if (param.name == paramName) {
+              if (param.defaultValue != null) {
+                return param.defaultValue;
+              } else {
+                return constructor.getSuperConstructorParam(paramName);
+              }
+            }
+          }
+        }
+      }
+    } else {
+      if (clazz.superClassName != null) {
+        final superClass = allClazzCache[clazz.superClassName!];
+        if (superClass != null) {
+          for (final constructor in superClass.constructors) {
+            if (constructor.realName == this.realName) {
+              for (final param in constructor.params) {
+                if (param.name == paramName) {
+                  if (param.defaultValue != null) {
+                    return param.defaultValue;
+                  } else {
+                    return constructor.getSuperConstructorParam(paramName);
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    return null;
+  }
+
+  String? getSuperConstructorParamType(String paramName) {
+    if (clazz.superClass != null) {
+      for (final constructor in clazz.superClass!.constructors) {
+        if (constructor.realName == this.realName) {
+          for (final param in constructor.params) {
+            if (param.name == paramName) {
+              if (param.type != null) {
+                return param.type;
+              } else {
+                return constructor.getSuperConstructorParamType(paramName);
+              }
+            }
+          }
+        }
+      }
+    } else {
+      if (clazz.superClassName != null) {
+        final superClass = allClazzCache[clazz.superClassName!];
+        if (superClass != null) {
+          for (final constructor in superClass.constructors) {
+            if (constructor.realName == this.realName) {
+              for (final param in constructor.params) {
+                if (param.name == paramName) {
+                  if (param.type != null) {
+                    return param.type;
+                  } else {
+                    return constructor.getSuperConstructorParamType(paramName);
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    return null;
+  }
+
   String getConstructorParams() {
     final allParams = <String>[];
     var namedParams = [];
+    String getType(String? type) {
+      return type?.contains('.') == true ? '' : ': $type';
+    }
+
     params.forEach((p) {
       if (p.isPositional) {
-        allParams.add(p.name!);
+        allParams.add("${p.name!}${getType(p.type)}");
       } else {
-        namedParams.add(p.name!);
+        namedParams.add("${p.name!}${getType(p.type)}");
       }
     });
     if (namedParams.isNotEmpty) {
@@ -585,8 +691,20 @@ class ConstructorDefine {
         index++;
       } else {
         //命名参数
-        var value = checkWrapValue('namedArgs[\'${p.name}\']', p.type);
-        if (p.isRequired && p.defaultValue == null) {
+        var type = p.type;
+        if (type == null) {
+          type = getSuperConstructorParamType(p.name!);
+        }
+        var value = checkWrapValue('namedArgs[\'${p.name}\']', type);
+        if (p.isSuper  && p.defaultValue == null) {
+          if(p.isRequired){
+            allParams.add('${p.name} : $value');
+          }else{
+            final defaultValue = getSuperConstructorParam(p.name!);
+            allParams.add(
+                '${p.name} : namedArgs.containsKey(\'${p.name}\') ? $value : ${defaultValue}');
+          }
+        } else if (p.isRequired && p.defaultValue == null) {
           //没有默认值并且要求非null，这种情况用户必须保证提供了这个参数值
           allParams.add('${p.name} : $value');
         } else {
@@ -819,8 +937,7 @@ class BindingDefine {
   final List<String> externalVars;
   final List<Map<String, dynamic>> funcTypeDefs;
 
-  BindingDefine(
-      this.filePath, this.htFilePath, this.externalVars, this.funcTypeDefs);
+  BindingDefine(this.filePath, this.htFilePath, this.externalVars, this.funcTypeDefs);
 }
 
 class FunctionTypeDefine {
@@ -906,6 +1023,7 @@ class MixinDefine {
 // late final List<FieldVarDefine> instanceVars;
   bool ignored = false;
   late final String name;
+  late final String raw;
   late final List<MethodDefine> instanceMethods;
 
   MixinDefine(Map<String, dynamic> json) {
@@ -915,6 +1033,7 @@ class MixinDefine {
   void parse(Map<String, dynamic> json) {
     instanceMethods = [];
     name = json['name'];
+    raw = json['raw'];
     var members = json['members'] as List?;
     if (members != null) {
       for (var value in members) {

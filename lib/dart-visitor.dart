@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 
@@ -59,7 +61,7 @@ class RootAstVisitor extends UnifyingAstVisitor<dynamic> {
       '_': nodeType(node),
       'prefix': node.prefix?.name,
       'id': node.uri.toString(),
-      'keyword': node.keyword.toString()
+      'keyword': node.importKeyword.toString()
     };
   }
 
@@ -88,7 +90,7 @@ class RootAstVisitor extends UnifyingAstVisitor<dynamic> {
   dynamic visitFunctionTypeAlias(FunctionTypeAlias node) {
     return {
       '_': nodeType(node),
-      'name': node.name.name,
+      'name': node.name2.toString(),
       'params': _safelyVisitNode(node.parameters),
       'returnType': node.returnType.toString(),
       'generic?': _safelyVisitNode(node.typeParameters),
@@ -99,7 +101,7 @@ class RootAstVisitor extends UnifyingAstVisitor<dynamic> {
   dynamic visitGenericTypeAlias(GenericTypeAlias node) {
     return {
       '_': nodeType(node),
-      'name': node.name.name,
+      'name': node.name2.toString(),
       'params': _safelyVisitNode(node.functionType?.parameters),
       'returnType': node.functionType?.returnType.toString(),
       'generic?': _safelyVisitNode(node.functionType?.typeParameters),
@@ -115,7 +117,7 @@ class RootAstVisitor extends UnifyingAstVisitor<dynamic> {
   dynamic visitExtensionDeclaration(ExtensionDeclaration node) {
     return {
       '_': nodeType(node),
-      'name': node.name?.name,
+      'name': node.name2?.toString(),
       'super': node.extendedType.toString(),
       'members': _safelyVisitNodeList(node.members),
     };
@@ -134,7 +136,7 @@ class RootAstVisitor extends UnifyingAstVisitor<dynamic> {
     return {
       '_': nodeType(node),
       'raw': node.toString(),
-      'name': node.name.name,
+      'name': node.name2.toString(),
       'generic': _safelyVisitNode(node.typeParameters),
       'super': _safelyVisitNode(node.extendsClause),
       'with': _safelyVisitNode(node.withClause),
@@ -149,11 +151,13 @@ class RootAstVisitor extends UnifyingAstVisitor<dynamic> {
 
   @override
   dynamic visitMixinDeclaration(MixinDeclaration node) {
-    return {
+    final map =  {
       '_': nodeType(node),
-      'name': node.name.name,
+      'raw': node.toString(),
+      'name': node.name2.toString(),
       'members': _safelyVisitNodeList(node.members),
     };
+    return map;
   }
 
   @override
@@ -178,8 +182,14 @@ class RootAstVisitor extends UnifyingAstVisitor<dynamic> {
   dynamic visitWithClause(WithClause node) {
     var arr = <String>[];
     node.mixinTypes.forEach((element) {
-      String s = _safelyVisitNode(element);
-      arr.add(s);
+      final result = _safelyVisitNode(element);
+      String str;
+      if (result is Map) {
+        str = jsonEncode(result);
+      } else {
+        str = result;
+      }
+      arr.add(str);
     });
     return arr;
   }
@@ -194,7 +204,7 @@ class RootAstVisitor extends UnifyingAstVisitor<dynamic> {
     // print('ctor: ${node.parameters}');
     return {
       '_': nodeType(node),
-      'name': node.name?.name,
+      'name': node.name2?.toString(),
       'params': _safelyVisitNode(node.parameters),
       'init': _safelyVisitNodeList(node.initializers),
       'body': node.body.toString(),
@@ -225,11 +235,11 @@ class RootAstVisitor extends UnifyingAstVisitor<dynamic> {
   dynamic visitEnumDeclaration(EnumDeclaration node) {
     var enums = <String>[];
     node.constants.forEach((element) {
-      enums.add(element.name.name);
+      enums.add(element.name2.toString());
     });
     return {
       '_': nodeType(node),
-      'name': node.name.name,
+      'name': node.name2.toString(),
       'meta': _safelyVisitNodeList(node.metadata),
       'enums': enums
     };
@@ -237,7 +247,7 @@ class RootAstVisitor extends UnifyingAstVisitor<dynamic> {
 
   @override
   dynamic visitEnumConstantDeclaration(EnumConstantDeclaration node) {
-    return node.name.name;
+    return node.name2.toString();
   }
 
   @override
@@ -297,7 +307,7 @@ class RootAstVisitor extends UnifyingAstVisitor<dynamic> {
 
   @override
   dynamic visitTypeParameter(TypeParameter node) {
-    return {'name': node.name.name, 'type': node.bound?.toString()};
+    return {'name': node.name2.toString(), 'type': node.bound?.toString()};
   }
 
   @override
@@ -340,7 +350,7 @@ class RootAstVisitor extends UnifyingAstVisitor<dynamic> {
       '_': nodeType(node),
       'static': node.isStatic,
       'ret': node.returnType?.toString(),
-      'name': node.name.toString(),
+      'name': node.name2.toString(),
       'operator?': node.operatorKeyword != null,
       'type': _safelyVisitNode(node.typeParameters),
       'params': _safelyVisitNode(node.parameters),
@@ -369,7 +379,7 @@ class RootAstVisitor extends UnifyingAstVisitor<dynamic> {
   dynamic visitVariableDeclaration(VariableDeclaration node) {
     return {
       '_': nodeType(node),
-      'name': node.name.name,
+      'name': node.name2.toString(),
       'final?': node.isFinal,
       'const?': node.isConst,
       'init': _safelyVisitNode(node.initializer),
@@ -432,13 +442,15 @@ class RootAstVisitor extends UnifyingAstVisitor<dynamic> {
     return {
       '_': nodeType(node),
       'type': node.type?.toString(),
-      'name': node.identifier?.name,
+      'name': node.name?.toString(),
       'pos?': node.isPositional,
       'named?': node.isNamed,
       'optional?': node.isOptional,
       'required?': node.isRequired,
     };
   }
+
+
 
   @override
   dynamic visitGenericFunctionType(GenericFunctionType node) {
@@ -453,7 +465,7 @@ class RootAstVisitor extends UnifyingAstVisitor<dynamic> {
     return {
       '_': nodeType(node),
       'type': node.type?.toString(),
-      'name': node.identifier.name,
+      'name': node.name.toString(),
       'this?': node.thisKeyword.toString() == 'this',
       'pos?': node.isPositional,
       'named?': node.isNamed,
@@ -467,7 +479,7 @@ class RootAstVisitor extends UnifyingAstVisitor<dynamic> {
     return {
       '_': nodeType(node),
       'ret': node.returnType?.toString(),
-      'name': node.identifier.name,
+      'name': node.name.toString(),
       'pos?': node.isPositional,
       'named?': node.isNamed,
       'optional?': node.isOptional,
@@ -487,14 +499,30 @@ class RootAstVisitor extends UnifyingAstVisitor<dynamic> {
   }
 
   @override
+  dynamic visitSuperFormalParameter(SuperFormalParameter node) {
+    final all = {
+      'parameters':node.parameters.toString(),
+    };
+    final map = {
+      '_': nodeType(node),
+      'type': node.type?.toString(),
+      'name': node.name.toString(),
+      'pos?': node.isPositional,
+      'named?': node.isNamed,
+      'optional?': node.isOptional,
+      'required?': node.isRequired,
+    };
+    return map;
+  }
+
+  @override
   dynamic visitFormalParameterList(FormalParameterList node) {
     return _safelyVisitNodeList(node.parameters);
   }
 
-  @override
-  dynamic visitTypeName(NamedType node) {
-    return node.name.name;
-  }
+  // dynamic visitTypeName(NamedType node) {
+  //   return node.name.name;
+  // }
 
   @override
   dynamic visitReturnStatement(ReturnStatement node) {
@@ -983,7 +1011,7 @@ class IdentifierASTVisitor extends UnifyingAstVisitor<List<String>> {
   @override
   List<String>? visitVariableDeclaration(VariableDeclaration node) {
     var ret = <String>[];
-    ret.add(node.name.name);
+    ret.add(node.name2.toString());
     if (node.initializer != null) {
       ret.addAll(_safelyVisitNode(node.initializer));
     }
@@ -1094,16 +1122,15 @@ class IdentifierASTVisitor extends UnifyingAstVisitor<List<String>> {
   @override
   List<String>? visitSimpleFormalParameter(SimpleFormalParameter node) {
     var ret = <String>[];
-    if (node.identifier != null) {
-      ret.add(node.identifier!.name);
+    if (node.name != null) {
+      ret.add(node.name!.toString());
     }
     return ret;
   }
 
   @override
-  List<String>? visitThisExpression(ThisExpression node) {
-    var ret = <String>[];
-    return ret;
+  List<String>? visitSuperFormalParameter(SuperFormalParameter node) {
+    return [];
   }
 
   @override
@@ -1116,7 +1143,9 @@ class IdentifierASTVisitor extends UnifyingAstVisitor<List<String>> {
   @override
   List<String>? visitFunctionDeclaration(FunctionDeclaration node) {
     var ret = <String>[];
-    ret.add(node.name.name);
+    if (node.name2.stringValue != null) {
+      ret.add(node.name2.toString());
+    }
     ret.addAll(_safelyVisitNode(node.functionExpression));
     return ret;
   }
@@ -1135,7 +1164,7 @@ class IdentifierASTVisitor extends UnifyingAstVisitor<List<String>> {
   List<String>? visitFunctionTypedFormalParameter(
       FunctionTypedFormalParameter node) {
     var ret = <String>[];
-    ret.add(node.identifier.name);
+    ret.add(node.name.toString());
     ret.addAll(_safelyVisitNode(node.parameters));
     if (node.typeParameters != null) {
       ret.add(_safelyVisitNode(node.typeParameters));
@@ -1145,7 +1174,9 @@ class IdentifierASTVisitor extends UnifyingAstVisitor<List<String>> {
 
   @override
   List<String>? visitTypeParameter(TypeParameter node) {
-    return [node.name.name];
+    final ret = <String>[];
+    ret.add(node.name2.toString());
+    return ret;
   }
 
   @override
@@ -1179,7 +1210,7 @@ class IdentifierASTVisitor extends UnifyingAstVisitor<List<String>> {
   @override
   List<String>? visitMethodDeclaration(MethodDeclaration node) {
     var ret = <String>[];
-    ret.add(node.name.name);
+    ret.add(node.name2.toString());
     ret.addAll(_safelyVisitNode(node.body));
     if (node.parameters != null) {
       ret.addAll(_safelyVisitNode(node.parameters));
@@ -1249,7 +1280,7 @@ class IdentifierASTVisitor extends UnifyingAstVisitor<List<String>> {
   @override
   List<String>? visitEnumDeclaration(EnumDeclaration node) {
     var ret = <String>[];
-    ret.add(node.name.name);
+    ret.add(node.name2.toString());
     ret.addAll(_safelyVisitNodeList(node.constants));
 
     return ret;
@@ -1258,7 +1289,7 @@ class IdentifierASTVisitor extends UnifyingAstVisitor<List<String>> {
   @override
   List<String>? visitEnumConstantDeclaration(EnumConstantDeclaration node) {
     var ret = <String>[];
-    ret.add(node.name.name);
+    ret.add(node.name2.toString());
     return ret;
   }
 
@@ -1275,6 +1306,9 @@ class IdentifierASTVisitor extends UnifyingAstVisitor<List<String>> {
         node is SuperExpression ||
         node is EmptyFunctionBody ||
         node is NativeFunctionBody ||
+        node is NamedType ||
+        node is ThisExpression ||
+        node is GenericFunctionType ||
         node is AssertInitializer) {
       return [];
     }

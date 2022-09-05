@@ -159,6 +159,14 @@ Future<List<FileDefine>> parseDartFiles(String? jsonPath, List<String> ignores,
       });
     }
   }
+  fileDefines.forEach((element) {
+    for (final value in element.classes) {
+      allClazzCache[value.name] = value;
+    }
+    for (final value in element.privateClasses) {
+      allClazzCache[value.name] = value;
+    }
+  });
   return fileDefines;
 }
 

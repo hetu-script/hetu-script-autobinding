@@ -24,8 +24,7 @@ class HetuLibraryScriptBinding {
   }
 
   @mustCallSuper
-  void loadAutoBinding(Hetu hetu) {
-    loadAutoBindingFunction(hetu);
+  void loadAutoBindingClass(Hetu hetu) {
     var bindings = [
       {{#bindings}}
       {{prefix}}{{dart_class_name}}AutoBinding(),
@@ -38,6 +37,12 @@ class HetuLibraryScriptBinding {
             print(e);
         }
     }
+  }
+
+  @mustCallSuper
+  void loadAutoBinding(Hetu hetu){
+    loadAutoBindingFunction(hetu);
+    loadAutoBindingClass(hetu);
   }
 
 }
