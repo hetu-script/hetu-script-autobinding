@@ -13,7 +13,7 @@ import 'default_templates.dart';
 import 'defines.dart';
 
 final seperator = Platform.isWindows ? '\\' : '/';
-
+final allClazzCache =Map<String,ClassDefine>();
 var defaultTemplates = {
   'import_entry.mustache': import_entry,
   'dart_classes.mustache': dart_classes,
@@ -585,8 +585,8 @@ Future<List<BindingDefine>> generateWrappers(
           'constructor_private_defines': constructor_private_defines
         });
 
-        // ht_fields.add({'field': 'construct ${ctor.name ?? ""}'});
         ht_fields.add({'field': 'construct ${ctor.name ?? ""}'});
+        // ht_fields.add({'field': 'construct ${ctor.name ?? ""}${ctor.getConstructorParams()}'});
       }
     }
     if (failed) {
